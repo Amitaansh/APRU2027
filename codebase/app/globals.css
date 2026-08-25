@@ -1,137 +1,488 @@
 @import "tailwindcss";
 
-/* next-themes uses the `class` strategy (TRD §6). */
-@custom-variant dark (&:where(.dark, .dark *));
-
 /*
- * Design Brief v2 §04 — mono + splash.
- * Ported verbatim from APRU-SCL-2027-DesignBrief-v2.html. Both themes are
- * fully designed; dark is an inversion of role, not a filter.
+ * ---------------------------------------------------------------------------
+ * FLUID ROOT
+ * ---------------------------------------------------------------------------
+ * The whole site is drawn at a fixed design basis and scaled by viewport width:
+ * 1rem === 1px at 1920 wide on desktop, and 1px at 375 wide on mobile. Every
+ * number in this file and in the components is therefore "px at design width",
+ * which is why nothing ever reflows between breakpoints -- it only scales.
+ *
+ * The clamp bounds are expressed in rem, not px, on purpose. On the root
+ * element `rem` resolves against the *initial* font-size, i.e. the reader's own
+ * browser default. So a visitor who has raised their base size still gets
+ * proportionally larger type everywhere, which a bare vw value would throw away.
+ *
+ *   0.05625rem = 0.9px at a 16px default   (floor,   ~1728 and below)
+ *   0.075rem   = 1.2px at a 16px default   (ceiling, ~2304 and above)
  */
 :root {
-  --paper: #f4f2ec;
-  --ink: #0c0c0d;
-  --surface: #fbfaf6;
-  --muted: #6e6c66;
-  --line: #d8d4c8;
+  font-size: clamp(0.05625rem, 0.0520833333vw, 0.075rem);
+}
 
+@media (max-width: 767.98px) {
+  :root {
+    font-size: clamp(0.05rem, 0.2666666667vw, 0.0725rem);
+  }
+}
+
+@theme {
+  /* Tailwind's own rem-based scales would resolve against a ~1px root, so the
+   * namespaces are cleared and replaced rather than extended. */
+  --text-*: initial;
+  --font-*: initial;
+  --spacing: 1rem;
+
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+
+  --font-sans: var(--font-switzer), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-hedvig), ui-serif, Georgia, serif;
+
+  --color-wh: #ffffff;
+  --color-bk: #000000;
+  --color-gr: #eeeeee;
+  --color-gr2: #e2e2e2;
+  --color-gr3: #6e6e6e;
+  --color-ac: #c2410c;
+  --color-orange: #f89c2c;
+
+  /* Every transition on the site uses this curve. Slow, no overshoot. */
+  --ease-ref: cubic-bezier(0.17, 0.84, 0.44, 1);
+}
+
+/*
+ * ---------------------------------------------------------------------------
+ * PALETTE
+ * ---------------------------------------------------------------------------
+ * Five neutrals and one accent. --ac has exactly one job -- live state, i.e. a
+ * deadline that is open or the date that is next -- and is never used for
+ * headings, links, borders, hovers or decoration. #c2410c clears 5.9:1 on
+ * white, so it is safe as text; the brand #f89c2c is not (1.9:1) and survives
+ * only inside the hero artwork.
+ */
+:root {
+  --wh: #ffffff;
+  --bk: #000000;
+  --gr: #eeeeee;
+  --gr2: #e2e2e2;
+  --gr3: #6e6e6e;
+
+  /* Secondary text on the dark ground. #929292 is the reference's grey and
+   * clears 6.7:1 on black, but only 3.1:1 on white -- hence the pair. */
+  --gr3-dark: #929292;
+  --ac: #c2410c;
+
+  /* The brand orange. Never used as text on white (1.9:1) -- only on the dark
+   * ground, where it clears 8.9:1, and inside the artwork and the halo. */
   --orange: #f89c2c;
-  --blue: #3c88c8;
-  --cyan: #1fc2f0;
 
-  /*
-   * Brand orange is a fill, not a text colour: #f89c2c on paper is 1.9:1.
-   * --accent is the same splash darkened to clear AA for text in light theme
-   * (5.1:1), and reverts to the brand hex in dark where it already passes.
-   * --line-strong is for control borders, which need 3:1 (WCAG 1.4.11); the
-   * faint --line stays for decorative grid and dividers.
-   */
-  --accent: #9a5600;
-  --line-strong: #6e6c66;
+  /* Descender headroom for masked lines. Sized from the font metrics; see the
+   * MASKED REVEAL block. Global because the reveal transform reads it whether
+   * or not .e-lh is in play. */
+  --off: 0.22em;
 
   color-scheme: light;
 }
 
-.dark {
-  --paper: #0c0c0d;
-  --ink: #f1efe8;
-  --surface: #141416;
-  --muted: #9a968c;
-  --line: #26262a;
-  --accent: #f89c2c;
-  --line-strong: #9a968c;
-
-  color-scheme: dark;
-}
-
-@theme inline {
-  --color-paper: var(--paper);
-  --color-ink: var(--ink);
-  --color-surface: var(--surface);
-  --color-muted: var(--muted);
-  --color-line: var(--line);
-  --color-orange: var(--orange);
-  --color-accent: var(--accent);
-  --color-line-strong: var(--line-strong);
-  --color-blue: var(--blue);
-  --color-cyan: var(--cyan);
-
-  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-space-mono), ui-monospace, monospace;
-
-  /* Design Brief §02 — 8px base, sections breathe at 88px. */
-  --spacing-gut: 20px;
-  --spacing-section: 88px;
-
-  /* Design Brief §06 — motion tokens. */
-  --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
-  --ease-out-quart: cubic-bezier(0.165, 0.84, 0.44, 1);
-  --ease-in-out-cubic: cubic-bezier(0.645, 0.045, 0.355, 1);
-}
-
 @layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
   html {
-    -webkit-text-size-adjust: 100%;
+    -webkit-text-size-adjust: none;
+    text-size-adjust: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   body {
-    background: var(--paper);
-    color: var(--ink);
-    font-family: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+    width: 100%;
+    min-height: 100%;
+    background-color: var(--wh);
+    color: var(--bk);
+    font-family: var(--font-switzer), ui-sans-serif, system-ui, sans-serif;
+    font-size: 18rem;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
     font-synthesis-weight: none;
-    -webkit-font-smoothing: antialiased;
-    /* Theme invert — Design Brief §06, 400ms ease-out-quart. */
-    transition: background-color 400ms cubic-bezier(0.165, 0.84, 0.44, 1),
-      color 400ms cubic-bezier(0.165, 0.84, 0.44, 1);
   }
 
-  /* Visible focus in both themes (TRD §10). */
-  :focus-visible {
-    outline: 2px solid var(--ink);
-    outline-offset: 3px;
-    border-radius: 2px;
+  @media (max-width: 767.98px) {
+    body {
+      font-size: 15rem;
+    }
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-hedvig), ui-serif, Georgia, serif;
+    font-weight: 400;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  button {
+    background: none;
+    border: none;
+    color: inherit;
+    font: inherit;
+    letter-spacing: inherit;
+    cursor: pointer;
+  }
+
+  ul,
+  ol {
+    list-style: none;
+  }
+
+  img,
+  video {
+    max-width: 100%;
+    object-fit: cover;
   }
 
   ::selection {
-    background: var(--orange);
-    color: #0c0c0d;
+    background: var(--ac);
+    color: var(--wh);
+  }
+
+  :focus-visible {
+    outline: 1px solid currentColor;
+    outline-offset: 4rem;
+  }
+
+  /* Lenis owns the scroll position; these are its required host styles. */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+
+  .lenis.lenis-stopped {
+    overflow: hidden;
   }
 }
 
 @layer components {
   /*
-   * Display face — Archivo's variable `wdth` axis at 125% is Archivo Expanded.
-   * Design Brief §03: uppercase, tight tracking, near-zero leading at size.
+   * -------------------------------------------------------------------------
+   * TYPE SCALE
+   * -------------------------------------------------------------------------
+   * Serif display, sans text. Leading tightens as size grows -- at display
+   * sizes the lines are meant to stack almost touching.
    */
-  .font-display {
-    font-family: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
-    font-stretch: 125%;
-    font-variation-settings: "wdth" 125;
-    text-transform: uppercase;
-    letter-spacing: -0.02em;
+  .t-d1 {
+    font-family: var(--font-hedvig), ui-serif, Georgia, serif;
+    font-size: 240rem;
+    letter-spacing: -0.03em;
+    line-height: 0.82;
+  }
+
+  .t-h1 {
+    font-family: var(--font-hedvig), ui-serif, Georgia, serif;
+    font-size: 175rem;
+    letter-spacing: -0.03em;
+    line-height: 0.85;
+  }
+
+  .t-h2 {
+    font-family: var(--font-hedvig), ui-serif, Georgia, serif;
+    font-size: 118rem;
+    letter-spacing: -0.03em;
     line-height: 0.9;
   }
 
-  /* Micro-label — Space Mono, uppercase, +0.1em (§03). */
-  .accent-text {
-    color: var(--accent);
+  .t-h3 {
+    font-family: var(--font-hedvig), ui-serif, Georgia, serif;
+    font-size: 80rem;
+    letter-spacing: -0.03em;
+    line-height: 0.92;
   }
 
-  .label-mono {
-    font-family: var(--font-space-mono), ui-monospace, monospace;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    font-size: 0.6875rem;
-    line-height: 1.4;
-    color: var(--muted);
+  .t-h4 {
+    font-family: var(--font-hedvig), ui-serif, Georgia, serif;
+    font-size: 40rem;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
   }
 
-  .hairline {
-    border-color: var(--line);
+  .t-b1 {
+    font-family: var(--font-switzer), ui-sans-serif, system-ui, sans-serif;
+    font-size: 18rem;
+    letter-spacing: -0.02em;
+    line-height: 1.35;
+  }
+
+  .t-b2 {
+    font-family: var(--font-switzer), ui-sans-serif, system-ui, sans-serif;
+    font-size: 15rem;
+    letter-spacing: -0.02em;
+    line-height: 1.35;
+  }
+
+  /* Small serif label. The signature move of the reference: a tiny serif word
+   * sitting beside sans data, in place of an uppercase mono micro-caption. */
+  .t-lbl {
+    font-family: var(--font-hedvig), ui-serif, Georgia, serif;
+    font-size: 16rem;
+    letter-spacing: 0;
+    line-height: 1.2;
+  }
+
+  @media (max-width: 767.98px) {
+    .t-d1 {
+      font-size: 46rem;
+      line-height: 0.9;
+    }
+    .t-h1 {
+      font-size: 40rem;
+      line-height: 0.95;
+    }
+    .t-h2 {
+      font-size: 34rem;
+    }
+    .t-h3 {
+      font-size: 28rem;
+    }
+    .t-h4 {
+      font-size: 22rem;
+    }
+    .t-b1 {
+      font-size: 15rem;
+    }
+    .t-b2 {
+      font-size: 13rem;
+    }
+    .t-lbl {
+      font-size: 14rem;
+    }
+  }
+
+  .f-serif {
+    font-family: var(--font-hedvig), ui-serif, Georgia, serif;
+  }
+
+  .f-sans {
+    font-family: var(--font-switzer), ui-sans-serif, system-ui, sans-serif;
+  }
+
+  /*
+   * -------------------------------------------------------------------------
+   * LAYOUT
+   * -------------------------------------------------------------------------
+   * A 30px page gutter at 1920 -- content sits close to the edge, and text is
+   * kept readable by living inside a few of the fifteen columns rather than by
+   * centring a narrow container.
+   */
+  .ctr {
+    display: block;
+    width: 100%;
+    padding: 0 30rem;
+  }
+
+  .grd {
+    display: grid;
+    grid-template-columns: repeat(15, 1fr);
+    gap: 20rem;
+    width: 100%;
+  }
+
+  @media (max-width: 767.98px) {
+    .ctr {
+      padding: 0 15rem;
+    }
+    .grd {
+      display: block;
+    }
+  }
+
+  /* Hairline. 1 real pixel at every viewport, never scaled. */
+  .rule {
+    width: 100%;
+    height: 1px;
+    background-color: currentColor;
+    opacity: 0.16;
+  }
+
+  .rule-solid {
+    width: 100%;
+    height: 1px;
+    background-color: currentColor;
+  }
+
+  /*
+   * -------------------------------------------------------------------------
+   * LINK
+   * -------------------------------------------------------------------------
+   * A 1px rule that wipes in from the left over 1.109s and, on leave, retracts
+   * to the right. The absurd duration is the point -- it reads as deliberate
+   * rather than as a hover state.
+   */
+  .link {
+    position: relative;
+    display: inline-block;
+    width: fit-content;
+    cursor: pointer;
+  }
+
+  .link::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -0.08em;
+    width: 100%;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right center;
+    transition: transform 1.109s var(--ease-ref);
+    pointer-events: none;
+  }
+
+  .link:hover::before,
+  .link:focus-visible::before {
+    transform: scaleX(1);
+    transform-origin: left center;
+  }
+
+  /* Current page: rule already drawn, and it retracts on hover. */
+  .link[aria-current="page"]::before {
+    transform: scaleX(1);
+    transform-origin: left center;
+  }
+
+  .link[aria-current="page"]:hover::before {
+    transform: scaleX(0);
+    transform-origin: right center;
+  }
+
+  /*
+   * -------------------------------------------------------------------------
+   * MASKED REVEAL
+   * -------------------------------------------------------------------------
+   * A single line of type rises out of a clipped wrapper.
+   *
+   * `overflow: hidden` clips to the MASK's padding box, so the descender room
+   * has to be bought there -- padding on the inner line cannot buy it. The mask
+   * is inflated by --off top and bottom and pulled back by an equal negative
+   * margin, which is net-zero: the mask's outer box stays exactly one
+   * line-height tall and layout is untouched, while its clip window is
+   * line-height + 2x--off.
+   *
+   * --off is sized from the real font metrics. Hedvig's ink spans 1.214em
+   * (-0.257 to +0.957), Switzer's 1.185em, so at the tightest leading on the
+   * site (0.82) the headroom needed per side is (1.214 - 0.82) / 2 = 0.197em.
+   * 0.22em clears every display size with margin to spare.
+   *
+   * MASKS ARE FOR SINGLE-LINE ELEMENTS ONLY. Anything that wraps gets .rise --
+   * a wrapping inline-block inside a mask breaks the arithmetic above, because
+   * the element is then taller than one line and the clip no longer
+   * corresponds to it.
+   */
+  .ln-mask {
+    display: block;
+    overflow: hidden;
+  }
+
+  .ln-mask > .ln {
+    display: block;
+    will-change: transform;
+  }
+
+  .ln-mask > .wd {
+    display: inline-block;
+    will-change: transform;
+  }
+
+  .e-lh .ln-mask {
+    padding-top: var(--off);
+    padding-bottom: var(--off);
+    margin-top: calc(var(--off) * -1);
+    margin-bottom: calc(var(--off) * -1);
+  }
+
+  /*
+   * -------------------------------------------------------------------------
+   * BUTTON
+   * -------------------------------------------------------------------------
+   * A rectangle and a rule. No radius, no shadow, no icon.
+   */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12rem;
+    padding: 14rem 34rem;
+    border: 1px solid currentColor;
+    font-family: var(--font-switzer), ui-sans-serif, system-ui, sans-serif;
+    font-size: 16rem;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    background-color: transparent;
+    color: inherit;
+    transition:
+      background-color 0.6s var(--ease-ref),
+      color 0.6s var(--ease-ref);
+  }
+
+  .btn:hover {
+    background-color: var(--bk);
+    color: var(--wh);
+  }
+
+  .btn-fill {
+    background-color: var(--bk);
+    color: var(--wh);
+    border-color: var(--bk);
+  }
+
+  .btn-fill:hover {
+    background-color: transparent;
+    color: var(--bk);
+  }
+
+  @media (max-width: 767.98px) {
+    .btn {
+      padding: 16rem 28rem;
+      font-size: 14rem;
+    }
+  }
+
+  /* Live state -- the accent's only assignment. */
+  .live {
+    color: var(--ac);
   }
 }
 
-/* Design Brief §06 — reduced motion cuts everything to near-zero. */
+/*
+ * Reduced motion: reveals resolve to their end state instantly and Lenis is
+ * disabled from the provider, so the page is simply a static document.
+ */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -141,4 +492,538 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/*
+ * ===========================================================================
+ * REVEAL STATES
+ * ===========================================================================
+ * A [data-reveal] element gets .is-in once, which releases every mask and rise
+ * inside it. Stagger is done with transition-delay at the call site rather than
+ * with per-child selectors, so a section can order its own children.
+ */
+@layer components {
+  .ln-mask > .ln,
+  .ln-mask > .wd {
+    transform: translate3d(0, calc(100% + var(--off)), 0);
+    transition: transform 1.15s var(--ease-ref);
+  }
+
+  .is-in .ln-mask > .ln,
+  .is-in .ln-mask > .wd,
+  .is-in.ln-mask > .ln,
+  .is-in.ln-mask > .wd {
+    transform: translate3d(0, 0, 0);
+  }
+
+  .rise {
+    opacity: 0;
+    transform: translate3d(0, 24rem, 0);
+    transition:
+      opacity 1s var(--ease-ref),
+      transform 1s var(--ease-ref);
+  }
+
+  .is-in .rise,
+  .is-in.rise {
+    opacity: 1;
+    transform: none;
+  }
+
+  /*
+   * =========================================================================
+   * SECTION RHYTHM
+   * =========================================================================
+   * .pad-flow is for a section that continues the one above it -- it drops the
+   * top pad so two ruled tables read as one table, instead of paying 180 twice
+   * at the seam.
+   */
+  .pad {
+    padding-top: 180rem;
+    padding-bottom: 180rem;
+  }
+
+  .pad-t {
+    padding-top: 180rem;
+  }
+
+  .pad-b {
+    padding-bottom: 180rem;
+  }
+
+  .pad-flow {
+    padding-top: 0;
+  }
+
+  @media (max-width: 767.98px) {
+    .pad {
+      padding-top: 80rem;
+      padding-bottom: 80rem;
+    }
+    .pad-t {
+      padding-top: 80rem;
+    }
+    .pad-b {
+      padding-bottom: 80rem;
+    }
+    .pad-flow {
+      padding-top: 0;
+    }
+  }
+
+  /*
+   * =========================================================================
+   * VERTICAL SECTION LABEL
+   * =========================================================================
+   * Reads bottom-to-top down the left column. writing-mode plus a 180 turn is
+   * what gets bottom-to-top -- vertical-rl on its own reads top-to-bottom.
+   */
+  .sec-label {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-family: var(--font-hedvig), ui-serif, Georgia, serif;
+    font-size: 80rem;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 767.98px) {
+    .sec-label {
+      writing-mode: horizontal-tb;
+      transform: none;
+      font-size: 22rem;
+    }
+  }
+
+  .dim {
+    color: var(--gr3);
+  }
+
+  /* Digits that sit in columns have to line up. */
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/*
+ * ===========================================================================
+ * DARK SECTIONS
+ * ===========================================================================
+ * The site goes dark by painting individual sections, not by holding a theme.
+ * There is no state, no toggle and no JavaScript: a section opts in and every
+ * rule, link underline and button border inside it follows, because all of them
+ * are drawn in currentColor. The header needs no involvement either -- its
+ * mix-blend-mode difference already inverts it over any ground.
+ */
+[data-ground="dark"] {
+  background-color: var(--bk);
+  color: var(--wh);
+}
+
+[data-ground="dark"] .dim {
+  color: var(--gr3-dark);
+}
+
+/* On black the real brand orange clears 8.9:1, so live state can use it. */
+[data-ground="dark"] .live {
+  color: var(--orange);
+}
+
+[data-ground="dark"] ::selection {
+  background: var(--orange);
+  color: var(--bk);
+}
+
+/*
+ * The halo canvas sits above every ground and every block of type. That is only
+ * safe because Section reserves it a lane and puts the content in the
+ * complement -- see components/ui/Section.tsx. It stays below the header.
+ */
+.halo-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+}
+
+/*
+ * ===========================================================================
+ * CURTAIN
+ * ===========================================================================
+ * 200vh of section with a pinned 100vh inner: the screen holds still while
+ * black rises from the bottom edge to cover it. Both faces sit in the same grid
+ * cell so they are pixel-identical and the wipe cannot show a seam.
+ *
+ * --wipe is written by components/motion/Curtain.tsx and defaults to 100%, so
+ * the dark face is fully clipped before any script runs.
+ */
+.curtain {
+  position: relative;
+  height: 200vh;
+  background-color: var(--wh);
+}
+
+.curtain-pin {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: grid;
+  overflow: hidden;
+}
+
+.curtain-face {
+  grid-area: 1 / 1;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.curtain-veil {
+  clip-path: inset(var(--wipe, 100%) 0 0 0);
+  pointer-events: none;
+}
+
+/* No room to pin on a phone, so the section is simply dark. */
+@media (max-width: 767.98px) {
+  .curtain {
+    height: auto;
+  }
+
+  .curtain-pin {
+    position: static;
+    display: block;
+    height: auto;
+    padding-top: 80rem;
+    padding-bottom: 80rem;
+  }
+
+  .curtain-veil {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ln-mask > .ln,
+  .ln-mask > .wd {
+    transform: none !important;
+  }
+
+  .rise {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* No loading screen, and the hero is simply already open. */
+  .preload {
+    display: none !important;
+  }
+
+  .hero-clip {
+    clip-path: none !important;
+  }
+}
+
+/*
+ * ===========================================================================
+ * INDEX ROW
+ * ===========================================================================
+ * The rule-separated row is the structural unit of the whole site -- it stands
+ * in for every card grid the old build used.
+ *
+ * THE HOVER. The row inverts, with the fill sweeping in from the left and
+ * retracting back to the left. It is a clip over a second copy of the row rather
+ * than a background plus a colour transition, because the type has to change as
+ * the edge passes it rather than all at once -- the same construction the
+ * curtain uses, for the reason set out there and in components/ui/IndexRow.tsx.
+ *
+ * THE RULES ARE BORDERS. They used to be `div.rule-solid` siblings between the
+ * rows, which a fill cannot cover: a standalone hairline is drawn in the
+ * parent's currentColor, so it would neither invert with the row nor sit under
+ * it, and every filled row would carry a seam top and bottom.
+ */
+@layer components {
+  .rulelist {
+    border-bottom: 1px solid currentColor;
+  }
+
+  .idx-row {
+    --row-pad: 34rem;
+
+    /*
+     * The inverted ground, as tokens rather than literals. This mirrors the way
+     * .dim and .live already flip under [data-ground="dark"], and it is what
+     * makes the sweep work at all on the dark half of the site: roughly half the
+     * lists here sit inside a dark section, where a hard-coded black fill would
+     * be invisible.
+     */
+    --row-fill: var(--bk);
+    --row-ink: var(--wh);
+    --row-dim: var(--gr3-dark);
+    --row-live: var(--orange);
+
+    display: block;
+    position: relative;
+    padding: var(--row-pad) 0;
+    border-top: 1px solid currentColor;
+  }
+
+  [data-ground="dark"] .idx-row {
+    --row-fill: var(--wh);
+    --row-ink: var(--bk);
+    --row-dim: var(--gr3);
+    --row-live: var(--ac);
+  }
+
+  /* Accordion headers keep their own rhythm; everything else is shared. */
+  .idx-row--fold {
+    --row-pad: 30rem;
+  }
+
+  .idx-in {
+    display: flex;
+    gap: 20rem;
+    align-items: baseline;
+  }
+
+  /*
+   * Grown a pixel past the row on both edges so the fill swallows its own
+   * hairline and the next row's, then given that pixel back as padding so its
+   * copy of .idx-in lands exactly on the live one underneath.
+   */
+  .idx-veil {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -1px;
+    height: calc(100% + 2px);
+    padding-top: calc(var(--row-pad) + 1px);
+    background-color: var(--row-fill);
+    color: var(--row-ink);
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path 0.72s var(--ease-ref);
+    pointer-events: none;
+  }
+
+  .idx-veil .dim {
+    color: var(--row-dim);
+  }
+
+  .idx-veil .live {
+    color: var(--row-live);
+  }
+
+  /*
+   * Enter and leave share an origin, so the fill comes in from the left and goes
+   * back out to the left rather than travelling across -- unlike .link, which
+   * flips its origin to sweep through.
+   */
+  @media (hover: hover) {
+    .idx-row:hover > .idx-veil {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+
+  .idx-row .arw {
+    display: inline-block;
+    transition: transform 0.9s var(--ease-ref);
+  }
+
+  .idx-row:hover .arw {
+    transform: translateX(10rem);
+  }
+
+  @media (max-width: 767.98px) {
+    .idx-row {
+      --row-pad: 22rem;
+    }
+
+    .idx-in {
+      flex-wrap: wrap;
+      gap: 8rem 14rem;
+    }
+  }
+}
+
+/*
+ * ===========================================================================
+ * PRELOADER
+ * ===========================================================================
+ * Two panels meeting at the centre line, so the screen is solid paper at rest
+ * with nothing but a count in the corner. At 100 they retract to the top and
+ * bottom edges over 0.75s while .hero-clip opens over 1.15s.
+ *
+ * The panels have to be the faster of the two. Retract them at the same rate as
+ * the band opens and the band's edges track the panels' exactly, so it is never
+ * visible and the whole thing reads as a plain split reveal.
+ *
+ * Each panel is a pixel over half the viewport, so an odd viewport height cannot
+ * leave a hairline of hero showing down the middle before anything moves.
+ */
+.preload {
+  position: fixed;
+  inset: 0;
+  z-index: 90; /* above the skip link, which is 80 */
+  pointer-events: none;
+}
+
+.preload[hidden] {
+  display: none;
+}
+
+.pre-half {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: calc(50vh + 1px);
+  background-color: var(--wh);
+  transition: transform 0.75s var(--ease-ref);
+}
+
+.pre-half--t {
+  top: 0;
+}
+
+.pre-half--b {
+  bottom: 0;
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: 38rem;
+}
+
+.preload[data-open] .pre-half--t {
+  transform: translate3d(0, -100%, 0);
+}
+
+.preload[data-open] .pre-half--b {
+  transform: translate3d(0, 100%, 0);
+}
+
+@media (max-width: 767.98px) {
+  .pre-half--b {
+    padding-bottom: 20rem;
+  }
+}
+
+/*
+ * The hero opens from the seam the panels part at. Shut by default so it is
+ * already closed in the static HTML before any script runs -- the same
+ * defensive default .curtain-veil takes. layout.tsx unclips it for a visitor
+ * with no JavaScript; the reduced-motion block above unclips it for everyone
+ * who has asked for less movement.
+ */
+.hero-clip {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(50% 0 50% 0);
+  transition: clip-path 1.15s var(--ease-ref) 0.08s;
+}
+
+html[data-entered] .hero-clip {
+  clip-path: inset(0 0 0 0);
+}
+
+/*
+ * ===========================================================================
+ * CURSOR
+ * ===========================================================================
+ * The dot tracks the pointer exactly; the halo ring lerps after it and turns on
+ * its own clock. JavaScript writes translate on .cur-pos and rotate on
+ * .cur-spin; CSS owns the scales, so the hover and press states get the site's
+ * curve without easing being reimplemented in the rAF loop.
+ *
+ * WHY THE MASK. /icon.png is an opaque 512px square -- the mark is drawn on
+ * white with no alpha channel, which is invisible on the paper ground and a
+ * glaring white tile on the dark half of the site. The annulus is cut out of it
+ * using the geometry Halo.tsx measured off the same file: centre at 50/50.2%,
+ * band from r=99 to r=144 against a 256 half-width, i.e. 38.7% to 56.3% under
+ * `closest-side`. The box is oversized to make up for the padding that leaves.
+ *
+ * Unlayered, like the grounds and the curtain above, so `cursor: none` beats the
+ * `cursor: pointer` that `button` and `.link` set from inside a layer.
+ */
+.cur {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 95;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s var(--ease-ref);
+}
+
+/* Set by Cursor.tsx once the device has been checked; see the note there. */
+.cur[data-live] {
+  display: block;
+}
+
+.cur[data-on] {
+  opacity: 1;
+}
+
+/* Zero-sized, so the origin is the pointer and the children hang off centre. */
+.cur-pos,
+.cur-spin {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  will-change: transform;
+}
+
+.cur-ring {
+  width: 64rem;
+  height: 64rem;
+  margin: -32rem 0 0 -32rem;
+  background-image: url("/icon.png");
+  background-size: 100% 100%;
+  transition: transform 0.6s var(--ease-ref);
+  -webkit-mask-image: radial-gradient(
+    circle closest-side at 50% 50.2%,
+    transparent 0 38.4%,
+    #000 39% 56%,
+    transparent 56.6%
+  );
+  mask-image: radial-gradient(
+    circle closest-side at 50% 50.2%,
+    transparent 0 38.4%,
+    #000 39% 56%,
+    transparent 56.6%
+  );
+}
+
+.cur-dot {
+  display: block;
+  width: 8rem;
+  height: 8rem;
+  margin: -4rem 0 0 -4rem;
+  border-radius: 50%;
+  background-color: var(--orange);
+  transition: transform 0.6s var(--ease-ref);
+}
+
+.cur[data-hot] .cur-ring {
+  transform: scale(1.7);
+}
+
+.cur[data-hot] .cur-dot {
+  transform: scale(0.4);
+}
+
+/* Press wins over hover: it is the more recent thing the visitor did. */
+.cur[data-down] .cur-ring {
+  transform: scale(1.3);
+}
+
+.cur[data-down] .cur-dot {
+  transform: scale(0.6);
+}
+
+html[data-cursor="on"],
+html[data-cursor="on"] * {
+  cursor: none;
 }

@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { WorkingGroups } from "@/components/program/WorkingGroups";
-import { Card } from "@/components/ui/Card";
+import { Reveal } from "@/components/motion/Reveal";
+import { IndexRow, RuleList } from "@/components/ui/IndexRow";
 import { ImportantDates } from "@/components/ui/ImportantDates";
-import { CellReveal, Reveal } from "@/components/ui/Reveal";
+import { PageHead } from "@/components/ui/PageHead";
 import { Section } from "@/components/ui/Section";
 import { ToBeAnnounced } from "@/components/ui/ToBeAnnounced";
 import { forums, program } from "@/lib/content";
@@ -18,57 +19,64 @@ export const metadata = pageMetadata({
 export default function ProgramPage() {
   return (
     <>
-      <Section
-        index="§ Program"
-        title="What to expect"
+      <PageHead
+        label="Programme"
+        title={["What to", "expect"]}
         lede={program.intro}
-        level={1}
-        bordered={false}
-      >
-        <div className="grid gap-5 md:grid-cols-3">
+      />
+
+      <Section label="Sessions">
+        <RuleList>
           {program.blocks.map((block, i) => (
-            <CellReveal key={block.id} index={i}>
-              <Card
-                index={"§ 0" + (i + 1)}
-                title={block.title}
-                status={block.status === "tba" ? "TBA" : "Confirmed"}
-              >
-                <p>{block.summary}</p>
-              </Card>
-            </CellReveal>
+            <IndexRow
+              key={block.id}
+              number={String(i + 1).padStart(2, "0")}
+              title={block.title}
+              body={block.summary}
+              meta={
+                <span className={block.status === "tba" ? "dim" : "live"}>
+                  {block.status === "tba" ? "To be confirmed" : "Confirmed"}
+                </span>
+              }
+            />
           ))}
-        </div>
+        </RuleList>
       </Section>
 
+      {/*
+       * The one page where colour carries information: each working group gets a
+       * swatch from a ramp between the halo blue and the key-art orange. The
+       * number and the title still identify the group, so the colour is a second
+       * channel rather than the only one.
+       */}
       <Section
-        index="§ Working groups"
-        title={forums.workingGroups.length + " working groups"}
-        lede={forums.intro}
+        label="Working groups"
+        ground="dark"
       >
+        <Reveal className="rise pb-[60rem] max-md:pb-[36rem]">
+          <p className="t-b1 dim max-w-[70ch]">{forums.intro}</p>
+        </Reveal>
         <WorkingGroups />
-        <p className="label-mono mt-8">
-          Details on joining a working group will be published with the full
-          program.{" "}
-          <Link href="/call-for-abstracts" className="text-accent hover:underline">
+        <p className="t-b2 dim pt-[40rem]">
+          Details on joining a working group will be published with the full programme.{" "}
+          <Link href="/call-for-abstracts" className="link">
             See the call for abstracts
           </Link>
           .
         </p>
       </Section>
 
-      <Section index="§ Schedule" title="Schedule">
-        {program.scheduleStatus === "tba" ? (
+      {program.scheduleStatus === "tba" ? (
+        <Section label="Schedule">
           <ToBeAnnounced
-            label="Detailed program to be announced"
+            label="Detailed programme to be announced"
             note={program.scheduleNote}
           />
-        ) : null}
-      </Section>
+        </Section>
+      ) : null}
 
-      <Section index="§ Dates" title="Important dates">
-        <Reveal>
-          <ImportantDates />
-        </Reveal>
+      <Section label="Key dates" flow={program.scheduleStatus === "tba"}>
+        <ImportantDates />
       </Section>
     </>
   );

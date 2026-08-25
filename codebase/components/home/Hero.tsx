@@ -1,79 +1,59 @@
-"use client";
-
-import { m } from "motion/react";
-import { CTAButton } from "@/components/ui/CTAButton";
-import { Container } from "@/components/ui/Container";
+import { MaskLines, Reveal } from "@/components/motion/Reveal";
 import { site } from "@/lib/content";
-import { usePhase } from "@/lib/usePhase";
-
-const EASE_OUT_EXPO = [0.19, 1, 0.22, 1] as const;
 
 /**
- * Theme-first hero (PRD §5.1, Design Brief §03/§05). The title is the primary
- * graphic: Archivo Expanded, uppercase, near-zero leading, over the duotone
- * dithered terrain.
+ * The supplied key art, full bleed, with the title sitting on it.
  *
- * data-hero is what FloatingCTA observes to decide when to reveal itself.
+ * The artwork is the only colour event above the fold and the only place the
+ * orange-over-blue dither appears at size — everything below this section is
+ * monochrome. The title is deliberately not set at display scale here: the
+ * image is the statement, and the big type arrives in the section after it.
+ *
+ * No scrim over the image. The header inverts itself with `mix-blend-mode` and
+ * the title is set in white directly on the artwork, which is dark enough
+ * across its full area to carry it.
+ *
+ * The artwork arrives as a band. `.hero-clip` is closed to a zero-height sliver
+ * at the centre line until the preloader's two panels split, and opens to full
+ * bleed as they retract -- so what the loading screen uncovers is this image
+ * widening, not a finished hero sitting behind it. The title waits for the same
+ * signal (`gate="entered"`) rather than for fonts, or it would spend its rise
+ * behind a white panel. See components/motion/Preloader.tsx.
  */
 export function Hero() {
-  const { cta } = usePhase();
-
   return (
-    <section data-hero className="relative overflow-hidden border-b border-line">
-      <div aria-hidden="true" className="absolute inset-0">
+    <section data-hero className="relative h-screen min-h-[560rem] w-full overflow-hidden">
+      <div className="hero-clip">
         <picture>
-          <source srcSet="/images/hero-1920.avif 1920w, /images/hero-1280.avif 1280w, /images/hero-768.avif 768w" type="image/avif" sizes="100vw" />
+          <source
+            srcSet="/images/hero-1920.avif 1920w, /images/hero-1280.avif 1280w, /images/hero-768.avif 768w"
+            type="image/avif"
+            sizes="100vw"
+          />
           <img
             src="/images/hero-768.webp"
-            alt=""
-            className="size-full object-cover opacity-90 dark:opacity-70"
-            width={1280}
-            height={720}
+            alt="Dithered terrain artwork in orange over blue — the visual identity of the 10th APRU Sustainable Cities and Landscapes conference."
+            className="absolute inset-0 size-full object-cover"
+            width={1920}
+            height={1080}
           />
         </picture>
-        <div className="absolute inset-0 bg-gradient-to-t from-paper via-paper/70 to-paper/20" />
       </div>
 
-      <Container className="relative">
-        <div className="flex min-h-[78vh] flex-col justify-end py-16 md:min-h-[86vh] md:py-24">
-          <m.p
-            className="label-mono mb-6"
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: EASE_OUT_EXPO }}
-          >
-            {site.seriesName} &middot; {site.dates} &middot; {site.location}
-          </m.p>
-
-          <m.h1
-            className="font-display text-[clamp(2.75rem,12vw,9rem)] font-black"
-            initial={{ opacity: 0, y: 28 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, ease: EASE_OUT_EXPO, delay: 0.06 }}
-          >
-            Bridging
-            <br />
-            Resilience<span className="text-accent">(s)</span>
-          </m.h1>
-
-          <m.div
-            className="mt-10 flex flex-col gap-6 md:flex-row md:items-end md:justify-between"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, ease: EASE_OUT_EXPO, delay: 0.18 }}
-          >
-            <p className="max-w-[46ch] text-base leading-relaxed text-muted md:text-lg">
-              {site.tagline}
-            </p>
-            <div className="flex flex-wrap gap-3">
-              <CTAButton page="home" surface="hero" />
-              {cta.secondary && (
-                <CTAButton page="home" surface="hero" variant="secondary" target={cta.secondary} />
-              )}
-            </div>
-          </m.div>
+      <div className="ctr relative z-[2] flex h-full flex-col justify-end pb-[38rem] max-md:pb-[20rem]">
+        <div className="flex items-end justify-between gap-[20rem] text-wh max-md:flex-col max-md:items-start max-md:gap-[24rem]">
+          <MaskLines
+            as="h1"
+            gate="entered"
+            className="t-h3"
+            lines={["Bridging", "Resilience(s)"]}
+          />
+          <Reveal gate="entered" className="t-b2 rise text-right max-md:text-left">
+            <p>{site.dates}</p>
+            <p>{site.hostShort}</p>
+          </Reveal>
         </div>
-      </Container>
+      </div>
     </section>
   );
 }

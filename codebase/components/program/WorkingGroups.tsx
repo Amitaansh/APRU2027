@@ -1,76 +1,93 @@
 "use client";
 
 import { useState } from "react";
-import { AnimatePresence, m } from "motion/react";
-import { Minus, Plus } from "lucide-react";
+import { Reveal } from "@/components/motion/Reveal";
 import { forums } from "@/lib/content";
+import { workingGroupColour } from "@/lib/wg-colour";
 
 /**
  * The eleven confirmed working groups (client roster, 20 Aug 2026). Leads are
- * named with their institution; contact addresses are deliberately not
- * published here — enquiries route through the organising committee.
+ * named with their institution; contact addresses are deliberately not published
+ * here — enquiries route through the organising committee.
+ *
+ * The open panel is animated with `grid-template-rows: 0fr -> 1fr`, which
+ * transitions to auto height in CSS without measuring anything, so the accordion
+ * needs no animation runtime. The toggle glyph is a typographic plus and minus,
+ * not an icon.
+ *
+ * The header borrows `.idx-row` wholesale — the rule, the padding and the hover
+ * sweep — so an accordion row and an index row are the same object to the eye.
+ * See components/ui/IndexRow.tsx for why the header content is rendered twice.
  */
 export function WorkingGroups() {
   const [open, setOpen] = useState<string | null>(null);
+  const total = forums.workingGroups.length;
 
   return (
-    <div className="border-t border-line">
+    <Reveal className="rulelist">
       {forums.workingGroups.map((group, i) => {
         const expanded = open === group.id;
+        const cells = (
+          <>
+            <span
+              aria-hidden="true"
+              className="size-[10rem] flex-none translate-y-[-2rem] rounded-full"
+              style={{ backgroundColor: workingGroupColour(i, total) }}
+            />
+            <span className="t-b2 dim tnum w-[50rem] flex-none max-md:w-auto">
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <span className="t-h4 flex-1">{group.title}</span>
+            <span aria-hidden="true" className="t-b1 flex-none">
+              {expanded ? "−" : "+"}
+            </span>
+          </>
+        );
         return (
-          <div key={group.id} className="border-b border-line">
+          <div key={group.id}>
             <h3>
               <button
                 type="button"
                 onClick={() => setOpen(expanded ? null : group.id)}
                 aria-expanded={expanded}
                 aria-controls={"wg-" + group.id}
-                className="flex w-full items-start justify-between gap-6 py-6 text-left transition-colors duration-[180ms] hover:text-accent"
+                className="idx-row idx-row--fold w-full text-left"
               >
-                <span className="label-mono pt-1">
-                  {String(i + 1).padStart(2, "0")}
+                <span
+                  className="idx-in rise"
+                  style={{ transitionDelay: Math.min(i * 0.06, 0.36) + "s" }}
+                >
+                  {cells}
                 </span>
-                <span className="flex-1 font-display text-lg font-bold leading-tight md:text-2xl">
-                  {group.title}
-                </span>
-                <span aria-hidden="true" className="pt-1">
-                  {expanded ? <Minus className="size-4" /> : <Plus className="size-4" />}
+                <span aria-hidden="true" className="idx-veil">
+                  <span className="idx-in">{cells}</span>
                 </span>
               </button>
             </h3>
-            <AnimatePresence initial={false}>
-              {expanded && (
-                <m.div
-                  id={"wg-" + group.id}
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: "auto", opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.3, ease: [0.645, 0.045, 0.355, 1] }}
-                  className="overflow-hidden"
-                >
-                  <div className="grid gap-6 pb-8 md:grid-cols-12 md:gap-5">
-                    <div className="md:col-span-3">
-                      <p className="label-mono mb-3">Convenors</p>
-                      <ul className="space-y-2 text-sm">
-                        {group.leads.map((lead) => (
-                          <li key={lead.name}>
-                            <span className="text-ink">{lead.name}</span>
-                            <br />
-                            <span className="text-muted">{lead.institution}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <p className="text-sm leading-relaxed text-muted md:col-span-9 md:text-base">
-                      {group.blurb}
-                    </p>
-                  </div>
-                </m.div>
-              )}
-            </AnimatePresence>
+            <div
+              id={"wg-" + group.id}
+              className="grid transition-[grid-template-rows] duration-500 ease-[cubic-bezier(0.17,0.84,0.44,1)]"
+              style={{ gridTemplateRows: expanded ? "1fr" : "0fr" }}
+            >
+              <div className="overflow-hidden">
+                <div className="pb-[36rem] pl-[80rem] max-md:pl-0">
+                  <p className="t-b1 dim max-w-[70ch]">{group.blurb}</p>
+                  {group.leads?.length ? (
+                    <ul className="flex flex-col gap-[8rem] pt-[24rem]">
+                      {group.leads.map((lead) => (
+                        <li key={lead.name} className="t-b2">
+                          {lead.name}
+                          <span className="dim"> — {lead.institution}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
+                </div>
+              </div>
+            </div>
           </div>
         );
       })}
-    </div>
+    </Reveal>
   );
 }

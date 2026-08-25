@@ -1,125 +1,171 @@
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 import { Hero } from "@/components/home/Hero";
-import { Card } from "@/components/ui/Card";
-import { Container } from "@/components/ui/Container";
-import { Counter } from "@/components/ui/Counter";
-import { Marquee } from "@/components/ui/Marquee";
-import { CellReveal, Reveal } from "@/components/ui/Reveal";
+import { Curtain } from "@/components/motion/Curtain";
+import { Preloader } from "@/components/motion/Preloader";
+import { MaskLines, Reveal } from "@/components/motion/Reveal";
+import { IndexRow, RuleList } from "@/components/ui/IndexRow";
+import { ImportantDates } from "@/components/ui/ImportantDates";
 import { Section } from "@/components/ui/Section";
-import { SpreadRow } from "@/components/ui/SpreadRow";
-import { forums, site } from "@/lib/content";
+import { CTAButton } from "@/components/ui/CTAButton";
+import { site } from "@/lib/content";
+
+/**
+ * PRD §5.1. The page reads as an index: artwork, a statement, the facts, then
+ * ruled tables. There are no cards.
+ *
+ * GROUND. The page is light until the Index, where the curtain wipes it black,
+ * and dark from there to the footer. One darkening, in one place, reversing on
+ * the way back up.
+ *
+ * HALO. `halo` names the lane the mark occupies; Section puts the content in
+ * the complement, so they can never collide. It alternates right, left, right
+ * down the page, appearing once at the statement and leaving once at the index.
+ */
 
 const TEASERS = [
   {
-    index: "01",
+    number: "01",
     title: "The theme",
     href: "/about",
     body: "How different knowledges and practices connect and coalesce in advancing social, cultural, and environmental resilience — and how bridging is itself a form of resilience.",
   },
   {
-    index: "02",
-    title: "The program",
+    number: "02",
+    title: "The programme",
     href: "/program",
     body: "Keynotes, thematic sessions, eleven working groups, a student symposium, and field visits across Singapore.",
   },
   {
-    index: "03",
+    number: "03",
     title: "Call for abstracts",
     href: "/call-for-abstracts",
     body: "Papers, posters, and panels examining urban and environmental sustainability across the Pacific Rim. Opening soon.",
+  },
+  {
+    number: "04",
+    title: "Venue & travel",
+    href: "/venue",
+    body: "Kent Ridge campus, arrival by air and rail, accommodation near the university, and getting around Singapore.",
   },
 ];
 
 export default function HomePage() {
   return (
     <>
+      {/* Home only, and only on a real document load -- see Preloader. */}
+      <Preloader />
       <Hero />
 
-      <Marquee
-        items={[
-          "Bridging Resilience(s)",
-          "10th Conference of APRU-SCL",
-          "Singapore 2027",
-          "Sustainable Cities & Landscapes",
-        ]}
-      />
-
-      {/* Key facts (PRD §5.1) — the at-a-glance identity a visitor needs first. */}
-      <section className="border-b border-line py-14 md:py-[88px]">
-        <Container>
-          <SpreadRow label="Dates" value={site.dates} meta="Three days" />
-          <SpreadRow label="Location" value={site.location} meta="NUS Kent Ridge" />
-          <SpreadRow label="Host" value={site.host} meta="CDE" />
-          <SpreadRow
-            label="Series"
-            value={site.seriesName}
-            meta={"Est. " + (site.priorEditions.at(-1)?.year ?? 2027 - site.edition)}
+      {/*
+       * The statement is set in the SANS while the headings elsewhere are serif.
+       * That flip is deliberate: it stops the page becoming wall-to-wall serif
+       * and makes this one sentence read as a title rather than a heading.
+       */}
+      <Section id="theme" halo="right">
+        <div className="flex flex-col gap-[60rem] max-md:gap-[40rem]">
+          <MaskLines
+            as="h2"
+            className="f-sans text-[120rem] font-normal leading-[0.85] tracking-[-0.045em] max-md:text-[38rem] max-md:leading-[0.95] max-md:tracking-[-0.035em]"
+            lines={[
+              "Sustainable",
+              <span key="b" className="block pl-[1.6em] max-md:pl-[0.9em]">
+                Cities &amp; Landscapes
+              </span>,
+            ]}
           />
-        </Container>
-      </section>
-
-      <Section index="§01" title="An invitation" bordered={false}>
-        <div className="grid gap-10 md:grid-cols-12 md:gap-5">
-          <Reveal className="md:col-span-7">
-            <p className="text-lg leading-relaxed md:text-xl">{site.intro}</p>
-            <Link
-              href="/about"
-              className="label-mono mt-8 inline-flex items-center gap-2 text-ink transition-transform duration-[180ms] hover:translate-x-1"
+          <Reveal className="flex gap-[20rem] max-md:flex-col max-md:gap-[24rem]">
+            <div className="t-b2 rise w-[300rem] max-w-[34ch] max-md:w-full">
+              <p>
+                Keynotes, thematic sessions, eleven working groups, a student symposium, and field
+                visits across Singapore.
+              </p>
+            </div>
+            <div
+              className="t-b2 rise w-[300rem] max-w-[34ch] max-md:w-full"
+              style={{ transitionDelay: "0.12s" }}
             >
-              Read the full theme <ArrowRight aria-hidden="true" className="size-3.5" />
-            </Link>
-          </Reveal>
-
-          <Reveal delay={0.1} className="grid grid-cols-2 gap-x-5 gap-y-8 md:col-span-5">
-            <Counter to={site.edition} label="Edition" />
-            <Counter to={forums.workingGroups.length} label="Working groups" />
-            <Counter to={3} label="Days" />
-            <Counter to={2027} label="Year" />
+              <p>
+                Papers, posters and panels examining urban and environmental sustainability across
+                the Pacific Rim.
+              </p>
+            </div>
           </Reveal>
         </div>
       </Section>
 
-      <Section index="§02" title="Where to start">
-        <div className="grid gap-5 md:grid-cols-3">
-          {TEASERS.map((teaser, i) => (
-            <CellReveal key={teaser.href} index={i}>
-              <Link href={teaser.href} className="group block h-full">
-                <Card
-                  index={teaser.index}
-                  title={teaser.title}
-                  className="transition-transform duration-[180ms] group-hover:-translate-y-[3px] group-hover:border-ink"
+      <Section id="facts" halo="left">
+        <div className="flex gap-[40rem] max-md:flex-col">
+          <Reveal className="w-[300rem] flex-none max-md:w-full">
+            <dl className="flex flex-col gap-[34rem] max-md:gap-[26rem]">
+              {[
+                ["Dates", site.dates],
+                ["Location", "Kent Ridge campus, " + site.location],
+                ["Host", site.host],
+                ["Series", site.seriesName],
+              ].map(([term, value], i) => (
+                <div
+                  key={term}
+                  className="rise flex flex-col gap-[6rem]"
+                  style={{ transitionDelay: i * 0.06 + "s" }}
                 >
-                  <p>{teaser.body}</p>
-                  <span className="label-mono mt-6 inline-flex items-center gap-2 text-accent">
-                    Continue <ArrowRight aria-hidden="true" className="size-3" />
-                  </span>
-                </Card>
-              </Link>
-            </CellReveal>
-          ))}
+                  <dt className="t-lbl dim">{term}</dt>
+                  <dd className="t-b2">{value}</dd>
+                </div>
+              ))}
+            </dl>
+          </Reveal>
+
+          {/* Wraps, so it rises rather than being masked — see globals.css. */}
+          <Reveal className="flex-1">
+            <p className="t-h4 rise">{site.intro}</p>
+          </Reveal>
         </div>
       </Section>
 
-      {/* Prior-editions credibility note (PRD §5.1). */}
-      <Section
-        index="§03"
-        title="The series"
-        lede="APRU-SCL convenes annually across the Pacific Rim. Singapore 2027 marks ten years of the network."
-      >
-        <div className="grid gap-5 md:grid-cols-2">
-          {site.priorEditions.map((edition, i) => (
-            <CellReveal key={edition.year} index={i}>
-              <Card
-                index={"№ " + edition.edition}
-                title={edition.theme}
-                status={String(edition.year)}
-              >
-                <p>{edition.host}</p>
-              </Card>
-            </CellReveal>
+      {/* The darkening. 200vh, pinned, black rising from the bottom edge. */}
+      <Curtain id="index" label="Index" halo="right">
+        <RuleList>
+          {TEASERS.map((teaser) => (
+            <IndexRow
+              key={teaser.href}
+              href={teaser.href}
+              number={teaser.number}
+              title={teaser.title}
+              body={teaser.body}
+              action="Read"
+            />
           ))}
-        </div>
+        </RuleList>
+      </Curtain>
+
+      <Section id="dates" label="Key dates" ground="dark">
+        <ImportantDates />
+      </Section>
+
+      {/* Flows straight on from Key dates — one continuous table, one seam. */}
+      <Section id="series" label="The series" ground="dark" flow>
+        <MaskLines
+          as="h3"
+          className="t-h2 pb-[80rem] max-md:pb-[40rem]"
+          lines={["Ten years across", "the Pacific Rim."]}
+        />
+        <RuleList>
+          {site.priorEditions.map((edition) => (
+            <IndexRow
+              key={edition.year}
+              number={String(edition.edition).padStart(2, "0")}
+              title={edition.theme}
+              body={edition.host}
+              meta={<span className="tnum">{edition.year}</span>}
+            />
+          ))}
+        </RuleList>
+      </Section>
+
+      <Section id="join" ground="dark">
+        <MaskLines as="h2" className="t-h1" lines={["Join us in", "Singapore, 2027."]} />
+        <Reveal className="rise flex flex-wrap gap-[16rem] pt-[60rem] max-md:pt-[40rem]">
+          <CTAButton page="home" surface="hero" />
+        </Reveal>
       </Section>
     </>
   );

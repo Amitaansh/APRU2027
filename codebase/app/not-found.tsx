@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { Reveal } from "@/components/motion/Reveal";
 import { CTAButton } from "@/components/ui/CTAButton";
+import { PageHead } from "@/components/ui/PageHead";
 import { Section } from "@/components/ui/Section";
 
 /**
@@ -8,21 +10,21 @@ import { Section } from "@/components/ui/Section";
  */
 export default function NotFound() {
   return (
-    <Section index="§ 404" title="Page not found" level={1}
-        bordered={false}>
-      <p className="max-w-[52ch] leading-relaxed text-muted">
-        That page does not exist. It may have moved, or it may not have been published yet — much of
-        this site fills in as the 2027 program is confirmed.
-      </p>
-      <div className="mt-10 flex flex-wrap gap-3">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-3 border border-line-strong px-6 py-3.5 font-medium transition-transform duration-[180ms] hover:-translate-y-[3px] hover:border-ink"
-        >
-          Back to home
-        </Link>
-        <CTAButton page="other" surface="inline" />
-      </div>
-    </Section>
+    <>
+      <PageHead
+        label="404"
+        title={["Page not", "found"]}
+        lede="That page does not exist. It may have moved, or it may not have been published yet — much of this site fills in as the 2027 programme is confirmed."
+      />
+
+      <Section>
+        <Reveal className="rise flex flex-wrap gap-[16rem]">
+          <Link href="/" className="btn">
+            Back to home
+          </Link>
+          <CTAButton page="other" surface="inline" variant="secondary" />
+        </Reveal>
+      </Section>
+    </>
   );
 }

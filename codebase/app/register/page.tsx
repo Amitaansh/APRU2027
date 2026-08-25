@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { RegisterState } from "@/components/register/RegisterState";
-import { Card } from "@/components/ui/Card";
+import { IndexRow, RuleList } from "@/components/ui/IndexRow";
 import { ImportantDates } from "@/components/ui/ImportantDates";
-import { CellReveal, Reveal } from "@/components/ui/Reveal";
+import { PageHead } from "@/components/ui/PageHead";
 import { Section } from "@/components/ui/Section";
 import { pageMetadata } from "@/lib/seo";
 
@@ -24,47 +24,44 @@ const INCLUDES = [
   },
   {
     title: "Field visits",
-    body: "Guided visits to sites across Singapore. Capacity and booking details will follow with the program.",
+    body: "Guided visits to sites across Singapore. Capacity and booking details will follow with the programme.",
   },
 ];
 
 export default function RegisterPage() {
   return (
     <>
-      <Section
-        index="§ Register"
-        title="Registration"
+      <PageHead
+        label="Register"
+        title={["Registration"]}
         lede="Registration is not yet open. This page will carry the link and the rates the moment it is."
-        level={1}
-        bordered={false}
-      >
-        <Reveal>
-          <RegisterState />
-        </Reveal>
+      />
+
+      <Section>
+        <RegisterState />
       </Section>
 
-      <Section index="§ Includes" title="What registration will include">
-        <div className="grid gap-5 md:grid-cols-3">
+      <Section label="Includes" ground="dark">
+        <RuleList>
           {INCLUDES.map((item, i) => (
-            <CellReveal key={item.title} index={i}>
-              <Card index={"§ 0" + (i + 1)} title={item.title}>
-                <p>{item.body}</p>
-              </Card>
-            </CellReveal>
+            <IndexRow
+              key={item.title}
+              number={String(i + 1).padStart(2, "0")}
+              title={item.title}
+              body={item.body}
+            />
           ))}
-        </div>
-        <p className="label-mono mt-8">
+        </RuleList>
+        <p className="t-b2 dim pt-[40rem]">
           Fees have not been set. No figures are published here until they are confirmed.
         </p>
       </Section>
 
-      <Section index="§ Dates" title="Important dates">
-        <Reveal>
-          <ImportantDates />
-        </Reveal>
-        <p className="label-mono mt-8">
+      <Section label="Key dates">
+        <ImportantDates />
+        <p className="t-b2 dim pt-[40rem]">
           Planning travel?{" "}
-          <Link href="/venue" className="text-accent hover:underline">
+          <Link href="/venue" className="link">
             Venue and travel information
           </Link>
           .

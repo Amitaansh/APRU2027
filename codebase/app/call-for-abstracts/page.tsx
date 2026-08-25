@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { AbstractsState } from "@/components/cfa/AbstractsState";
-import { Card } from "@/components/ui/Card";
+import { IndexRow, RuleList } from "@/components/ui/IndexRow";
 import { ImportantDates } from "@/components/ui/ImportantDates";
-import { CellReveal, Reveal } from "@/components/ui/Reveal";
+import { PageHead } from "@/components/ui/PageHead";
 import { Section } from "@/components/ui/Section";
 import { pageMetadata } from "@/lib/seo";
 
@@ -31,51 +31,49 @@ const FORMATS = [
 export default function CallForAbstractsPage() {
   return (
     <>
-      <Section
-        index="§ Abstracts"
-        title="Call for abstracts"
+      <PageHead
+        label="Abstracts"
+        title={["Call for", "abstracts"]}
         lede="The 2027 conference welcomes submissions of papers, posters, and panels that examine solutions and challenges facing urban and environmental sustainability in the Pacific Rim through transdisciplinary collaboration, comparative studies, and cross-cultural investigation."
-        level={1}
-        bordered={false}
-      >
-        <Reveal>
-          <AbstractsState />
-        </Reveal>
+      />
+
+      <Section>
+        <AbstractsState />
       </Section>
 
-      <Section index="§ Formats" title="What you can submit">
-        <div className="grid gap-5 md:grid-cols-3">
+      <Section label="Formats" ground="dark">
+        <RuleList>
           {FORMATS.map((item, i) => (
-            <CellReveal key={item.title} index={i}>
-              <Card index={"§ 0" + (i + 1)} title={item.title}>
-                <p>{item.body}</p>
-              </Card>
-            </CellReveal>
+            <IndexRow
+              key={item.title}
+              number={String(i + 1).padStart(2, "0")}
+              title={item.title}
+              body={item.body}
+            />
           ))}
-        </div>
-        <div className="mt-10 border border-line bg-surface p-6 md:p-8">
-          <p className="label-mono text-accent">§ Convention</p>
-          <p className="mt-3 font-display text-xl font-bold md:text-2xl">
-            Abstracts are 200 words
-          </p>
-          <p className="mt-4 max-w-[60ch] text-sm leading-relaxed text-muted">
-            Full submission guidelines, including formatting and review criteria, will be published
-            when the call opens.
-          </p>
+        </RuleList>
+        <div className="grd pt-[80rem] max-md:pt-[40rem]">
+          <div style={{ gridColumn: "1 / span 6" }}>
+            <p className="t-h3">Abstracts are 200 words</p>
+          </div>
+          <div style={{ gridColumn: "8 / span 6" }} className="max-md:mt-[24rem]">
+            <p className="t-b2 dim max-w-[56ch]">
+              Full submission guidelines, including formatting and review criteria, will be
+              published when the call opens.
+            </p>
+          </div>
         </div>
       </Section>
 
-      <Section index="§ Dates" title="Important dates">
-        <Reveal>
-          <ImportantDates />
-        </Reveal>
-        <p className="label-mono mt-8">
+      <Section label="Key dates">
+        <ImportantDates />
+        <p className="t-b2 dim pt-[40rem]">
           See the{" "}
-          <Link href="/program" className="text-accent hover:underline">
-            program outline
+          <Link href="/program" className="link">
+            programme outline
           </Link>{" "}
           and the eleven working groups, or{" "}
-          <Link href="/register" className="text-accent hover:underline">
+          <Link href="/register" className="link">
             registration
           </Link>
           .

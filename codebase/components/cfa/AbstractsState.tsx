@@ -1,7 +1,7 @@
 "use client";
 
 import { CTAButton } from "@/components/ui/CTAButton";
-import { ToBeAnnounced } from "@/components/ui/ToBeAnnounced";
+import { StatusBlock, ToBeAnnounced } from "@/components/ui/ToBeAnnounced";
 import { phases } from "@/content/phases";
 import { usePhase } from "@/lib/usePhase";
 
@@ -23,15 +23,13 @@ export function AbstractsState() {
   }
 
   return (
-    <div className="border border-line bg-surface p-8">
-      <p className="label-mono text-accent">§ Now open</p>
-      <p className="mt-3 font-display text-2xl font-bold">Submissions are open</p>
-      <p className="mt-4 max-w-[60ch] text-sm leading-relaxed text-muted">
-        Abstracts are submitted through the conference submission platform. You will be taken there in a new tab.
-      </p>
-      <div className="mt-8">
-        <CTAButton page="cfa" surface="inline" target={phases.cta.abstracts} />
-      </div>
-    </div>
+    <StatusBlock
+      live
+      status="Now open"
+      title="Submissions are open"
+      note="Abstracts are submitted through the conference submission platform. You will be taken there in a new tab."
+    >
+      <CTAButton page="cfa" surface="inline" target={phases.cta.abstracts} />
+    </StatusBlock>
   );
 }

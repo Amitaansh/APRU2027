@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { SpeakerGrid } from "@/components/speakers/SpeakerGrid";
+import { PageHead } from "@/components/ui/PageHead";
 import { Section } from "@/components/ui/Section";
 import { pageMetadata } from "@/lib/seo";
 
@@ -12,21 +13,23 @@ export const metadata = pageMetadata({
 
 export default function SpeakersPage() {
   return (
-    <Section
-      index="§ Speakers"
-      title="Speakers"
-      lede="Keynote and featured speakers are being confirmed. They will be published here as each is announced."
-      level={1}
-        bordered={false}
-    >
-      <SpeakerGrid />
-      <p className="label-mono mt-8">
-        Meanwhile, see the{" "}
-        <Link href="/program" className="text-accent hover:underline">
-          program outline
-        </Link>{" "}
-        and the eleven working groups.
-      </p>
-    </Section>
+    <>
+      <PageHead
+        label="Speakers"
+        title={["Speakers"]}
+        lede="Keynote and featured speakers are being confirmed. They will be published here as each is announced."
+      />
+
+      <Section>
+        <SpeakerGrid />
+        <p className="t-b2 dim pt-[40rem]">
+          Meanwhile, see the{" "}
+          <Link href="/program" className="link">
+            programme outline
+          </Link>{" "}
+          and the eleven working groups.
+        </p>
+      </Section>
+    </>
   );
 }

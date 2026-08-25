@@ -1,22 +1,24 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
+import { workingGroupColour } from "@/lib/wg-colour";
 
 /**
  * WCAG 2.1 AA guard on the design tokens (TRD §10).
  *
- * The palette is the thing most likely to drift — a designer nudges a shade and
- * the light theme quietly drops below 4.5:1. This parses the real token values
- * out of globals.css so the check cannot go stale.
+ * The palette is the thing most likely to drift — someone nudges a shade and a
+ * value quietly drops below 4.5:1. This parses the real token values out of
+ * globals.css so the check cannot go stale.
+ *
+ * The site has one ground and no theme toggle, but sections opt into a dark
+ * ground with `[data-ground="dark"]`, so both directions still have to hold.
  */
 
 const css = readFileSync(path.join(process.cwd(), "app", "globals.css"), "utf8");
 
-function tokensFrom(selector: string): Record<string, string> {
-  const block = new RegExp(selector + "\\s*\\{([^}]*)\\}").exec(css);
-  if (!block) throw new Error("no token block for " + selector);
+function tokensIn(block: string): Record<string, string> {
   const out: Record<string, string> = {};
-  for (const [, name, value] of block[1].matchAll(/--([a-z-]+):\s*(#[0-9a-f]{6})/gi)) {
+  for (const [, name, value] of block.matchAll(/--([a-z0-9-]+):\s*(#[0-9a-f]{6})/gi)) {
     out[name] = value;
   }
   return out;
@@ -38,45 +40,71 @@ export function contrast(a: string, b: string): number {
   return (hi + 0.05) / (lo + 0.05);
 }
 
-const light = tokensFrom(":root");
-const dark = tokensFrom("\\.dark");
-// The dark block only redefines what changes; the rest inherits from :root.
-const darkFull = { ...light, ...dark };
+// There are two `:root` blocks: the first carries only the fluid font-size, the
+// second is the palette. Matching on `--wh`, which exists only in the palette,
+// pins this to the right one however the file is reordered.
+const paletteBlock = /:root\s*\{[^}]*--wh:[^}]*\}/.exec(css);
+if (!paletteBlock) throw new Error("no palette block in globals.css");
+const t = tokensIn(paletteBlock[0]);
 
-describe.each([
-  ["light", light],
-  ["dark", darkFull],
-])("%s theme meets WCAG AA", (_name, t) => {
+describe("palette tokens exist", () => {
+  it.each(["wh", "bk", "gr", "gr2", "gr3", "ac", "orange"])("--%s is defined", (name) => {
+    expect(t[name]).toMatch(/^#[0-9a-f]{6}$/i);
+  });
+});
+
+describe("light ground meets WCAG AA", () => {
   // 1.4.3 — normal text needs 4.5:1.
   it.each([
-    ["body text on paper", "ink", "paper"],
-    ["body text on surface", "ink", "surface"],
-    ["muted and micro-labels on paper", "muted", "paper"],
-    ["muted and micro-labels on surface", "muted", "surface"],
-    ["accent text on paper", "accent", "paper"],
-    ["accent text on surface", "accent", "surface"],
+    ["body text on white", "bk", "wh"],
+    ["secondary text on white", "gr3", "wh"],
+    ["live state on white", "ac", "wh"],
+  ])("%s", (_label, fg, bg) => {
+    expect(contrast(t[fg], t[bg])).toBeGreaterThanOrEqual(4.5);
+  });
+});
+
+describe("dark ground meets WCAG AA", () => {
+  it.each([
+    ["body text on black", "wh", "bk"],
+    ["secondary text on black", "gr3-dark", "bk"],
+    // Dark sections swap the accent for the real brand orange, which only
+    // clears AA on the dark ground — never use it as text on white.
+    ["live state on black", "orange", "bk"],
   ])("%s", (_label, fg, bg) => {
     expect(contrast(t[fg], t[bg])).toBeGreaterThanOrEqual(4.5);
   });
 
-  // 1.4.11 — control boundaries and focus indicators need 3:1.
-  it.each([
-    ["control border on paper", "line-strong", "paper"],
-    ["control border on surface", "line-strong", "surface"],
-    ["focus ring on paper", "ink", "paper"],
-  ])("%s", (_label, fg, bg) => {
-    expect(contrast(t[fg], t[bg])).toBeGreaterThanOrEqual(3);
+  it("the accent is swapped per ground, not reused", () => {
+    // Why --ac exists at all: the brand hex fails badly on paper (1.9:1), so
+    // the light ground gets a darkened orange and only the dark ground gets the
+    // real one. These two rules are what enforce that.
+    expect(contrast(t.orange, t.wh)).toBeLessThan(4.5);
+    expect(css).toMatch(/[^\]]\s*\.live\s*\{\s*color:\s*var\(--ac\);/);
+    expect(css).toMatch(/\[data-ground="dark"\]\s*\.live\s*\{\s*color:\s*var\(--orange\);/);
   });
 
-  it("keeps the CTA label legible on the orange fill", () => {
-    expect(contrast("#0c0c0d", t.orange)).toBeGreaterThanOrEqual(4.5);
+  it("secondary text is swapped per ground too", () => {
+    // #929292 is the reference's grey and only clears 3.1:1 on white.
+    expect(contrast(t["gr3-dark"], t.wh)).toBeLessThan(4.5);
+    expect(css).toMatch(/\[data-ground="dark"\]\s*\.dim\s*\{\s*color:\s*var\(--gr3-dark\);/);
+  });
+});
+
+describe("non-text contrast (WCAG 1.4.11)", () => {
+  it("hairlines are decorative, but control borders use currentColor", () => {
+    // Buttons and links draw their rules in currentColor, so they inherit the
+    // 21:1 of the ground they sit on rather than needing their own token.
+    expect(css).toMatch(/\.btn\s*\{[^}]*border:\s*1px solid currentColor/);
+    expect(css).toMatch(/\.rule-solid\s*\{[^}]*background-color:\s*currentColor/);
   });
 
-  it("does not let brand orange be used as a text colour where it would fail", () => {
-    // If this ever passes in light theme, the fill hex has been changed and the
-    // separate --accent token may no longer be needed.
-    if (_name === "light") {
-      expect(contrast(t.orange, t.paper)).toBeLessThan(4.5);
-    }
+  /*
+   * The swatches render on the dark ground (Programme page), so that is the
+   * ground they have to clear. They are also redundant — every group carries a
+   * number and a title — so the colour is a second channel, never the only one.
+   */
+  it.each([0, 2, 5, 8, 10])("working-group swatch %i clears 3:1 on black", (i) => {
+    expect(contrast(workingGroupColour(i, 11), t.bk)).toBeGreaterThanOrEqual(3);
   });
 });

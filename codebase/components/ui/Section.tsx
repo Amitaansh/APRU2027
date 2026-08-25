@@ -1,62 +1,93 @@
 import type { ReactNode } from "react";
-import { Container } from "@/components/ui/Container";
+import { SectionLabel } from "@/components/ui/SectionLabel";
 
 /**
- * Design Brief §07/03 — mono index + expanded uppercase title on the 12-col
- * grid. Sections breathe at 88px vertical.
+ * A section of the page, on the fifteen-column grid.
+ *
+ * `ground="dark"` paints it black; nothing inside needs to know, because every
+ * rule, underline and border on the site is drawn in `currentColor`.
+ *
+ * `halo` names the lane the halo occupies while this section owns the viewport,
+ * and is the ONLY thing that has to be said. The content columns are derived
+ * from it as the complement, so the mark and the type can never collide — the
+ * old API took four separate props and guaranteed nothing.
+ *
+ *   halo="right"  halo in cols 11-15, label + content in 1-10
+ *   halo="left"   halo in cols 1-5,   label + content in 6-15
+ *
+ * `flow` drops the top padding so a section reads as a continuation of the one
+ * above it rather than paying the full rhythm twice at the seam.
  */
+
+export type HaloLane = "left" | "right";
+
+/** Where the label and the body sit, given the lane the halo has taken. */
+const COLUMNS: Record<"none" | HaloLane, { label: string; body: string }> = {
+  none: { label: "1 / span 3", body: "4 / span 12" },
+  right: { label: "1 / span 2", body: "3 / span 8" },
+  left: { label: "6 / span 2", body: "8 / span 8" },
+};
+
+/**
+ * The label-and-body grid, without the surrounding <section>.
+ *
+ * Curtain renders this twice — once light, once dark — so it has to be sharable
+ * or the two copies would drift apart and the wipe would show a seam.
+ */
+export function SectionGrid({
+  label,
+  halo,
+  children,
+}: {
+  label?: string;
+  halo?: HaloLane;
+  children: ReactNode;
+}) {
+  const columns = COLUMNS[halo ?? "none"];
+
+  if (!label && !halo) return <>{children}</>;
+
+  return (
+    <div className="grd">
+      {label && (
+        <div className="max-md:mb-[24rem]" style={{ gridColumn: columns.label }}>
+          <SectionLabel>{label}</SectionLabel>
+        </div>
+      )}
+      <div style={{ gridColumn: columns.body }}>{children}</div>
+    </div>
+  );
+}
+
 export function Section({
   id,
-  index,
-  title,
-  lede,
+  label,
   children,
+  ground,
+  halo,
+  flow = false,
   className = "",
-  bordered = true,
-  level = 2,
 }: {
   id?: string;
-  index?: string;
-  title?: ReactNode;
-  lede?: ReactNode;
-  children?: ReactNode;
+  label?: string;
+  children: ReactNode;
+  ground?: "dark";
+  halo?: HaloLane;
+  flow?: boolean;
   className?: string;
-  bordered?: boolean;
-  /** The first section on a page carries the h1; the rest are h2. */
-  level?: 1 | 2;
 }) {
-  const Heading = level === 1 ? "h1" : "h2";
   return (
     <section
       id={id}
-      className={
-        (bordered ? "border-t border-line " : "") +
-        "py-14 md:py-[88px] " +
-        className
-      }
+      data-ground={ground}
+      data-halo-lane={halo}
+      className={"pad " + (flow ? "pad-flow " : "") + className}
     >
-      <Container>
-        {(index || title) && (
-          <div className="mb-10 grid gap-4 md:grid-cols-12 md:gap-5">
-            {index && (
-              <p className="label-mono md:col-span-2">{index}</p>
-            )}
-            <div className="md:col-span-10">
-              {title && (
-                <Heading className="font-display text-[clamp(1.75rem,5vw,3.25rem)] font-black">
-                  {title}
-                </Heading>
-              )}
-              {lede && (
-                <div className="mt-5 max-w-[60ch] text-base leading-relaxed text-muted md:text-lg">
-                  {lede}
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-        {children}
-      </Container>
+      <div className="ctr">
+        <SectionGrid label={label} halo={halo}>
+          {children}
+        </SectionGrid>
+      </div>
     </section>
   );
 }

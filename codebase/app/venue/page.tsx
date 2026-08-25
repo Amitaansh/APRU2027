@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { Reveal } from "@/components/ui/Reveal";
+import { Reveal } from "@/components/motion/Reveal";
+import { PageHead } from "@/components/ui/PageHead";
 import { Section } from "@/components/ui/Section";
-import { ToBeAnnounced } from "@/components/ui/ToBeAnnounced";
 import { venue } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 
@@ -22,43 +22,42 @@ const TBA_NOTES: Record<string, string> = {
 export default function VenuePage() {
   return (
     <>
-      <Section
-        index="§ Attendee info"
-        title="Venue and travel"
+      <PageHead
+        label="Attendee information"
+        title={["Venue", "and travel"]}
         lede="Practical information for getting to Singapore and to the NUS Kent Ridge campus. Sections fill in as arrangements are confirmed."
-        level={1}
-        bordered={false}
-      >
-        <div className="grid gap-x-5 gap-y-12 md:grid-cols-12">
+      />
+
+      <Section label="Getting here">
+        <div className="flex flex-col">
           {venue.map((section, i) => (
-            <Reveal
-              key={section.id}
-              delay={i * 0.05}
-              className="md:col-span-6"
-            >
-              <h2 className="font-display text-xl font-bold md:text-2xl">
-                {section.heading}
-              </h2>
-              {section.status === "confirmed" ? (
-                <p className="mt-4 max-w-[58ch] leading-relaxed text-muted">
-                  {section.body}
-                </p>
-              ) : (
-                <div className="mt-4">
-                  <ToBeAnnounced
-                    label={section.heading + " to be announced"}
-                    note={TBA_NOTES[section.id]}
-                  />
+            <Reveal key={section.id}>
+              <div className="rule-solid" />
+              <div
+                className="rise flex gap-[20rem] py-[50rem] max-md:flex-col max-md:gap-[14rem] max-md:py-[34rem]"
+                style={{ transitionDelay: Math.min(i * 0.05, 0.3) + "s" }}
+              >
+                <h2 className="t-h4 w-[380rem] flex-none max-md:w-full">{section.heading}</h2>
+                <div className="flex-1">
+                  {section.status === "confirmed" ? (
+                    <p className="t-b1 dim max-w-[64ch]">{section.body}</p>
+                  ) : (
+                    <>
+                      <p className="t-lbl dim pb-[14rem]">To be announced</p>
+                      <p className="t-b2 dim max-w-[60ch]">{TBA_NOTES[section.id]}</p>
+                    </>
+                  )}
                 </div>
-              )}
+              </div>
             </Reveal>
           ))}
+          <div className="rule-solid" />
         </div>
 
-        <p className="label-mono mt-14">
+        <p className="t-b2 dim pt-[40rem]">
           Planning around the schedule?{" "}
-          <Link href="/program" className="text-accent hover:underline">
-            See the program outline
+          <Link href="/program" className="link">
+            See the programme outline
           </Link>
           .
         </p>

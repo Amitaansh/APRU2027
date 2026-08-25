@@ -1,6 +1,12 @@
 import type { ReactNode } from "react";
 
-/** Design Brief §02 — 1280px max, 20px gutter. */
+/**
+ * The page gutter -- 30px at 1920, 15px on mobile.
+ *
+ * Deliberately not a centred max-width box. Content runs almost to the edge of
+ * the viewport and line length is controlled by which of the fifteen columns a
+ * block sits in, not by narrowing the page.
+ */
 export function Container({
   children,
   className = "",
@@ -8,9 +14,5 @@ export function Container({
   children: ReactNode;
   className?: string;
 }) {
-  return (
-    <div className={"mx-auto w-full max-w-[1280px] px-5 md:px-10 " + className}>
-      {children}
-    </div>
-  );
+  return <div className={"ctr " + className}>{children}</div>;
 }

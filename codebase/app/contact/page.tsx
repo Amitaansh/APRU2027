@@ -1,6 +1,6 @@
 import { FAQAccordion } from "@/components/contact/FAQAccordion";
 import { ContactRoute } from "@/components/contact/ContactRoute";
-import { Reveal } from "@/components/ui/Reveal";
+import { PageHead } from "@/components/ui/PageHead";
 import { Section } from "@/components/ui/Section";
 import { pageMetadata } from "@/lib/seo";
 
@@ -14,19 +14,17 @@ export const metadata = pageMetadata({
 export default function ContactPage() {
   return (
     <>
-      <Section
-        index="§ Contact"
-        title="Contact"
+      <PageHead
+        label="Contact"
+        title={["Talk to the", "committee"]}
         lede="Questions about the conference, the working groups, or partnering with us go to the organising committee at the NUS Department of Architecture."
-        level={1}
-        bordered={false}
-      >
-        <Reveal>
-          <ContactRoute />
-        </Reveal>
+      />
+
+      <Section>
+        <ContactRoute />
       </Section>
 
-      <Section index="§ FAQ" title="Frequently asked questions">
+      <Section label="Questions" ground="dark">
         <FAQAccordion />
       </Section>
     </>

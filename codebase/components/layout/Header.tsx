@@ -2,30 +2,29 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
-import { Menu, X } from "lucide-react";
-import { ThemeToggle } from "@/components/layout/ThemeToggle";
-import { CTAButton } from "@/components/ui/CTAButton";
-import { Container } from "@/components/ui/Container";
+import { useEffect, useState } from "react";
 import { hasSpeakers, nav, site } from "@/lib/content";
 import { isInPrimaryNav } from "@/lib/phase";
-import { pageKeyFor } from "@/lib/routes";
 import { usePhase } from "@/lib/usePhase";
 
 /**
- * The navbar grows with the site (App Flow §4): four content-bearing items at
- * launch, promoting Register at P1, Call for Abstracts at P2, and Speakers the
- * moment a keynote lands. The footer always lists everything, so a
- * de-emphasized page is never unreachable.
+ * Fixed, with no background of its own.
  *
- * The row has a reserved height and promoted items fade in, so a promotion
- * never reflows the page under the visitor.
+ * `mix-blend-mode: difference` over white text is what lets one header sit over
+ * the artwork, over white sections and over black sections without any of them
+ * knowing about it: the blend inverts against whatever is behind, so the header
+ * is black on white and white on black for free. It is also why the header has
+ * no theme logic even though the site goes dark.
+ *
+ * The blend has to be turned off while the mobile menu is open, because the menu
+ * is a real surface and the header must sit on it normally rather than invert
+ * against it.
  */
 export function Header() {
   const pathname = usePathname();
   const { phase } = usePhase();
-  // The menu is scoped to the route it was opened on, so a navigation closes
-  // it without an effect reaching back into state.
+  // Scoped to the route it was opened on, so navigating closes it without an
+  // effect reaching back into state.
   const [openPath, setOpenPath] = useState<string | null>(null);
   const open = openPath === pathname;
 
@@ -38,77 +37,116 @@ export function Header() {
     return here === route;
   };
 
-  return (
-    <header className="sticky top-0 z-30 border-b border-line bg-paper/95 backdrop-blur-sm">
-      <Container>
-        {/* Design Brief §07.01 — mono status bar. */}
-        <div className="label-mono hidden justify-between border-b border-line py-2 md:flex">
-          <span>[ 01&deg;17&prime;N 103&deg;50&prime;E ] {site.location}</span>
-          <span>{site.host}</span>
-          <span>{site.dates}</span>
-        </div>
+  useEffect(() => {
+    document.documentElement.classList.toggle("lenis-stopped", open);
+    return () => document.documentElement.classList.remove("lenis-stopped");
+  }, [open]);
 
-        <div className="flex min-h-[72px] items-center justify-between gap-6 py-3">
-          <Link href="/" className="font-display text-base font-black leading-none md:text-lg">
-            APRU-SCL <span className="text-accent">2027</span>
+  return (
+    <>
+      <ScrollProgress />
+
+      <header
+        className={
+          "fixed left-0 top-0 z-[60] w-full py-[24rem] text-wh max-md:py-[14rem] " +
+          (open ? "" : "mix-blend-difference ") +
+          "pointer-events-none"
+        }
+      >
+        <div className="ctr flex w-full items-start justify-between">
+          <Link href="/" className="pointer-events-auto block text-[19rem] leading-none tracking-[-0.02em] max-md:text-[14rem]">
+            <span className="block">APRU</span>
+            <span className="block">Sustainable Cities</span>
+            <span className="f-serif block">&amp; Landscapes</span>
           </Link>
 
-          <nav aria-label="Primary" className="hidden items-center gap-7 md:flex">
+          {/*
+           * Comma-separated, the way an index line is set. The comma belongs to
+           * the link text so the underline sweep runs under it too.
+           */}
+          <nav aria-label="Primary" className="t-b2 pointer-events-auto max-md:hidden">
+            <ul className="flex items-center gap-[0.5em]">
+              {items.map((item, i) => (
+                <li key={item.route}>
+                  <Link
+                    href={item.route}
+                    aria-current={isCurrent(item.route) ? "page" : undefined}
+                    className="link"
+                  >
+                    {item.label}
+                    {i < items.length - 1 ? "," : ""}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <button
+            type="button"
+            onClick={() => setOpenPath(open ? null : pathname)}
+            aria-expanded={open}
+            aria-controls="mobile-menu"
+            className="t-b2 pointer-events-auto hidden max-md:block"
+          >
+            {open ? "Close" : "Menu"}
+          </button>
+        </div>
+      </header>
+
+      {open && (
+        <div
+          id="mobile-menu"
+          className="fixed inset-0 z-[55] bg-wh px-[15rem] pb-[20rem] pt-[90rem] text-bk md:hidden"
+        >
+          <nav aria-label="Primary" className="flex h-full flex-col justify-end gap-[10rem]">
             {items.map((item) => (
               <Link
                 key={item.route}
                 href={item.route}
                 aria-current={isCurrent(item.route) ? "page" : undefined}
-                className={
-                  "label-mono transition-colors duration-[180ms] hover:text-ink " +
-                  (isCurrent(item.route) ? "text-ink" : "")
-                }
+                onClick={() => setOpenPath(null)}
+                className="t-h3"
               >
                 {item.label}
               </Link>
             ))}
+            <p className="t-b2 dim mt-[30rem]">
+              {site.dates} &middot; {site.location}
+            </p>
           </nav>
-
-          <div className="flex items-center gap-3">
-            <ThemeToggle />
-            <div className="hidden lg:block">
-              <CTAButton page={pageKeyFor(pathname)} surface="hero" className="px-4 py-2 text-sm" />
-            </div>
-            <button
-              type="button"
-              onClick={() => setOpenPath(open ? null : pathname)}
-              aria-expanded={open}
-              aria-controls="mobile-menu"
-              aria-label={open ? "Close menu" : "Open menu"}
-              className="border border-line p-2 text-ink md:hidden"
-            >
-              {open ? <X aria-hidden="true" className="size-4" /> : <Menu aria-hidden="true" className="size-4" />}
-            </button>
-          </div>
-        </div>
-      </Container>
-
-      {open && (
-        <div id="mobile-menu" className="border-t border-line bg-paper md:hidden">
-          <Container>
-            <nav aria-label="Primary mobile" className="flex flex-col py-4">
-              {items.map((item) => (
-                <Link
-                  key={item.route}
-                  href={item.route}
-                  aria-current={isCurrent(item.route) ? "page" : undefined}
-                  className="border-b border-line py-4 font-display text-lg font-bold"
-                >
-                  {item.label}
-                </Link>
-              ))}
-              <div className="pt-5">
-                <CTAButton page={pageKeyFor(pathname)} surface="hero" />
-              </div>
-            </nav>
-          </Container>
         </div>
       )}
-    </header>
+    </>
+  );
+}
+
+/**
+ * A 3px rule across the top that fills as the page is read. White under
+ * `difference` rather than a flat black bar, so it inverts against whatever
+ * section is at the top of the viewport instead of vanishing into a dark one.
+ */
+function ScrollProgress() {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const onScroll = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      setProgress(max > 0 ? window.scrollY / max : 0);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
+
+  return (
+    <div
+      aria-hidden="true"
+      className="fixed left-0 top-0 z-[70] h-[3rem] w-full origin-left bg-wh mix-blend-difference"
+      style={{ transform: "scaleX(" + progress + ")" }}
+    />
   );
 }

@@ -1,6 +1,5 @@
 "use client";
 
-import { ArrowUpRight } from "lucide-react";
 import type { CTATarget } from "@/content/phases";
 import { track } from "@/lib/analytics";
 import { withSource } from "@/lib/phase";
@@ -16,19 +15,13 @@ import { usePhase } from "@/lib/usePhase";
  *  - an unset URL renders a labelled "link coming soon" affordance, never a
  *    dead href that looks broken (App Flow §7.9);
  *  - every click is tagged src=<page>-<surface> for attribution later.
+ *
+ * Visually it is a rectangle and a rule: `.btn` inverts on hover over 600ms and
+ * takes its border from `currentColor`, so it works on the dark ground with no
+ * variant of its own. The arrow is a typographic character, not an icon.
  */
 
 export type Surface = "hero" | "floating" | "footer" | "inline";
-
-const BASE =
-  "group inline-flex items-center gap-3 border px-6 py-3.5 font-medium tracking-tight transition-[transform,background-color,color] duration-[180ms] ease-[cubic-bezier(0.165,0.84,0.44,1)]";
-
-const VARIANTS = {
-  primary:
-    "border-ink bg-orange text-[#0c0c0d] hover:-translate-y-[3px] hover:bg-orange/90",
-  secondary:
-    "border-line-strong bg-transparent text-ink hover:-translate-y-[3px] hover:border-ink",
-} as const;
 
 export function CTAButton({
   page,
@@ -39,7 +32,7 @@ export function CTAButton({
 }: {
   page: string;
   surface: Surface;
-  variant?: keyof typeof VARIANTS;
+  variant?: "primary" | "secondary";
   /** Defaults to the phase's primary action; pass to pin a specific one. */
   target?: CTATarget | null;
   className?: string;
@@ -51,15 +44,15 @@ export function CTAButton({
   if (!action) return null;
 
   const src = page + "-" + surface;
+  const base = "btn " + (variant === "primary" ? "btn-fill " : "") + className;
 
   if (!action.url) {
     return (
       <span
-        className={BASE + " cursor-default border-dashed border-line-strong bg-surface text-muted " + className}
+        className={base + " dim cursor-default"}
         title="This link will be published shortly"
       >
-        {action.label}
-        <span className="label-mono normal-case tracking-normal">link coming soon</span>
+        {action.label} <span className="dim">— soon</span>
       </span>
     );
   }
@@ -71,13 +64,10 @@ export function CTAButton({
       rel="noopener noreferrer"
       data-analytics={action.event}
       onClick={() => track(action.event, { src, phase })}
-      className={BASE + " " + VARIANTS[variant] + " " + className}
+      className={base}
     >
       {action.label}
-      <ArrowUpRight
-        aria-hidden="true"
-        className="size-4 transition-transform duration-[180ms] group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-      />
+      <span aria-hidden="true">&#8599;</span>
       <span className="sr-only">(opens in a new tab)</span>
     </a>
   );

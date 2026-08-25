@@ -1,58 +1,70 @@
 "use client";
 
 import { useState } from "react";
-import { AnimatePresence, m } from "motion/react";
-import { Minus, Plus } from "lucide-react";
+import { Reveal } from "@/components/motion/Reveal";
 import { faq } from "@/lib/content";
 
-/** Design Brief §07.07 — hairline dividers, mono index, ease-in-out expand. */
+/**
+ * Hairline dividers, a numbered spine, and a plus that becomes a minus.
+ *
+ * Same mechanism as the working groups: `grid-template-rows: 0fr -> 1fr`
+ * animates to auto height purely in CSS, so no measurement and no animation
+ * library. The header is an `.idx-row` for the same reason it is there — one row
+ * shape for the whole site, hover sweep included.
+ */
 export function FAQAccordion() {
   const [open, setOpen] = useState<string | null>(faq[0]?.id ?? null);
 
   return (
-    <div className="border-t border-line">
+    <Reveal className="rulelist">
       {faq.map((item, i) => {
         const expanded = open === item.id;
+        const cells = (
+          <>
+            <span className="t-b2 dim tnum w-[50rem] flex-none max-md:w-auto">
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <span className="t-h4 flex-1">{item.question}</span>
+            <span aria-hidden="true" className="t-b1 flex-none">
+              {expanded ? "−" : "+"}
+            </span>
+          </>
+        );
         return (
-          <div key={item.id} className="border-b border-line">
+          <div key={item.id}>
             <h3>
               <button
                 type="button"
                 onClick={() => setOpen(expanded ? null : item.id)}
                 aria-expanded={expanded}
                 aria-controls={"faq-" + item.id}
-                className="flex w-full items-start justify-between gap-6 py-6 text-left transition-colors duration-[180ms] hover:text-accent"
+                className="idx-row idx-row--fold w-full text-left"
               >
-                <span className="label-mono pt-1">
-                  {String(i + 1).padStart(2, "0")}
+                <span
+                  className="idx-in rise"
+                  style={{ transitionDelay: Math.min(i * 0.06, 0.36) + "s" }}
+                >
+                  {cells}
                 </span>
-                <span className="flex-1 font-display text-base font-bold leading-tight md:text-xl">
-                  {item.question}
-                </span>
-                <span aria-hidden="true" className="pt-1">
-                  {expanded ? <Minus className="size-4" /> : <Plus className="size-4" />}
+                <span aria-hidden="true" className="idx-veil">
+                  <span className="idx-in">{cells}</span>
                 </span>
               </button>
             </h3>
-            <AnimatePresence initial={false}>
-              {expanded && (
-                <m.div
-                  id={"faq-" + item.id}
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: "auto", opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.3, ease: [0.645, 0.045, 0.355, 1] }}
-                  className="overflow-hidden"
-                >
-                  <p className="max-w-[70ch] pb-8 pl-0 text-sm leading-relaxed text-muted md:pl-16 md:text-base">
-                    {item.answer}
-                  </p>
-                </m.div>
-              )}
-            </AnimatePresence>
+            <div
+              id={"faq-" + item.id}
+              className="grid transition-[grid-template-rows] duration-500 ease-[cubic-bezier(0.17,0.84,0.44,1)]"
+              style={{ gridTemplateRows: expanded ? "1fr" : "0fr" }}
+            >
+              <div className="overflow-hidden">
+                <p className="t-b1 dim max-w-[70ch] pb-[36rem] pl-[70rem] max-md:pl-0">
+                  {item.answer}
+                </p>
+              </div>
+            </div>
           </div>
         );
       })}
-    </div>
+    </Reveal>
   );
 }
