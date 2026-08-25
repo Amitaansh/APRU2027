@@ -13,7 +13,8 @@ export const OG_IMAGE = {
   alt: "Bridging Resilience(s) — the 10th Conference of APRU-SCL, 21-23 May 2027, Singapore",
 };
 
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://apru-scl2027.org";
+export const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://apruscl2027.com";
 
 export const DEFAULT_DESCRIPTION =
   site.name +

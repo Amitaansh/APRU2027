@@ -7,3 +7,12 @@ DOA-APRU-MainImage.jpg
 
 # Scratch
 _claude_tmp/
+
+# Source documents stay local, not in the repo: the working-group proposals and
+# the website sitemap carry personal email addresses for NUS and partner-
+# university academics.
+*.pdf
+*.ai
+APRU-SCL-2027-*.md
+APRU-SCL-2027-DesignBrief-v2.html
+apru-icon.jpg
