@@ -1,0 +1,32 @@
+[
+  {
+    "id": "abstracts-open",
+    "label": "Call for abstracts opens",
+    "date": null
+  },
+  {
+    "id": "abstracts-close",
+    "label": "Abstract submission deadline",
+    "date": null
+  },
+  {
+    "id": "notification",
+    "label": "Notification of acceptance",
+    "date": null
+  },
+  {
+    "id": "registration-opens",
+    "label": "Registration opens",
+    "date": null
+  },
+  {
+    "id": "early-bird",
+    "label": "Early-bird registration closes",
+    "date": null
+  },
+  {
+    "id": "conference",
+    "label": "Conference",
+    "date": "2027-05-21"
+  }
+]

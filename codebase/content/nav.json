@@ -1,0 +1,29 @@
+[
+  { "label": "Home", "route": "/", "group": "primary" },
+  { "label": "About", "route": "/about", "group": "primary" },
+  { "label": "Venue & Travel", "route": "/venue", "group": "primary" },
+  { "label": "Contact", "route": "/contact", "group": "primary" },
+  {
+    "label": "Program",
+    "route": "/program",
+    "group": "footer-only",
+    "active": false
+  },
+  {
+    "label": "Speakers",
+    "route": "/speakers",
+    "group": "footer-only"
+  },
+  {
+    "label": "Register",
+    "route": "/register",
+    "group": "footer-only",
+    "activeFrom": "P1"
+  },
+  {
+    "label": "Call for Abstracts",
+    "route": "/call-for-abstracts",
+    "group": "footer-only",
+    "activeFrom": "P2"
+  }
+]

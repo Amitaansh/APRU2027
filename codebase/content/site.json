@@ -1,0 +1,28 @@
+{
+  "name": "Bridging Resilience(s)",
+  "seriesName": "The 10th Conference of APRU-SCL",
+  "edition": 10,
+  "dates": "21–23 May 2027",
+  "dateStart": "2027-05-21",
+  "dateEnd": "2027-05-23",
+  "location": "Singapore",
+  "host": "NUS Department of Architecture, College of Design and Engineering",
+  "hostShort": "NUS Department of Architecture",
+  "coBrand": "APRU",
+  "tagline": "The 10th Conference of the APRU Sustainable Cities and Landscapes network, hosted by the National University of Singapore.",
+  "intro": "The Department of Architecture at the National University of Singapore is proud to host the 10th Annual APRU Sustainable Cities and Landscapes (SCL) Conference on 21–23 May 2027. The conference will celebrate the 10th anniversary of the growing network of scholars, educators, practitioners, and community partners in the Pacific Rim.",
+  "priorEditions": [
+    {
+      "edition": 9,
+      "year": 2026,
+      "host": "Shanghai Jiao Tong University",
+      "theme": "Evolutionary Cities and Landscapes at the Pacific Rim"
+    },
+    {
+      "edition": 8,
+      "year": 2025,
+      "host": "Simon Fraser University, Vancouver",
+      "theme": "Living with Water"
+    }
+  ]
+}

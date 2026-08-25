@@ -1,0 +1,9 @@
+# Design source art — both files are over GitHub's 100 MB hard limit and are
+# working files, not deliverables. Keep them in shared storage. The site ships
+# the derivatives generated from them (codebase/public/images), and
+# `npm run imagery` regenerates those from the originals.
+DOA-APRU-Design-21Aug.ai
+DOA-APRU-MainImage.jpg
+
+# Scratch
+_claude_tmp/

@@ -1,0 +1,102 @@
+{
+  "intro": "The APRU Sustainable Cities and Landscapes program uses a collaborative working group framework at its annual conferences to co-produce actionable urban-landscape solutions. The framework features ongoing thematic groups that promote collaboration and joint agenda-building over static paper presentations, with working groups typically leaving the conference with a planned output related to their group theme and/or connected to the conference location. Established to connect Pacific Rim academics and practitioners, the working group framework aims to collaborate on research related to sustainable cities and landscapes, build cross-institutional and cross-disciplinary networks, develop shared academic outputs such as publications, case studies, white papers, and webinars, and engage meaningfully with the host city and conference theme.",
+  "workingGroups": [
+    {
+      "id": "therapeutic-landscapes",
+      "title": "Climate-Responsive Therapeutic Landscapes for Healthy Aging Communities",
+      "leads": [
+        { "name": "Lin Xiao", "institution": "Universiti Kebangsaan Malaysia" }
+      ],
+      "blurb": "The group focuses on the intersection of therapeutic landscapes, landscape ecology, planting strategies, microclimate regulation, and age-friendly environmental design. It aims to investigate how vegetation systems, green infrastructure, and landscape planning approaches can enhance thermal comfort, psychological wellbeing, and quality of life for elderly populations in diverse climatic contexts. It will promote comparative studies and knowledge exchange on healthy aging environments across the Asia-Pacific region. Particular attention will be given to tropical, subtropical, and rapidly urbanizing regions where climate adaptation and healthy living environments are increasingly important."
+    },
+    {
+      "id": "botanical-urbanism",
+      "title": "Botanical Urbanism",
+      "leads": [
+        { "name": "Lu Xiaoxuan", "institution": "National University of Singapore" },
+        { "name": "Hwang Yun Hye", "institution": "National University of Singapore" }
+      ],
+      "blurb": "Botanical Urbanism provides a lens to re-center plants and ecological processes as fundamental urban drivers, while advocating a paradigm shift toward a culturally-engaged revolution of ecological design. Ecological design has long been dominated by a prioritization of ecosystem services, treating ecology as a utility by quantifying how nature can serve human needs. In contrast, this working group engages with political ecology by arguing that the ecological cannot be separated from the cultural and political, asking questions such as: Whose nature is being designed? Who benefits from urban green space? What cultural meanings are attached to these plants? Furthermore, this working group positions Botanical Urbanism as a proposal for action beyond analysis, engaging urban flora as a proactive, generative force in the design process to advocate for urban nature that is equitable in both human and non-human domains."
+    },
+    {
+      "id": "water-and-wastewater",
+      "title": "Water and Wastewater",
+      "leads": [
+        { "name": "Kory Christ Russel", "institution": "University of Oregon" }
+      ],
+      "blurb": "The water and wastewater working group has engaged with a number of different water and sanitation concepts over the years. For 2027 in Singapore, the group will focus on affordable and scalable water reuse — stormwater and greywater — technologies and designs within the urban landscape."
+    },
+    {
+      "id": "urban-ai",
+      "title": "Urban AI: Planning, Governance and Decision Support",
+      "leads": [
+        { "name": "Ellie Bahmanteymouri", "institution": "University of Auckland" },
+        { "name": "Alessandro Premier", "institution": "University of Auckland" },
+        { "name": "Mohsen Mohammadzadeh", "institution": "University of Auckland" }
+      ],
+      "blurb": "The Urban AI, Smart Technologies and Energy Transitions Working Group brings together the complementary agendas of Urban AI, urban innovation, smart technologies, and sustainable energy. It will examine how artificial intelligence, data-driven systems, digital twins, intelligent infrastructure, and emerging energy technologies are reshaping urban management, governance, service delivery, and everyday life across the Asia-Pacific region. The Working Group will promote interdisciplinary and cross-city collaboration addressing both the transformative potential and the economic, social, ethical, environmental, and governance implications of these innovations. Particular attention will be given to smart solutions for existing and future urban problems, inclusive digitalisation, energy transitions, data governance, and socio-spatial justice. Through comparative research, knowledge exchange, policy dialogue, and collaborative publications, the group will support cities in developing responsible, context-sensitive, and equitable pathways towards digitally enabled, low-carbon, and resilient urban futures."
+    },
+    {
+      "id": "climate-adaptation",
+      "title": "Urban Climate Adaptation in Practice",
+      "leads": [
+        { "name": "Iresh Jayawardena", "institution": "University of Auckland" }
+      ],
+      "blurb": "Climate adaptation is entering a new phase. The question is no longer whether cities adapt, but how well, for whom, and toward what future. This working group proposes that place-based interventions are where strategic adaptation is made real, tested, and legitimised. Precinct retrofits, blue-green infrastructure, urban living laboratories, managed relocation, informal-settlement upgrading, community- and Indigenous-led placemaking, and regulatory experimentation can each make competing values and distributional claims explicit — and, under favourable conditions, act as catalysts for the deeper institutional and systemic change that adaptation requires. Contributions are welcome from urban planning, governance, engineering, landscape architecture, public health, urban economics, geography, Indigenous scholarship, evaluation and data science, and from practitioners and community partners."
+    },
+    {
+      "id": "civic-resilience",
+      "title": "Civic Resilience and Justice Co-Design",
+      "leads": [
+        { "name": "Chaewon Ahn", "institution": "National University of Singapore" },
+        { "name": "Chingwen Cheng", "institution": "Pennsylvania State University" },
+        { "name": "Jeff Hou", "institution": "National University of Singapore" }
+      ],
+      "blurb": "Building on the work of previous working groups, including Civic Engagement and Community Design as well as Climate Justice and Community Resilience, this working group will focus on collaborative approaches to enhancing civic resilience and advancing structural change toward justice in the built environment. Working as a consortium of researchers and practitioners, it will investigate how climate change, environmental inequities, and urban vulnerabilities intersect to affect communities disproportionately across diverse geographical and social contexts. The group's activities will emphasize the co-production of actionable knowledge, integrating transdisciplinary perspectives, with a focus on civic resilience and justice in the processes and outcomes of the built environment. The group will also highlight the importance of place-based insights, community co-design, Indigenous knowledge, and local knowledge in strengthening both infrastructural and community resilience."
+    },
+    {
+      "id": "moral-ecologies",
+      "title": "Moral Ecologies of Infrastructure",
+      "leads": [
+        { "name": "Anne Taufen", "institution": "University of Washington – Tacoma" }
+      ],
+      "blurb": "Moral ecologies are context-specific relational systems that impact priorities in the construction of cities and landscapes. What do we value, why, and how do we interact with each other to get things done? Around the globe, we bring acculturated expectations to the siting, development, and sustainability of infrastructure investments. To investigate and better understand the practical significance of moral ecologies, this working group focuses on three questions related to sustainable infrastructure. First, can we identify and understand the multiple ways that people make sense of and construct their environment, in different Asia Pacific cities and landscapes? Second, how do these moral ecologies relate to specific forms of essential infrastructure, such as transportation, water, or energy? And third, how can interpretive methods strengthen our ability to recognize, characterize, and engage these moral ecologies, to build pragmatic leadership skills for inclusive, equitable, sustainable development?"
+    },
+    {
+      "id": "age-friendly-cities",
+      "title": "Age-friendly Cities and Communities",
+      "leads": [
+        { "name": "Shengxiao (Alex) Li", "institution": "National University of Singapore" },
+        { "name": "Mei Fang", "institution": "Simon Fraser University" }
+      ],
+      "blurb": "This working group unpacks urban aging problems experienced by cities and communities in an aging society, and proposes context-based solutions towards sustainable and educational approaches that support the next generation of leaders in advancing inclusive, age-friendly planning."
+    },
+    {
+      "id": "pedagogies",
+      "title": "Pedagogies for Sustainable Cities and Landscapes",
+      "leads": [
+        { "name": "Sara Padgett Kjaersgaard", "institution": "University of New South Wales" },
+        { "name": "Catherine Evans", "institution": "University of New South Wales" }
+      ],
+      "blurb": "The APRU SCL Hub, with its annual conferences and its working groups, provides an ideal and unique forum for sharing and collaborating on pedagogical practices and projects which support teaching and learning for societal impact and sustainability across disciplines, universities, geographies, professions, and academic levels. This working group invites educators, researchers, practitioners and recent graduates across the Asia Pacific region to explore the role of cities and their landscapes as site, partner, medium and catalyst for learning and teaching. We seek to understand how urban landscape-centered pedagogies across diverse settings, scales and contexts foster sustainable, relational and transformative forms of knowledge production whilst addressing societal and environmental challenges."
+    },
+    {
+      "id": "sepls",
+      "title": "Socio-ecological Production Landscapes and Seascapes (SEPLS)",
+      "leads": [
+        { "name": "Gerard Francisco Sandoval", "institution": "University of Oregon" },
+        { "name": "Jaime López-Andrade", "institution": "Universidad San Francisco de Quito" },
+        { "name": "Yizhao Yang", "institution": "University of Oregon" }
+      ],
+      "blurb": "The concept of socio-ecological production landscapes and seascapes (SEPLS) draws on the historically rooted wisdom and practices from communities in which biodiversity, human well-being, and socio-economic activities are sustained through mutually beneficial relationships between people and nature. The SEPLS Working Group seeks to adapt and advance this concept in evolving urban, peri-urban, and rural communities through evidence-based, community-engaged approaches. Its contributions will focus on strengthening SEPLS research, developing practical methods, supporting innovative applications, and informing place-based policy recommendations across diverse geographic contexts."
+    },
+    {
+      "id": "human-development",
+      "title": "Human Development and Nature Preservation",
+      "leads": [
+        { "name": "John Dunn", "institution": "Universidad San Francisco de Quito" }
+      ],
+      "blurb": "This working group aims to study cases where human development — such as urban expansion or resource extraction — intersects with areas where ecosystem preservation is a priority. The goal is to document and analyze how these places experience and manage such conflicts."
+    }
+  ]
+}

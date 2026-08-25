@@ -1,0 +1,52 @@
+{
+  "showEmails": false,
+  "organising": [
+    {
+      "name": "Jeff Hou",
+      "role": "Co-lead",
+      "affiliation": "NUS Department of Architecture"
+    },
+    {
+      "name": "Yun Hye Hwang",
+      "role": "Co-lead",
+      "affiliation": "NUS Department of Architecture"
+    },
+    {
+      "name": "Naomi Clara Hanakata",
+      "role": "Organising Committee",
+      "affiliation": "NUS Department of Architecture"
+    },
+    {
+      "name": "Shengxiao (Alex) Li",
+      "role": "Organising Committee",
+      "affiliation": "NUS Department of Architecture"
+    },
+    {
+      "name": "Qi Jinda",
+      "role": "Organising Committee",
+      "affiliation": "NUS Department of Architecture"
+    },
+    {
+      "name": "Chaewon Ahn",
+      "role": "Organising Committee",
+      "affiliation": "NUS Department of Architecture"
+    },
+    {
+      "name": "Rosita Samsudin",
+      "role": "Organising Committee",
+      "affiliation": "NUS Department of Architecture"
+    },
+    {
+      "name": "Lu Xiaoxuan",
+      "role": "Organising Committee",
+      "affiliation": "NUS Department of Architecture"
+    },
+    {
+      "name": "Chee Qian Ning",
+      "role": "Organising Committee",
+      "affiliation": "NUS Department of Architecture"
+    }
+  ],
+  "scientific": [],
+  "scientificStatus": "tba"
+}

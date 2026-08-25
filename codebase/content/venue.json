@@ -1,0 +1,38 @@
+[
+  {
+    "id": "location",
+    "heading": "Singapore",
+    "body": "Singapore, with its unique institutional structure along with the challenges of density and land scarcity, provides a setting for this discussion. A city-state of roughly six million people on 730 square kilometres, it has pursued water self-sufficiency, high-density housing, and an explicit greening agenda under conditions that make trade-offs unusually visible — which is what makes it a useful place to examine bridging as a practice rather than an aspiration.",
+    "status": "confirmed"
+  },
+  {
+    "id": "host",
+    "heading": "National University of Singapore",
+    "body": "The conference is hosted by the Department of Architecture in the College of Design and Engineering at NUS. The department sits on the Kent Ridge campus in the south-west of the island, connected to the city centre by the MRT rail network and by the campus bus service.",
+    "status": "confirmed"
+  },
+  {
+    "id": "exact-venue",
+    "heading": "Conference venue",
+    "body": "",
+    "status": "tba"
+  },
+  {
+    "id": "getting-here",
+    "heading": "Getting here",
+    "body": "Singapore Changi Airport is served by direct flights from most major Pacific Rim cities and is connected to the city by MRT, bus, and taxi. Kent Ridge campus is reachable from the airport in roughly 45 minutes. Detailed directions from the airport and city centre will be published closer to the conference.",
+    "status": "confirmed"
+  },
+  {
+    "id": "accommodation",
+    "heading": "Accommodation",
+    "body": "",
+    "status": "tba"
+  },
+  {
+    "id": "visa",
+    "heading": "Visas and entry",
+    "body": "Entry requirements for Singapore depend on your nationality; many passport holders may enter visa-free for short stays. Check the Immigration & Checkpoints Authority of Singapore for current requirements well before you travel. Where a visa is required, the organising committee can provide a letter of invitation to registered participants — details will follow when registration opens.",
+    "status": "confirmed"
+  }
+]

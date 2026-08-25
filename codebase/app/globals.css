@@ -1,0 +1,144 @@
+@import "tailwindcss";
+
+/* next-themes uses the `class` strategy (TRD §6). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * Design Brief v2 §04 — mono + splash.
+ * Ported verbatim from APRU-SCL-2027-DesignBrief-v2.html. Both themes are
+ * fully designed; dark is an inversion of role, not a filter.
+ */
+:root {
+  --paper: #f4f2ec;
+  --ink: #0c0c0d;
+  --surface: #fbfaf6;
+  --muted: #6e6c66;
+  --line: #d8d4c8;
+
+  --orange: #f89c2c;
+  --blue: #3c88c8;
+  --cyan: #1fc2f0;
+
+  /*
+   * Brand orange is a fill, not a text colour: #f89c2c on paper is 1.9:1.
+   * --accent is the same splash darkened to clear AA for text in light theme
+   * (5.1:1), and reverts to the brand hex in dark where it already passes.
+   * --line-strong is for control borders, which need 3:1 (WCAG 1.4.11); the
+   * faint --line stays for decorative grid and dividers.
+   */
+  --accent: #9a5600;
+  --line-strong: #6e6c66;
+
+  color-scheme: light;
+}
+
+.dark {
+  --paper: #0c0c0d;
+  --ink: #f1efe8;
+  --surface: #141416;
+  --muted: #9a968c;
+  --line: #26262a;
+  --accent: #f89c2c;
+  --line-strong: #9a968c;
+
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-surface: var(--surface);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-orange: var(--orange);
+  --color-accent: var(--accent);
+  --color-line-strong: var(--line-strong);
+  --color-blue: var(--blue);
+  --color-cyan: var(--cyan);
+
+  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-space-mono), ui-monospace, monospace;
+
+  /* Design Brief §02 — 8px base, sections breathe at 88px. */
+  --spacing-gut: 20px;
+  --spacing-section: 88px;
+
+  /* Design Brief §06 — motion tokens. */
+  --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+  --ease-out-quart: cubic-bezier(0.165, 0.84, 0.44, 1);
+  --ease-in-out-cubic: cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+    font-synthesis-weight: none;
+    -webkit-font-smoothing: antialiased;
+    /* Theme invert — Design Brief §06, 400ms ease-out-quart. */
+    transition: background-color 400ms cubic-bezier(0.165, 0.84, 0.44, 1),
+      color 400ms cubic-bezier(0.165, 0.84, 0.44, 1);
+  }
+
+  /* Visible focus in both themes (TRD §10). */
+  :focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background: var(--orange);
+    color: #0c0c0d;
+  }
+}
+
+@layer components {
+  /*
+   * Display face — Archivo's variable `wdth` axis at 125% is Archivo Expanded.
+   * Design Brief §03: uppercase, tight tracking, near-zero leading at size.
+   */
+  .font-display {
+    font-family: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+    font-stretch: 125%;
+    font-variation-settings: "wdth" 125;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    line-height: 0.9;
+  }
+
+  /* Micro-label — Space Mono, uppercase, +0.1em (§03). */
+  .accent-text {
+    color: var(--accent);
+  }
+
+  .label-mono {
+    font-family: var(--font-space-mono), ui-monospace, monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.6875rem;
+    line-height: 1.4;
+    color: var(--muted);
+  }
+
+  .hairline {
+    border-color: var(--line);
+  }
+}
+
+/* Design Brief §06 — reduced motion cuts everything to near-zero. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
