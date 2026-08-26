@@ -3,11 +3,12 @@
 import { useEffect, useRef } from "react";
 
 /**
- * The APRU halo: the mark itself, as a torus, whole and on screen.
+ * The APRU halo: the mark itself, as a torus, larger than the frame and cropped
+ * by it.
  *
- * WHY THE PATTERN IS UNWRAPPED RATHER THAN COMPUTED. The icon looks like a
- * simple four-cycle gradient, and two earlier attempts treated it as one. It is
- * not. Measured off app/icon.png:
+ * WHY THE PATTERN IS SAMPLED RATHER THAN COMPUTED. The icon looks like a simple
+ * four-cycle gradient, and two earlier attempts treated it as one. It is not.
+ * Measured off the artwork:
  *
  *   - the annulus is uniform: inner 0.69 R, band 0.31 R at every angle;
  *   - the gradient does four cycles, but the four sectors are NOT identical --
@@ -18,46 +19,102 @@ import { useEffect, useRef } from "react";
  *     angular one.
  *
  * A single linear gradient explains R^2 = 0.15 of it; a four-cycle spiral model
- * still leaves a third of the variance. So the pattern is taken from the
- * artwork directly, resampled into polar space: angle across the texture's
- * width, radial position across its height.
+ * still leaves a third of the variance. So the pattern is taken from the artwork
+ * directly, resampled into polar space -- angle across the texture's width,
+ * radial position across its height -- and band-limited around the angle, which
+ * discards the source JPEG's block noise and keeps the mark as drawn. That work
+ * is done offline by scripts/build-imagery.mjs, where the reasoning and the
+ * measured R^2 live; this file only uploads the result.
  *
- * THE CHOREOGRAPHY. The whole circle is visible, sized to fit inside the lane
- * Section reserves for it. It turns on three axes at once -- a full spin about
- * its own axis, a 55-degree rock about the horizontal, and a slower sway -- at
- * frequencies that do not divide into each other, so the motion never quite
- * repeats. It opens from 55 degrees on arrival and closes the same way.
+ * HOW THE BAND WRAPS THE TUBE. `t = (1 + cos v) / 2`, and that is not a taste
+ * decision. A point at minor angle v sits at ring-radius 1 + TUBE * cos v, which
+ * under this orthographic projection lands in the annulus at exactly that
+ * normalised radial position. The mapping is the inverse of the projection, so a
+ * face-on torus reproduces the icon pixel for pixel -- and it is periodic in v,
+ * so there is no seam anywhere on the object.
+ *
+ * The obvious mapping -- t = v, the band once around the tube -- is wrong twice
+ * over, and both showed. It butts the band's inner edge against its outer at the
+ * tube's OUTER equator, the most exposed line on the whole object, and measured
+ * off the artwork those two colours are 171 apart out of a possible 441. And it
+ * paints the INNER equator, the edge that borders the hole, with mid-band colour
+ * instead of the inner edge's cyan, which is why the centre read as detached
+ * from the ring.
+ *
+ * THE CHOREOGRAPHY. The ring is bigger than the frame and deliberately cropped
+ * by it. Its radius is the whole width of the lane Section reserves, and its
+ * centre sits on the screen edge, so half of it is on screen and it runs off
+ * the top and bottom as well -- the page is a window onto something larger than
+ * the page. That crop is exact rather than approximate: the lane's midpoint was
+ * one old radius in from the edge, so doubling the radius and moving the centre
+ * to the edge leaves the visible width precisely the lane, and the mark still
+ * cannot touch type.
+ *
+ * ONE PHASE, NOT A PILE OF WINDOWS. Every quantity here is a smooth function of
+ * a single monotone phase, Psi, and of nothing else. Psi is 0 at the centre of
+ * the first lane section, 0.5 at the first seam, 1 at the centre of the next,
+ * and so on -- anchors measured live off the sections themselves. Between two
+ * anchors it eases with `hold`, which crawls at both ends without ever stopping.
+ * Two more anchors sit at the ends of the halo's life, a whole half turn beyond
+ * the first and last section centres, so the phase is still advancing while the
+ * ring grows in and out instead of holding a pose. Both are a whole number of
+ * half turns from a centre, so both ends are still exactly face-on.
+ *
+ * That shape is the choreography. At an integer Psi the ring is face-on and
+ * barely turning: a big clear arc parked in its lane. At a half-integer it is
+ * exactly edge-on and barely turning: a flat plate lying in the gap between two
+ * sections. In between it hurries, so the face-on state -- where a torus shows
+ * nothing but its texture going round -- is passed through rather than dwelt in.
+ * The seams land on exactly 90 degrees and both ends of the page on a multiple
+ * of 180 by arithmetic, not by tuning: the tilt IS pi * Psi.
+ *
+ * WHY IT IS BUILT THIS WAY. The previous version gave every crossing its own
+ * window and combined them with `max`, picking the nearest one. Where two
+ * windows overlapped -- which they did, because the windows were a fixed 0.9
+ * screens and the sections are shorter than that -- the `max` put a corner in
+ * the size curve and the nearest-crossing choice flipped at the same instant,
+ * stepping the lateral progress from 1 to 0 and swapping which band the ring
+ * was tied to. That was a visible snap, and no amount of tuning removes it: it
+ * is what selecting by proximity does. A single monotone phase has no windows
+ * to overlap and nothing to select.
+ *
+ * The same version clipped the band to the viewport. `room` is the denominator
+ * of `fit`, so as a gap scrolled off the top of the screen `room` collapsed
+ * towards zero and the ring's size stepped by several per cent in one frame.
+ * The gap's height is a property of the two blocks of type; it is not measured
+ * against the viewport any more.
+ *
+ * One branch remains -- which of the bands to measure -- and it is safe by
+ * construction. It changes at integer Psi, and at integer Psi the ring is fully
+ * parked: `bell` is zero, so the band has no pull on its height and no part in
+ * its size; `commit` is zero, so the band does not constrain its fit; and `lat`
+ * is hard at an endpoint, so the band has no say in where it sits. Every
+ * quantity the choice feeds is stationary at the moment the choice is made.
  *
  * HOW IT CHANGES LANES WITHOUT CROSSING TYPE. Between two sections there is an
- * empty band: the bottom of one section's type to the top of the next one's.
- * The ring rides that band. As a crossing approaches it is drawn onto the band
- * and shrunk by exactly the factor that makes it fit -- `room / bound`, derived,
- * not guessed -- then it slides sideways while the band carries it up the
- * screen, and grows back on the far side. The band is measured live off the two
- * content boxes, so a sticky section (the curtain) reports the room it actually
- * has, and the fit is right at every viewport rather than at the one it was
- * tuned on.
+ * empty band, and the ring rides it: at the seam its centre is on the band
+ * exactly, and it is edge-on there, which cuts its height to a sixth. That
+ * sixth is what lets a ring this size pass through a gap this narrow. The band
+ * is measured live off the two content boxes, so a sticky section (the curtain)
+ * reports the room it actually has.
+ *
+ * The travel is concentrated in phase rather than in pixels -- a narrow window
+ * of Psi around the seam, which is a generous window of scroll precisely
+ * because Psi crawls there. So the ring is always thin while it is over type,
+ * and the path it takes is a curve: it leaves its parked height, meets the
+ * band, is carried up the screen with it, and settles again on the far side.
  *
  * All of it is a pure function of scrollY, so scrolling back up retraces the
  * path exactly -- there is no eased state to get stranded in the wrong place.
  */
 
 /**
- * Icon geometry, measured off app/icon.png at 512px.
- *
- * `inset` trims the antialiased edge on both sides of the band. Without it
- * ~1.5% of the unwrapped texels sample the white outside the annulus, which
- * shows on the torus as a pale fringe running around the tube.
+ * Torus mesh density. At the cropped size the ring's outline runs some 4000px,
+ * so 320 segments put a visible flat every 13px; these two numbers are what
+ * keep the silhouette a curve. ~49k vertices, which is nothing.
  */
-const ICON = { size: 512, cx: 256, cy: 257, rOuter: 144, band: 45, inset: 2.5 };
-
-/** Polar unwrap resolution. Wide, because the seams run in the angular axis. */
-const TEX_W = 2048;
-const TEX_H = 128;
-
-/** Torus mesh density. */
-const SEG_U = 320;
-const SEG_V = 48;
+const SEG_U = 512;
+const SEG_V = 96;
 
 /** Tube radius as a fraction of ring radius. */
 const TUBE = 0.2;
@@ -71,22 +128,36 @@ const TAU = Math.PI * 2;
  */
 const DIA_SM = 0.3;
 
-/** Rock about the horizontal axis. Centred on face-on, so it passes flat. */
-const ROCK = (55 * Math.PI) / 180;
-/** Sway about the vertical axis. */
-const SWAY = (18 * Math.PI) / 180;
-/** Vertical wander while parked, as a fraction of viewport height. */
-const DRIFT = 0.06;
+/** Sway about the vertical axis: the second live axis, running at a frequency
+ *  that does not divide into the phase, so the parked ring is never turning on
+ *  one axis alone. Narrower on a phone, which keeps its old treatment. */
+const SWAY = (45 * Math.PI) / 180;
+const SWAY_SM = (30 * Math.PI) / 180;
+/** Vertical wander while parked, as a fraction of viewport height. Wide enough
+ *  to slide the crop up and down the arc, now that the ring overruns the frame. */
+const DRIFT = 0.15;
+const DRIFT_SM = 0.06;
 /** Scroll spent arriving and leaving, in viewports. Not a share of the page:
  *  a fraction of the span would make the entrance crawl on a long page. */
 const ENTRY = 0.5;
 /** How small it is when it first appears, out past the screen edge. */
 const ENTRY_SCALE = 0.3;
-/** Half the scroll spent riding a seam sideways, as a fraction of the viewport. */
-const RIDE = 0.14;
-/** Shortest ease out of a seam, as a multiple of the ride. The real one is
- *  derived from how far the full-size ring overhangs the band -- see draw(). */
-const EASE = 1.35;
+/** How much of the phase easing is smoothstep and how much is linear. The
+ *  linear remainder is what keeps the crawl at each anchor from becoming a
+ *  stop: at 0.85 the rate there is 15% of the average, never zero. */
+const HOLD = 0.85;
+/** Size at the bottom of the dip, on the seam. */
+const SEAM_SCALE = 0.65;
+/** The sideways travel, as a span of phase centred on the seam. Small in phase
+ *  is generous in scroll -- the phase crawls through the seam -- and it is
+ *  phase that decides how thin the ring is, which is what has to be true while
+ *  it is over type. */
+const LAT = 0.3;
+/** How far either side of the seam the band still constrains the fit. Wider
+ *  than the travel, so the constraint is a plateau with a shoulder rather than
+ *  a spike; short of 0.5, so it is spent before the phase reaches the anchor
+ *  where the band being measured changes. */
+const LAT_OUT = 0.42;
 
 const MOBILE = 768;
 
@@ -109,9 +180,15 @@ void main() {
 `;
 
 /**
- * Blinn-Phong over the unwrapped artwork. The lighting multiplies the sampled
- * colour rather than adding to it, so no hue enters that the icon does not
- * already have -- only the specular term brightens, and only narrowly.
+ * Blinn-Phong over the unwrapped artwork, with a fresnel rim. The lighting
+ * multiplies the sampled colour rather than adding to it, so no hue enters that
+ * the icon does not already have -- the specular and the rim are the only terms
+ * that add, and both add white, narrowly.
+ *
+ * The rim is brightest where the tube turns away from the eye, which on a
+ * face-on ring is its inner and outer edges -- the same two places the corrected
+ * UV mapping puts the band's own edges. It reads as the ring defining its own
+ * boundary. The 0.45 is the dial.
  */
 const FRAG = `
 precision highp float;
@@ -128,13 +205,16 @@ void main() {
   float diff = max(dot(n, lightDir), 0.0);
   vec3 half3 = normalize(lightDir + viewDir);
   float spec = pow(max(dot(n, half3), 0.0), 28.0);
-  vec3 col = base * (0.55 + 0.62 * diff) + vec3(spec * 0.35);
+  float fres = pow(1.0 - max(dot(n, viewDir), 0.0), 3.0);
+  vec3 col = base * (0.55 + 0.62 * diff + 0.45 * fres) + vec3(spec * 0.35 + fres * 0.10);
   gl_FragColor = vec4(col, uAlpha);
 }
 `;
 
 const lerp = (a: number, b: number, k: number) => a + (b - a) * k;
 const smooth = (t: number) => t * t * (3 - 2 * t);
+/** Smoothstep that never quite stops. See HOLD. */
+const hold = (t: number) => lerp(t, smooth(t), HOLD);
 const clamp01 = (t: number) => Math.max(0, Math.min(1, t));
 const clampTo = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 
@@ -179,48 +259,6 @@ type Node = { el: HTMLElement; content: HTMLElement; lane: Lane; slot: Box | nul
 type Stop = Node & { top: number; bottom: number };
 type Cross = { at: number; from: Stop; to: Stop };
 
-/** Resample the icon from (x, y) into (angle, radial position). */
-function unwrap(source: HTMLImageElement): Uint8Array {
-  const scratch = document.createElement("canvas");
-  scratch.width = ICON.size;
-  scratch.height = ICON.size;
-  const sctx = scratch.getContext("2d", { willReadFrequently: true });
-  if (!sctx) throw new Error("no 2d context");
-  sctx.drawImage(source, 0, 0, ICON.size, ICON.size);
-  const src = sctx.getImageData(0, 0, ICON.size, ICON.size).data;
-
-  const out = new Uint8Array(TEX_W * TEX_H * 4);
-  const rInner = ICON.rOuter - ICON.band + ICON.inset;
-  const usable = ICON.band - ICON.inset * 2;
-
-  for (let j = 0; j < TEX_H; j++) {
-    // t runs across the band: 0 at the inner edge, 1 at the outer.
-    const r = rInner + ((j + 0.5) / TEX_H) * usable;
-    for (let i = 0; i < TEX_W; i++) {
-      const a = ((i + 0.5) / TEX_W) * Math.PI * 2;
-      const x = ICON.cx + Math.cos(a) * r;
-      const y = ICON.cy + Math.sin(a) * r;
-
-      // Bilinear, so the seams stay smooth rather than stair-stepping.
-      const x0 = Math.floor(x);
-      const y0 = Math.floor(y);
-      const fx = x - x0;
-      const fy = y - y0;
-      const o = (j * TEX_W + i) * 4;
-      for (let c = 0; c < 3; c++) {
-        const p = (px: number, py: number) =>
-          src[(Math.min(ICON.size - 1, Math.max(0, py)) * ICON.size +
-            Math.min(ICON.size - 1, Math.max(0, px))) * 4 + c];
-        const top = p(x0, y0) * (1 - fx) + p(x0 + 1, y0) * fx;
-        const bot = p(x0, y0 + 1) * (1 - fx) + p(x0 + 1, y0 + 1) * fx;
-        out[o + c] = Math.round(top * (1 - fy) + bot * fy);
-      }
-      out[o + 3] = 255;
-    }
-  }
-  return out;
-}
-
 function buildTorus() {
   const pos: number[] = [];
   const nor: number[] = [];
@@ -240,7 +278,10 @@ function buildTorus() {
       // Ring radius 1, tube TUBE. Scaled to pixels by the model matrix.
       pos.push((1 + TUBE * cv) * cu, (1 + TUBE * cv) * su, TUBE * sv);
       nor.push(cv * cu, cv * su, sv);
-      uv.push(u, v);
+      // The band's radial axis, mapped by the inverse of the projection. See
+      // HOW THE BAND WRAPS THE TUBE at the top of the file: this one expression
+      // is what removes the seam and reattaches the hole to the gradient.
+      uv.push(u, (1 + cv) / 2);
     }
   }
   for (let i = 0; i < SEG_U; i++) {
@@ -316,24 +357,42 @@ export function Halo() {
     const texture = gl.createTexture();
     const image = new Image();
     image.onload = () => {
-      try {
-        const pixels = unwrap(image);
-        gl.bindTexture(gl.TEXTURE_2D, texture);
-        gl.texImage2D(
-          gl.TEXTURE_2D, 0, gl.RGBA, TEX_W, TEX_H, 0, gl.RGBA, gl.UNSIGNED_BYTE, pixels,
-        );
-        // Repeat on both axes: the band wraps the tube once, and the join where
-        // its inner edge meets its outer is the seam that falls on the far side.
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-        ready = true;
-      } catch {
-        ready = false;
+      gl.bindTexture(gl.TEXTURE_2D, texture);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+
+      // The angular axis wraps; the radial one does not. Clamping T is what
+      // stops the coarsest mip levels averaging the band's outer edge into its
+      // inner one -- they are the two ends of one gradient and nothing should
+      // ever mix them.
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+
+      // The ring is 30% of its size on arrival and a thin sliver at every seam,
+      // and a 2048-wide texture minified that far shimmers without mipmaps.
+      // Both dimensions are powers of two, so this is legal.
+      gl.generateMipmap(gl.TEXTURE_2D);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+
+      // The tube is seen at a grazing angle nearly everywhere and edge-on at
+      // every crossing, which is the case isotropic filtering handles worst.
+      // Asked for rather than assumed -- it is not universal.
+      const aniso =
+        gl.getExtension("EXT_texture_filter_anisotropic") ??
+        gl.getExtension("WEBKIT_EXT_texture_filter_anisotropic");
+      if (aniso) {
+        const most = gl.getParameter(aniso.MAX_TEXTURE_MAX_ANISOTROPY_EXT) as number;
+        gl.texParameterf(gl.TEXTURE_2D, aniso.TEXTURE_MAX_ANISOTROPY_EXT, Math.min(16, most));
       }
+      ready = true;
     };
-    image.src = "/icon.png";
+    // 15KB of AVIF against 698KB of the equivalent PNG, with WebP behind it for
+    // anything that cannot decode AVIF. Both are written by `npm run imagery`.
+    image.onerror = () => {
+      image.onerror = null;
+      image.src = "/halo.webp";
+    };
+    image.src = "/halo.avif";
 
     let nodes: Node[] = [];
     /** The type immediately before the halo's first lane and after its last. */
@@ -366,7 +425,6 @@ export function Halo() {
     const readSlot = (el: HTMLElement, lane: Lane): Box | null => {
       const grd = el.querySelector<HTMLElement>(".grd");
       if (!grd) return null;
-      const gap = parseFloat(getComputedStyle(grd).columnGap) || 0;
       let left = Infinity;
       let right = -Infinity;
       for (const child of Array.from(grd.children)) {
@@ -376,11 +434,14 @@ export function Halo() {
         right = Math.max(right, r.right);
       }
       if (!Number.isFinite(left)) return null;
-      // Inner edge one grid gap clear of the type, outer edge flush to the
-      // screen. Below 768px the grid is a block stack and the children run the
-      // full width, so this comes out empty and the caller falls back.
-      const x0 = lane === "right" ? right + gap : 0;
-      const x1 = lane === "right" ? width : left - gap;
+      // Inner edge flush to the type's own column, outer edge flush to the
+      // screen, so the ring fills the lane exactly. It meets that boundary at
+      // the single point of its own widest span, which is why the grid gap is
+      // not needed as a margin here. Below 768px the grid is a block stack and
+      // the children run the full width, so this comes out empty and the caller
+      // falls back.
+      const x0 = lane === "right" ? right : 0;
+      const x1 = lane === "right" ? width : left;
       if (x1 - x0 <= 0) return null;
       return { c: (x0 + x1) / 2, half: (x1 - x0) / 2 };
     };
@@ -466,37 +527,31 @@ export function Halo() {
         Math.min(clamp01((centre - first.top) / entryPx), clamp01((last.bottom - centre) / entryPx)),
       );
       if (arrive <= 0) return;
-      // Which end of its life this is -- and so which edge it came in through.
-      const endLane = centre - first.top <= last.bottom - centre ? first.lane : last.lane;
 
-      // Three axes at frequencies that do not divide into each other, so the
-      // compound motion never quite repeats: one full spin per section, one
-      // rock per two, and a sway slower than the page itself. Both sinusoids
-      // are zero at p = 0 and p = 1, so the opening lerp below has nothing to
-      // jump over.
+      // Two axes while parked, at frequencies that do not divide into each
+      // other so the compound motion never quite repeats: two full spins per
+      // section, and a sway slower than the page itself. The sway is zero at
+      // p = 0 and p = 1, so the ring is square to the viewer at both ends of
+      // its life without anything having to ease it there.
       const n = stops.length;
-      const spin = p * TAU * n;
-      const rock = Math.sin(p * TAU * n * 0.5) * ROCK;
-      const sway = Math.sin(p * TAU * n * 0.31) * SWAY;
-      const tilt = lerp(ROCK, rock, arrive);
+      const spin = p * TAU * n * 2;
+      const sway = Math.sin(p * TAU * n * 0.31) * (small ? SWAY_SM : SWAY);
 
-      const air = h * 0.02;
       /**
-       * Bounding radius of the whole torus, for one section. Under an
-       * orthographic projection a rotation can only shrink the projected extent,
-       * never push it past this, so fitting the bound inside the section's free
-       * space is a guarantee rather than a measurement that happens to hold at
-       * one viewport size.
+       * Bounding radius of the whole torus, for one section: the FULL width of
+       * the free space beside that section's type, not half of it. Paired with
+       * a centre on the screen edge below, that puts exactly one radius of ring
+       * on screen -- which is exactly the lane, since the lane's midpoint was
+       * one of the old radii in from the edge. The mark doubles and its
+       * footprint does not move.
        *
-       * The cap is not a taste decision -- it is what keeps the whole circle on
-       * screen once the vertical drift is spent. At 16:9 it never binds.
+       * There is no cap. An earlier one held the whole circle on screen; the
+       * ring is meant to overrun the frame now, top and bottom included.
        */
-      const boundOf = (s: Stop) =>
-        Math.min(
-          !small && s.slot ? s.slot.half : (DIA_SM * h) / 2,
-          h / 2 - air - DRIFT * h,
-        );
-      const centreOf = (s: Stop) => (!small && s.slot ? s.slot.c : w / 2);
+      const boundOf = (s: Stop) => (!small && s.slot ? s.slot.half * 2 : (DIA_SM * h) / 2);
+      /** The screen edge its lane sits against -- the centre is off-frame. */
+      const centreOf = (s: Stop) =>
+        !small && s.slot ? (s.lane === "right" ? w : 0) : w / 2;
 
       // A crossing is a seam where the lane actually changes; a seam that does
       // not move the ring needs no choreography. On a phone there are no lanes,
@@ -511,111 +566,184 @@ export function Halo() {
           });
         }
       }
+      // The anchors the phase is pinned to, in document coordinates: a section's
+      // centre, then the seam below it, then the next section's centre. Only
+      // the first crossing contributes a `from` anchor -- every later one's
+      // `from` is the previous one's `to`, and pushing it twice would put two
+      // anchors on the same scroll position.
+      const mid = (s: Stop) => (s.top + s.bottom) / 2;
+      const anchors: { at: number; v: number }[] = [];
+      if (crossings.length > 0) {
+        // A whole half turn before the first section's centre and another after
+        // the last, so the phase is still advancing through the arrival and the
+        // departure instead of sitting frozen while the ring grows. Both are a
+        // whole number of half turns from a section centre, so both ends of the
+        // halo's life are still exactly face-on -- it turns its way in and out
+        // rather than holding a pose.
+        anchors.push({ at: first.top, v: -1 });
+        anchors.push({ at: mid(crossings[0].from), v: 0 });
+        crossings.forEach((c, i) => {
+          anchors.push({ at: c.at, v: i + 0.5 });
+          anchors.push({ at: mid(c.to), v: i + 1 });
+        });
+        anchors.push({ at: last.bottom, v: crossings.length + 1 });
+      }
+
+      // Psi: monotone, continuous, and the only thing anything downstream reads.
+      // Flat at the value of the nearer end outside the anchors, which is what
+      // makes the entrance and the exit face-on without a special case -- both
+      // ends are integers.
+      let psi = 0;
+      if (anchors.length > 0) {
+        const head = anchors[0];
+        const tailA = anchors[anchors.length - 1];
+        if (centre <= head.at) psi = head.v;
+        else if (centre >= tailA.at) psi = tailA.v;
+        else {
+          for (let i = 0; i < anchors.length - 1; i++) {
+            const a = anchors[i];
+            const b = anchors[i + 1];
+            if (centre >= a.at && centre <= b.at) {
+              psi = a.v + (b.v - a.v) * hold((centre - a.at) / Math.max(1, b.at - a.at));
+              break;
+            }
+          }
+        }
+      }
+
+      // Which crossing the phase is inside, and how far through it. The choice
+      // changes at integer psi, where everything it feeds is stationary -- see
+      // the note at the top of the file. A phone keeps the old nearest-gap
+      // choice, because there the gap drives a fade rather than a lane change
+      // and the two switch in different places.
+      const j = crossings.length
+        ? Math.min(crossings.length - 1, Math.max(0, Math.floor(psi)))
+        : 0;
+      const phi = psi - j;
       let near: Cross | null = null;
       for (const c of crossings) {
         if (!near || Math.abs(centre - c.at) < Math.abs(centre - near.at)) near = c;
       }
+      const active: Cross | null = small ? near : (crossings[j] ?? null);
 
-      const W = RIDE * h;
-      let dip = 0;
-      let k = 0;
+      // Every degree of tilt the ring has, and nothing else contributes. Not on
+      // a phone: there are no lanes to change there.
+      const tilt = small ? 0 : Math.PI * psi;
+
+      // Zero at every section centre, one at every seam, with zero slope at
+      // both -- so the dip and the vertical path meet the parked state
+      // smoothly, and are spent exactly where the band being measured changes.
+      // Zero outside the run of crossings as well: the phase keeps advancing
+      // through the arrival and the departure, but there is no band out there
+      // to dip toward. sin is already zero at both ends, so this is continuous.
+      const bell =
+        small || psi <= 0 || psi >= crossings.length
+          ? 0
+          : Math.sin(Math.PI * psi) ** 2;
+      // Sideways travel, and the band's hold on the fit. The fit is a plateau
+      // with a shoulder rather than a spike, because it has to hold for as long
+      // as the ring's width is over a type column, not just at one instant.
+      const lat = smooth(clamp01((phi - 0.5) / LAT + 0.5));
+      const commit = small
+        ? 1
+        : smooth(clamp01((LAT_OUT - Math.abs(phi - 0.5)) / (LAT_OUT - LAT / 2)));
+      // How far the ring has left its parked height for the band. A phone rides
+      // the gap outright, as it always has.
+      const ride = active ? (small ? 1 : bell) : 0;
+
+      // Orthographic extents of the rotated torus, exactly, as multiples of the
+      // ring radius. A full torus's outline is unchanged by a spin about its
+      // own axis, so only the tilt and the sway enter, and both fall out in
+      // closed form: the ring contributes its radius foreshortened, the tube
+      // contributes TUBE in every direction.
+      //
+      // Worth deriving rather than bounding. Edge-on the ring is a sixth as
+      // tall as it is wide, and that sixth is the whole reason it can cross a
+      // narrow band at nearly full size instead of shrinking to fit.
+      const kY = (Math.abs(Math.cos(tilt)) + TUBE) / (1 + TUBE);
+      const kX =
+        (Math.hypot(Math.cos(sway), Math.sin(sway) * Math.sin(tilt)) + TUBE) / (1 + TUBE);
+
       let seamY = 0;
       let room = 0;
-      let a = 0;
-      if (near) {
-        const off = centre - near.at;
-        a = Math.abs(off);
-        k = smooth(clamp01((off + W) / (2 * W)));
-        // Clipped to the viewport first. A band that runs off the bottom of the
-        // screen would otherwise drag the ring off with it -- the clipped band
-        // is a subset of the real one, so staying inside it still clears the
-        // type, and the ring stays whole and on screen.
-        const ar = near.from.content.getBoundingClientRect();
-        const br = near.to.content.getBoundingClientRect();
-        const lo = Math.max(ar.bottom, 0);
-        const hi = Math.min(br.top, h);
-        seamY = (lo + hi) / 2;
-        room = Math.max(0, (hi - lo) / 2);
-      }
-
-      // Each section is a different size, because each leaves a different
-      // amount of room beside its own type. The resize rides the lane change on
-      // the same k as the sideways travel, so there is never a bare resize --
-      // the ring only ever changes size while it is already moving.
-      const from = near ? near.from : stops[0];
-      const to = near ? near.to : from;
-      const travel = near ? k : 0;
-      const grown = lerp(ENTRY_SCALE, 1, arrive);
-      const bound = lerp(boundOf(from), boundOf(to), travel) * grown;
-
-      if (near) {
-        // How far out of the band the ring hangs at full size is exactly how
-        // much room it needs to get back to full size, so the ease is derived
-        // rather than picked: it releases at `bound - room` from the seam and
-        // no later. A fixed fraction of the viewport was the wrong shape --
-        // these sections are two thirds of a screen tall, so a 0.45h ease
-        // never released at all and the ring never reached its own size.
-        // Where the band is already generous this collapses to the floor and
-        // the ring does not shrink at any point.
-        const E = Math.max(W * EASE, bound - room);
-        // A plateau, not a peak: the ring is fully committed to the band for
-        // the whole of the sideways travel, which is what makes the clearance
-        // below hold across the entire crossing instead of at one instant.
-        dip = small || a <= W ? 1 : smooth(clamp01(1 - (a - W) / (E - W)));
-      }
-
-      // Shrink by exactly the factor that fits the band, and no more. Where the
-      // band is generous -- the curtain, whose content is pinned and centred --
-      // this is 1 and the ring does not shrink at all.
-      const fit = room > 0 ? Math.min(1, room / bound) : 1;
-      let half = bound * lerp(1, fit, dip);
-
-      let y = h / 2 + Math.sin(p * TAU * 1.3) * DRIFT * h;
-      if (near) {
-        // A seam has two sides, and only one of them binds at a time until the
-        // ring is actually between lanes. Before the crossing it sits in
-        // `from`'s lane -- empty for `from`, but part of `to`'s content columns
-        // -- so only its lower edge is at risk. After the crossing it is the
-        // other way round. Both bind together only during the sideways travel,
-        // and there the ring is already fitted to the band, so they meet at
-        // exactly one point and it rides the seam.
+      if (active) {
+        // Unclipped, both of them. An earlier version clipped this band to the
+        // viewport, and `room` is the denominator of `fit` -- so as the gap
+        // scrolled off the top of the screen, `room` collapsed towards zero and
+        // the ring's size stepped by several per cent in a single frame. That
+        // was a snap, and no weighting in front of it removed one.
         //
-        // These are hard, not eased. A soft pull left the vertical drift free
-        // to push the ring past the band by up to 30px near a seam, which is
-        // precisely where there is no room to spare.
-        if (k < 1) y = Math.min(y, seamY + room - half);
-        if (k > 0) y = Math.max(y, seamY - room + half);
+        // The height of the gap is a property of the two blocks of type, not of
+        // where the page happens to be scrolled. The ring's pull toward it is
+        // already weighted by `ride`, which falls off far faster than the band
+        // runs away, so an off-screen band cannot drag the ring after it.
+        const ar = active.from.content.getBoundingClientRect();
+        const br = active.to.content.getBoundingClientRect();
+        seamY = (ar.bottom + br.top) / 2;
+        room = Math.max(0, (br.top - ar.bottom) / 2);
       }
 
-      // One vertical interval, from two sources: the type at either end of the
-      // halo's life, whose sections are not lane sections at all and run the
-      // full width, and the screen edges themselves less a little air. Taking
-      // them together means they can never fight -- if what is left is too
-      // short for the ring, the ring is what gives.
+      // Each section is a different size, because each leaves a different amount
+      // of room beside its own type. The handoff rides the same travel as the
+      // sideways move, so there is never a bare resize -- the ring only ever
+      // changes size while it is already moving. The dip rides on top of that:
+      // deepest on the seam, spent by the anchors either side of it.
+      const from = active ? active.from : stops[0];
+      const to = active ? active.to : from;
+      const grown = lerp(ENTRY_SCALE, 1, arrive);
+      const dip = 1 - (1 - SEAM_SCALE) * bell;
+      const bound = lerp(boundOf(from), boundOf(to), lat) * grown * dip;
+
+      // A backstop, not the gesture: shrink by whatever further factor the band
+      // demands, measured against the ring's real height rather than against a
+      // worst-case radius. Turning edge-on does most of the work -- it cuts the
+      // height to a sixth -- so this bites only on the shoulders of the travel,
+      // where the ring is half turned and still near full size. On a phone
+      // there is no flip and the ring stays face-on, so there this is the whole
+      // of the fit and it applies everywhere.
+      const fit = room > 0 ? Math.min(1, room / (bound * kY)) : 1;
+      let half = bound * lerp(1, fit, commit);
+      let halfY = half * kY;
+      let halfX = half * kX;
+
+      // The vertical path: off its parked height, onto the band, and back. At
+      // the seam `ride` is 1 and the centre is on the band exactly, so the ring
+      // is carried up the screen with the gap rather than sliding across it.
+      const parkedY = h / 2 + Math.sin(p * TAU * 1.3) * (small ? DRIFT_SM : DRIFT) * h;
+      let y = lerp(parkedY, seamY, ride);
+
+      // The type at either end of the halo's life, whose sections are not lane
+      // sections at all and run the full width. Nothing else bounds the ring
+      // vertically now -- it is meant to overrun the frame -- so these are the
+      // guard rails alone, and they go to infinity once their type is well off
+      // screen. If what is left between them is too short, the ring is what
+      // gives.
       const above = guards.above ? guards.above.getBoundingClientRect().bottom : -Infinity;
       const below = guards.below ? guards.below.getBoundingClientRect().top : Infinity;
-      const lo = Math.max(above, air);
-      const hi = Math.min(below, h - air);
-      if (hi - lo < half * 2) half = Math.max(0, (hi - lo) / 2);
-      y = clampTo(y, lo + half, hi - half);
+      if (halfY > 0 && below - above < halfY * 2) {
+        const squeeze = Math.max(0, (below - above) / 2) / halfY;
+        half *= squeeze;
+        halfX *= squeeze;
+        halfY *= squeeze;
+      }
+      y = clampTo(y, above + halfY, below - halfY);
 
-      // Sideways: between the two sections' slots while crossing, and from out
-      // past the screen edge while arriving or leaving. It enters and leaves
-      // through the edge its own lane sits against, so neither end crosses type.
-      const parked = lerp(centreOf(from), centreOf(to), travel);
-      const offscreen = endLane === "right" ? w + half : -half;
-      const x = lerp(offscreen, parked, arrive);
+      // Sideways: between the two lanes' edges, on the same travel as the size.
+      // There is no flight in from off-screen any more -- the ring already
+      // lives off the edge, so it arrives by growing where it stands.
+      const x = lerp(centreOf(from), centreOf(to), lat);
 
-      // No fade on a desktop: going off the edge is the whole entrance. On a
-      // phone there is no lane to leave through, so the ring belongs to the gaps
-      // between sections and arrives and leaves with each one.
-      let alpha = 1;
+      // Half of the ring is off-frame from its first frame, so growing in from
+      // ENTRY_SCALE would pop. Fade the first and last sliver of the arrival.
+      // On a phone there is no lane to leave through, so the ring belongs to
+      // the gaps between sections and arrives and leaves with each one.
+      let alpha = smooth(clamp01(arrive / 0.15));
       if (small) {
-        alpha = near ? smooth(clamp01(1 - Math.abs(seamY - h / 2) / (0.55 * h))) : 0;
+        alpha = active ? smooth(clamp01(1 - Math.abs(seamY - h / 2) / (0.55 * h))) : 0;
       }
       if (alpha < 0.004 || half <= 0) return;
       // Entirely past an edge: cheaper to skip than to rasterise out of frame.
-      if (x - half >= w || x + half <= 0) return;
+      if (x - halfX >= w || x + halfX <= 0) return;
 
       const S = half / (1 + TUBE);
 
