@@ -671,6 +671,168 @@
   .tnum {
     font-variant-numeric: tabular-nums;
   }
+
+  /*
+   * -------------------------------------------------------------------------
+   * THE WORDMARK
+   * -------------------------------------------------------------------------
+   * The last screen of every page: four serif capitals, gutter to gutter, with
+   * the halo docked behind them. Set in the display face rather than drawn as
+   * paths -- at this size Hedvig's thick/thin contrast IS the abstraction, and
+   * typesetting it keeps faith with the note in components/brand/Logos.tsx
+   * about not reconstructing an institution's mark.
+   *
+   * vw, not rem, and this is the one place on the site that is not on the rem
+   * system. The root font size is CLAMPED, so a rem mark would stop growing
+   * past 2304px and stop shrinking below 1728px and lose its fit at exactly
+   * the sizes where a full-bleed mark is most conspicuous. In vw the letters
+   * and the gutters scale together, so `justify-content: space-between`
+   * distributes the residual identically at every width.
+   *
+   * The line height is the cap height, near enough: there are no descenders in
+   * APRU, so the mask can hug the caps and the letters sit on the bottom edge
+   * of the document the way the reference's do.
+   */
+  .mark {
+    font-family: var(--font-hedvig), ui-serif, Georgia, serif;
+
+    /*
+     * Solved, not eyeballed. A P R U advance 2.715em together in Hedvig, the
+     * gutter is 30rem a side against a root font size that is 1px at 1920, so
+     * at 33vw the four caps take ~92% of the container and `space-between`
+     * spends the remaining 8% on three gaps of about 2.5% each -- tight, even,
+     * and near enough the reference's own tracking.
+     *
+     * One value, no breakpoint: the gutter is itself proportional, so the gap
+     * holds between 2.2% and 2.6% of the container from 1280 all the way to
+     * 2560. The clamp on the root font size is exactly why this cannot be rem.
+     */
+    font-size: 33vw;
+
+    /*
+     * The cap height is 0.7em and the leading is 0.72em, so the line box is the
+     * caps and almost nothing else: the mask hugs them, and APRU has no
+     * descender to buy room for. Tracking is off because `space-between` is
+     * already doing that job, and a trailing negative would only bias the U off
+     * the right gutter.
+     */
+    line-height: 0.72;
+    letter-spacing: 0;
+  }
+
+  /*
+   * -------------------------------------------------------------------------
+   * FOOTER DIRECTORY
+   * -------------------------------------------------------------------------
+   * Placement only, and it lives here rather than at the call site for two
+   * reasons: the component generates these names from a loop index, so Tailwind
+   * cannot see them to generate utilities; and inline styles cannot be
+   * media-queried, which this grid needs -- it rearranges completely below
+   * 768px. The reference's own footer solves it the same way.
+   *
+   * A label in one column with its list in the two beside it, four pairs
+   * marching across the fifteen.
+   */
+  .ftr-ask {
+    grid-column: 1 / span 8;
+  }
+  .ftr-cta {
+    grid-column: 10 / span 6;
+  }
+  .ftr-brand {
+    grid-column: 1 / span 3;
+  }
+  .ftr-lbl-1 {
+    grid-column: 4;
+  }
+  .ftr-list-1 {
+    grid-column: 5 / span 2;
+  }
+  .ftr-lbl-2 {
+    grid-column: 7;
+  }
+  .ftr-list-2 {
+    grid-column: 8 / span 2;
+  }
+  .ftr-lbl-3 {
+    grid-column: 10;
+  }
+  .ftr-list-3 {
+    grid-column: 11 / span 2;
+  }
+  .ftr-lbl-4 {
+    grid-column: 13;
+  }
+  .ftr-list-4 {
+    grid-column: 14 / span 2;
+  }
+
+  .ftr-meta > :nth-child(1) {
+    grid-column: 1 / span 4;
+  }
+  .ftr-meta > :nth-child(2) {
+    grid-column: 5 / span 5;
+  }
+  .ftr-meta > :nth-child(3) {
+    grid-column: 10 / span 3;
+  }
+  .ftr-meta > :nth-child(4) {
+    grid-column: 13 / span 3;
+  }
+
+  /*
+   * .grd is a block stack below 768px, which is right for a section of prose
+   * and wrong for a directory -- eight lists stacked is a page of its own. The
+   * footer keeps a grid there, two columns wide, and every pair takes an
+   * explicit cell: labels on one row, their lists on the next, two bands of
+   * two. Everything else in the footer takes the block stack as normal.
+   */
+  @media (max-width: 767.98px) {
+    .ftr-dir {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10rem 15rem;
+    }
+    .ftr-brand {
+      grid-column: 1 / -1;
+      grid-row: 1;
+      margin-bottom: 24rem;
+    }
+    .ftr-lbl-1 {
+      grid-column: 1;
+      grid-row: 2;
+    }
+    .ftr-lbl-2 {
+      grid-column: 2;
+      grid-row: 2;
+    }
+    .ftr-list-1 {
+      grid-column: 1;
+      grid-row: 3;
+    }
+    .ftr-list-2 {
+      grid-column: 2;
+      grid-row: 3;
+    }
+    .ftr-lbl-3 {
+      grid-column: 1;
+      grid-row: 4;
+      margin-top: 24rem;
+    }
+    .ftr-lbl-4 {
+      grid-column: 2;
+      grid-row: 4;
+      margin-top: 24rem;
+    }
+    .ftr-list-3 {
+      grid-column: 1;
+      grid-row: 5;
+    }
+    .ftr-list-4 {
+      grid-column: 2;
+      grid-row: 5;
+    }
+  }
 }
 
 /*
@@ -712,6 +874,22 @@
   inset: 0;
   z-index: 40;
   pointer-events: none;
+}
+
+/*
+ * The one place the halo goes UNDER the type instead of over it. The footer is
+ * the ring's terminal dock (see components/brand/Halo.tsx), and a mark that
+ * paints over its own name is not a lockup.
+ *
+ * Only the container is lifted. The footer's own black comes from the
+ * [data-ground="dark"] rule above, painted by the <footer> element itself at
+ * z-index auto -- so the ground stays BELOW the canvas and the ring is visible
+ * against it, while every line of footer type sits above. That also stops the
+ * ring washing over the link columns on its way down.
+ */
+footer[data-ground="dark"] .ctr {
+  position: relative;
+  z-index: 41;
 }
 
 /*

@@ -161,6 +161,32 @@ const LAT_OUT = 0.42;
 
 const MOBILE = 768;
 
+/**
+ * THE DOCK
+ *
+ * The one move the halo makes that is not a lane. At the bottom of every page
+ * the footer sets its wordmark gutter to gutter, and the ring comes to rest
+ * concentric behind it, face-on, and turns: the site's mark and the site's name
+ * land on top of each other in the last frame.
+ *
+ * It is a terminal override blended onto the finished lane result rather than a
+ * lane of its own, so nothing in the choreography above knows it exists. Two
+ * things have to yield to it -- the arrival, which is long spent by then, and
+ * the bottom guard rail, which is the footer itself.
+ *
+ * It is also the ONE place the halo stops being a pure function of scrollY.
+ * Everywhere else that is what lets the ring retrace its path exactly on the
+ * way back up; a ring that turns while the page is still cannot, and is meant
+ * not to. Under prefers-reduced-motion the rAF loop never starts, no time is
+ * ever accumulated, and the ring is simply parked in the dock.
+ */
+/** Viewports of scroll the dock takes to close. */
+const DOCK_IN = 0.75;
+/** Ring diameter as a multiple of the wordmark's height. */
+const DOCK_FILL = 1.35;
+/** Radians a second once docked -- about eighteen seconds to the turn. */
+const DOCK_SPIN = 0.35;
+
 const VERT = `
 attribute vec3 aPos;
 attribute vec3 aNormal;
@@ -400,6 +426,10 @@ export function Halo() {
       above: null,
       below: null,
     };
+    /** The footer's wordmark: where the ring ends up. See THE DOCK. */
+    let dockEl: HTMLElement | null = null;
+    /** Radians of docked turn accumulated so far. The only stateful term here. */
+    let spinExtra = 0;
     let width = 0;
     let height = 0;
     let small = false;
@@ -482,6 +512,7 @@ export function Halo() {
         above: step(nodes[0]?.el, true),
         below: step(nodes[nodes.length - 1]?.el, false),
       };
+      dockEl = document.querySelector<HTMLElement>("[data-halo-dock]");
 
       // A slot only comes back empty on a desktop viewport if the grid had not
       // been laid out yet. Take one more look next frame rather than sit on the
@@ -493,17 +524,108 @@ export function Halo() {
       }
     };
 
-    const draw = () => {
+    /**
+     * Everything downstream of the geometry: the projection, the model matrix
+     * and the two passes. Shared, because the dock draws the ring from numbers
+     * of its own on a page with no lanes at all, and neither path should be
+     * carrying a second copy of the depth prepass.
+     */
+    const drawRing = (
+      x: number,
+      y: number,
+      half: number,
+      halfX: number,
+      tilt: number,
+      sway: number,
+      spin: number,
+      alpha: number,
+    ) => {
+      if (alpha < 0.004 || half <= 0) return;
+      // Entirely past an edge: cheaper to skip than to rasterise out of frame.
+      if (x - halfX >= width || x + halfX <= 0) return;
+
+      const S = half / (1 + TUBE);
+
+      // Orthographic, in pixels: screen placement is then exact, which is what
+      // makes the clearance guarantee above hold at every viewport size.
+      const proj = new Float32Array([
+        2 / width, 0, 0, 0,
+        0, -2 / height, 0, 0,
+        0, 0, -1 / (S * 4), 0,
+        -1, 1, 0, 1,
+      ]);
+
+      // Composed rather than hand-expanded -- expanding three rotations by hand
+      // is exactly where sign errors hide.
+      const rot = mul3(mul3(rotY(sway), rotX(tilt)), rotZ(spin));
+
+      // Column-major, with the ring radius folded into the basis vectors.
+      const model = new Float32Array([
+        rot[0] * S, rot[3] * S, rot[6] * S, 0,
+        rot[1] * S, rot[4] * S, rot[7] * S, 0,
+        rot[2] * S, rot[5] * S, rot[8] * S, 0,
+        x, y, 0, 1,
+      ]);
+
+      gl.uniformMatrix4fv(uModel, false, model);
+      gl.uniformMatrix4fv(uProj, false, proj);
+      gl.uniform1f(uAlpha, alpha);
+      gl.bindTexture(gl.TEXTURE_2D, texture);
+
+      // Depth prepass. Without it the far wall of the tube blends through the
+      // near one while alpha < 1, so the ring goes muddy exactly when it is
+      // fading -- which, now that it fades on arrival and departure, is when it
+      // is most on show.
+      gl.colorMask(false, false, false, false);
+      gl.depthFunc(gl.LESS);
+      gl.drawElements(gl.TRIANGLES, mesh.idx.length, gl.UNSIGNED_INT, 0);
+      gl.colorMask(true, true, true, true);
+      gl.depthMask(false);
+      gl.depthFunc(gl.LEQUAL);
+      gl.drawElements(gl.TRIANGLES, mesh.idx.length, gl.UNSIGNED_INT, 0);
+    };
+
+    const draw = (dt = 0) => {
       // Depth writes are switched off during the colour pass below, so they have
       // to be switched back on or this clear silently does nothing.
       gl.depthMask(true);
       gl.clearColor(0, 0, 0, 0);
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-      if (!ready || nodes.length === 0) return;
+      if (!ready) return;
 
       const scroll = window.scrollY;
       const h = height;
       const w = width;
+
+      // THE DOCK, read first: it decides whether there is anything to draw at
+      // all on a page with no lane sections, and two of the early-outs further
+      // down have to yield to it.
+      let d = 0;
+      let dx = 0;
+      let dy = 0;
+      let dHalf = 0;
+      if (dockEl) {
+        const r = dockEl.getBoundingClientRect();
+        if (r.height > 0) {
+          d = smooth(clamp01((h - r.top) / (DOCK_IN * h)));
+          dx = r.left + r.width / 2;
+          dy = r.top + r.height / 2;
+          // Keyed to the mark's HEIGHT. The mark runs gutter to gutter, and a
+          // ring as wide as that would be a band across the screen rather than
+          // a circle standing behind four letters.
+          dHalf = (r.height * DOCK_FILL) / 2;
+        }
+      }
+      // Ramped by d, so a dock that is still closing cannot start the turn at
+      // full speed, and so nothing accumulates over the rest of the page.
+      spinExtra += d * dt * DOCK_SPIN;
+
+      if (nodes.length === 0) {
+        // No lane sections on this page -- but every page has a footer. Face-on
+        // and centred, with nothing to blend against.
+        if (d > 0) drawRing(dx, dy, dHalf, dHalf, 0, 0, spinExtra, smooth(clamp01(d / 0.15)));
+        return;
+      }
 
       // Rects are read live rather than cached: they self-correct after a font
       // swap or a reflow, and they are the only honest source for a sticky
@@ -523,8 +645,17 @@ export function Halo() {
       // in shares of the page, so they run at the same speed however long the
       // page is. `arrive` is 0 out past the screen edge and 1 once in place.
       const entryPx = ENTRY * h;
-      const arrive = smooth(
-        Math.min(clamp01((centre - first.top) / entryPx), clamp01((last.bottom - centre) / entryPx)),
+      // The dock floors it: the departure is long spent by the time the footer
+      // is on screen, and without this the ring would be gone before it could
+      // arrive anywhere. It carries `grown` back to full size for free.
+      const arrive = Math.max(
+        smooth(
+          Math.min(
+            clamp01((centre - first.top) / entryPx),
+            clamp01((last.bottom - centre) / entryPx),
+          ),
+        ),
+        d,
       );
       if (arrive <= 0) return;
 
@@ -745,45 +876,26 @@ export function Halo() {
       // Entirely past an edge: cheaper to skip than to rasterise out of frame.
       if (x - halfX >= w || x + halfX <= 0) return;
 
-      const S = half / (1 + TUBE);
-
-      // Orthographic, in pixels: screen placement is then exact, which is what
-      // makes the clearance guarantee above hold at every viewport size.
-      const proj = new Float32Array([
-        2 / w, 0, 0, 0,
-        0, -2 / h, 0, 0,
-        0, 0, -1 / (S * 4), 0,
-        -1, 1, 0, 1,
-      ]);
-
-      // Composed rather than hand-expanded -- expanding three rotations by hand
-      // is exactly where sign errors hide.
-      const rot = mul3(mul3(rotY(sway), rotX(tilt)), rotZ(spin));
-
-      // Column-major, with the ring radius folded into the basis vectors.
-      const model = new Float32Array([
-        rot[0] * S, rot[3] * S, rot[6] * S, 0,
-        rot[1] * S, rot[4] * S, rot[7] * S, 0,
-        rot[2] * S, rot[5] * S, rot[8] * S, 0,
-        x, y, 0, 1,
-      ]);
-
-      gl.uniformMatrix4fv(uModel, false, model);
-      gl.uniformMatrix4fv(uProj, false, proj);
-      gl.uniform1f(uAlpha, alpha);
-      gl.bindTexture(gl.TEXTURE_2D, texture);
-
-      // Depth prepass. Without it the far wall of the tube blends through the
-      // near one while alpha < 1, so the ring goes muddy exactly when it is
-      // fading -- which, now that it fades on arrival and departure, is when it
-      // is most on show.
-      gl.colorMask(false, false, false, false);
-      gl.depthFunc(gl.LESS);
-      gl.drawElements(gl.TRIANGLES, mesh.idx.length, gl.UNSIGNED_INT, 0);
-      gl.colorMask(true, true, true, true);
-      gl.depthMask(false);
-      gl.depthFunc(gl.LEQUAL);
-      gl.drawElements(gl.TRIANGLES, mesh.idx.length, gl.UNSIGNED_INT, 0);
+      // The dock, blended on last: after the guard squeeze and after the clamp,
+      // so the ring leaves the rail smoothly and no guard needs a special case;
+      // and after the phone's seam-proximity alpha, which would otherwise hold
+      // the docked ring at zero all the way down.
+      //
+      // `tilt` is not blended, because it does not need to be: psi is pinned at
+      // an integer once the phase is past the last section, and tilt is Pi psi,
+      // so the ring has already turned itself face-on by the time any of this
+      // is non-zero. Sway is, since its frequency lands nowhere in particular,
+      // and a docked ring has to be a circle.
+      drawRing(
+        lerp(x, dx, d),
+        lerp(y, dy, d),
+        lerp(half, dHalf, d),
+        lerp(halfX, dHalf, d),
+        tilt,
+        lerp(sway, 0, d),
+        spin + spinExtra,
+        lerp(alpha, 1, d),
+      );
     };
 
     measure();
@@ -801,8 +913,14 @@ export function Halo() {
       };
     }
 
-    let frame = requestAnimationFrame(function loop() {
-      draw();
+    // The frame delta is only ever spent on the docked turn -- everything else
+    // reads scrollY. Capped, so a tab that comes back after a minute in the
+    // background resumes the turn rather than snapping it forward.
+    let previous = 0;
+    let frame = requestAnimationFrame(function loop(now: number) {
+      const dt = previous ? Math.min(0.05, (now - previous) / 1000) : 0;
+      previous = now;
+      draw(dt);
       frame = requestAnimationFrame(loop);
     });
     const onResize = () => measure();

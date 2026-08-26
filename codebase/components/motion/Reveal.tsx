@@ -98,6 +98,7 @@ export function Reveal({
   immediate = false,
   gate,
   style,
+  dock = false,
 }: {
   children: ReactNode;
   className?: string;
@@ -105,10 +106,22 @@ export function Reveal({
   immediate?: boolean;
   gate?: "entered";
   style?: CSSProperties;
+  /**
+   * Marks this element as the halo's terminal dock -- the footer's wordmark,
+   * and nothing else. A named boolean rather than a spread of arbitrary props:
+   * there is exactly one dock on the site, and Halo.tsx finds it by querying
+   * for this attribute.
+   */
+  dock?: boolean;
 }) {
   const ref = useReveal(immediate, gate);
   return (
-    <Tag ref={ref as never} className={className} style={style}>
+    <Tag
+      ref={ref as never}
+      className={className}
+      style={style}
+      data-halo-dock={dock ? "" : undefined}
+    >
       {children}
     </Tag>
   );
