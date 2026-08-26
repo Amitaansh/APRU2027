@@ -166,9 +166,16 @@ const MOBILE = 768;
  * THE DOCK
  *
  * The one move the halo makes that is not a lane. At the bottom of every page
- * the footer sets its wordmark gutter to gutter, and the ring comes to rest
- * concentric behind it, face-on, and turns: the site's mark and the site's name
- * land on top of each other in the last frame.
+ * the ring sinks below the end of the document and grows until its top arc
+ * sweeps the full width of the screen, passing behind the footer's wordmark --
+ * which inverts against it, so the ring's colour reads straight through the
+ * letters and travels as it turns. See BLEND in globals.css.
+ *
+ * The geometry is derived, not dialled in. The centre sits DOCK_SINK viewports
+ * below the foot of the document, and the radius is then whatever reaches the
+ * bottom corners of the screen from there -- hypot(w/2, sink) -- so the band
+ * runs corner to corner at any window shape, and the arc flattens as the sink
+ * deepens. One number changes the whole picture.
  *
  * It is a terminal override blended onto the finished lane result rather than a
  * lane of its own, so nothing in the choreography above knows it exists. Two
@@ -183,8 +190,12 @@ const MOBILE = 768;
  */
 /** Viewports of scroll the dock takes to close. */
 const DOCK_IN = 0.75;
-/** Ring diameter as a multiple of the wordmark's height. */
-const DOCK_FILL = 1.35;
+/** How far below the foot of the document the centre sits, in viewports. Deeper
+ *  is flatter: it is the only thing setting the curvature of the arc. */
+const DOCK_SINK = 0.55;
+/** Where the tube's centreline crosses, as a multiple of the distance to the
+ *  screen's bottom corners. 1 puts it through them exactly. */
+const DOCK_SPAN = 1;
 /** Radians a second once docked -- about eighteen seconds to the turn. */
 const DOCK_SPIN = 0.35;
 
@@ -442,8 +453,10 @@ export function Halo() {
       above: null,
       below: null,
     };
-    /** The footer's wordmark: where the ring ends up. See THE DOCK. */
+    /** The footer's wordmark. It says WHEN the ring docks, not where. */
     let dockEl: HTMLElement | null = null;
+    /** The footer itself, whose foot is the document's. It says WHERE. */
+    let dockFoot: HTMLElement | null = null;
     /** Radians of docked turn accumulated so far. The only stateful term here. */
     let spinExtra = 0;
     let width = 0;
@@ -529,6 +542,7 @@ export function Halo() {
         below: step(nodes[nodes.length - 1]?.el, false),
       };
       dockEl = document.querySelector<HTMLElement>("[data-halo-dock]");
+      dockFoot = dockEl?.closest("footer") ?? dockEl;
 
       // A slot only comes back empty on a desktop viewport if the grid had not
       // been laid out yet. Take one more look next frame rather than sit on the
@@ -620,16 +634,26 @@ export function Halo() {
       let dx = 0;
       let dy = 0;
       let dHalf = 0;
-      if (dockEl) {
+      if (dockEl && dockFoot) {
         const r = dockEl.getBoundingClientRect();
         if (r.height > 0) {
+          // The wordmark rising through the last of the viewport is what closes
+          // the dock -- the ring arrives with the type it sits behind.
           d = smooth(clamp01((h - r.top) / (DOCK_IN * h)));
-          dx = r.left + r.width / 2;
-          dy = r.top + r.height / 2;
-          // Keyed to the mark's HEIGHT. The mark runs gutter to gutter, and a
-          // ring as wide as that would be a band across the screen rather than
-          // a circle standing behind four letters.
-          dHalf = (r.height * DOCK_FILL) / 2;
+
+          // Centred on the screen, and sunk below the foot of the document so
+          // that only the top of the arc is ever on it. Read live off the
+          // footer rather than from the viewport, so on the way down the centre
+          // is still off below the fold and the ring rises into place with the
+          // page instead of waiting at the bottom for it.
+          const foot = dockFoot.getBoundingClientRect().bottom;
+          dx = w / 2;
+          dy = foot + DOCK_SINK * h;
+
+          // Whatever radius reaches the bottom corners of the screen from
+          // there. `half` is the bounding radius, so the tube's centreline --
+          // where the band's ink actually is -- is the hypotenuse itself.
+          dHalf = Math.hypot(w / 2, Math.max(0, dy - h)) * DOCK_SPAN * (1 + TUBE);
         }
       }
       // Ramped by d, so a dock that is still closing cannot start the turn at
@@ -638,7 +662,7 @@ export function Halo() {
 
       if (nodes.length === 0) {
         // No lane sections on this page -- but every page has a footer. Face-on
-        // and centred, with nothing to blend against.
+        // and centred, with no lane result to blend against.
         if (d > 0) drawRing(dx, dy, dHalf, dHalf, 0, 0, spinExtra, smooth(clamp01(d / 0.15)));
         return;
       }
