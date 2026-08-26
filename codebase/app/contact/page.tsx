@@ -1,5 +1,7 @@
 import { FAQAccordion } from "@/components/contact/FAQAccordion";
 import { ContactRoute } from "@/components/contact/ContactRoute";
+import { Curtain } from "@/components/motion/Curtain";
+import { Reveal } from "@/components/motion/Reveal";
 import { PageHead } from "@/components/ui/PageHead";
 import { Section } from "@/components/ui/Section";
 import { pageMetadata } from "@/lib/seo";
@@ -11,6 +13,16 @@ export const metadata = pageMetadata({
   path: "/contact",
 });
 
+/**
+ * GROUND. Light until the questions, where the curtain wipes it black, and dark
+ * from there into the footer — the home page's construction, one darkening in
+ * one place. The accordion sits BELOW the curtain rather than inside it: the
+ * curtain's face is a pinned 100vh with `overflow: hidden`, and an answer
+ * opening inside that would be clipped.
+ *
+ * HALO. Two lanes, right then left, so the mark half-turns once on the way
+ * through and leaves at the curtain.
+ */
 export default function ContactPage() {
   return (
     <>
@@ -20,11 +32,20 @@ export default function ContactPage() {
         lede="Questions about the conference, the working groups, or partnering with us go to the organising committee at the NUS Department of Architecture."
       />
 
-      <Section>
+      <Section halo="right">
         <ContactRoute />
       </Section>
 
-      <Section label="Questions" ground="dark">
+      <Curtain label="Questions" halo="left">
+        <Reveal className="rise">
+          <p className="t-b1 dim max-w-[70ch]">
+            Common questions about the dates, the abstracts, and getting to Singapore. Anything not
+            answered here goes to the committee directly.
+          </p>
+        </Reveal>
+      </Curtain>
+
+      <Section ground="dark">
         <FAQAccordion />
       </Section>
     </>

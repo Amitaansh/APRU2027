@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { RegisterState } from "@/components/register/RegisterState";
+import { Curtain } from "@/components/motion/Curtain";
 import { IndexRow, RuleList } from "@/components/ui/IndexRow";
 import { ImportantDates } from "@/components/ui/ImportantDates";
 import { PageHead } from "@/components/ui/PageHead";
@@ -28,6 +29,16 @@ const INCLUDES = [
   },
 ];
 
+/**
+ * GROUND. Light until Includes, where the curtain wipes it black, and dark from
+ * there into the footer -- so what registration buys is the last thing read, on
+ * the dark ground, rather than a panel in the middle of the page.
+ *
+ * Three rows and a line is the most a curtain face will hold: it is a pinned
+ * 100vh with `overflow: hidden`.
+ *
+ * HALO. Right, left, right -- two half turns, leaving at the curtain.
+ */
 export default function RegisterPage() {
   return (
     <>
@@ -37,11 +48,23 @@ export default function RegisterPage() {
         lede="Registration is not yet open. This page will carry the link and the rates the moment it is."
       />
 
-      <Section>
+      <Section halo="right">
         <RegisterState />
       </Section>
 
-      <Section label="Includes" ground="dark">
+      <Section label="Key dates" halo="left">
+        <ImportantDates />
+        <p className="t-b2 dim pt-[40rem]">
+          Planning travel?{" "}
+          <Link href="/venue" className="link">
+            Venue and travel information
+          </Link>
+          .
+        </p>
+      </Section>
+
+      {/* The darkening. 200vh, pinned, black rising from the bottom edge. */}
+      <Curtain label="Includes" halo="right">
         <RuleList>
           {INCLUDES.map((item, i) => (
             <IndexRow
@@ -55,18 +78,7 @@ export default function RegisterPage() {
         <p className="t-b2 dim pt-[40rem]">
           Fees have not been set. No figures are published here until they are confirmed.
         </p>
-      </Section>
-
-      <Section label="Key dates">
-        <ImportantDates />
-        <p className="t-b2 dim pt-[40rem]">
-          Planning travel?{" "}
-          <Link href="/venue" className="link">
-            Venue and travel information
-          </Link>
-          .
-        </p>
-      </Section>
+      </Curtain>
     </>
   );
 }

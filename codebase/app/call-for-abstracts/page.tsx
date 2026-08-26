@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { AbstractsState } from "@/components/cfa/AbstractsState";
+import { Curtain } from "@/components/motion/Curtain";
 import { IndexRow, RuleList } from "@/components/ui/IndexRow";
 import { ImportantDates } from "@/components/ui/ImportantDates";
 import { PageHead } from "@/components/ui/PageHead";
@@ -28,6 +29,18 @@ const FORMATS = [
   },
 ];
 
+/**
+ * GROUND. Light until the formats, where the curtain wipes it black, and dark
+ * from there into the footer — so the three things that can be submitted are the
+ * last thing read. The curtain is a one-way door; that is why the formats moved
+ * below the key dates rather than sitting above them.
+ *
+ * The word count sits BELOW the curtain rather than in it. A curtain face is a
+ * pinned 100vh with `overflow: hidden`, and three rows plus a display-size
+ * spread would not clear it on a short window.
+ *
+ * HALO. Right, left, right — two half turns, leaving at the curtain.
+ */
 export default function CallForAbstractsPage() {
   return (
     <>
@@ -37,11 +50,27 @@ export default function CallForAbstractsPage() {
         lede="The 2027 conference welcomes submissions of papers, posters, and panels that examine solutions and challenges facing urban and environmental sustainability in the Pacific Rim through transdisciplinary collaboration, comparative studies, and cross-cultural investigation."
       />
 
-      <Section>
+      <Section halo="right">
         <AbstractsState />
       </Section>
 
-      <Section label="Formats" ground="dark">
+      <Section label="Key dates" halo="left">
+        <ImportantDates />
+        <p className="t-b2 dim pt-[40rem]">
+          See the{" "}
+          <Link href="/programme" className="link">
+            programme outline
+          </Link>{" "}
+          and the eleven working groups, or{" "}
+          <Link href="/register" className="link">
+            registration
+          </Link>
+          .
+        </p>
+      </Section>
+
+      {/* The darkening. 200vh, pinned, black rising from the bottom edge. */}
+      <Curtain label="Formats" halo="right">
         <RuleList>
           {FORMATS.map((item, i) => (
             <IndexRow
@@ -52,7 +81,10 @@ export default function CallForAbstractsPage() {
             />
           ))}
         </RuleList>
-        <div className="grd pt-[80rem] max-md:pt-[40rem]">
+      </Curtain>
+
+      <Section ground="dark">
+        <div className="grd">
           <div style={{ gridColumn: "1 / span 6" }}>
             <p className="t-h3">Abstracts are 200 words</p>
           </div>
@@ -63,21 +95,6 @@ export default function CallForAbstractsPage() {
             </p>
           </div>
         </div>
-      </Section>
-
-      <Section label="Key dates">
-        <ImportantDates />
-        <p className="t-b2 dim pt-[40rem]">
-          See the{" "}
-          <Link href="/program" className="link">
-            programme outline
-          </Link>{" "}
-          and the eleven working groups, or{" "}
-          <Link href="/register" className="link">
-            registration
-          </Link>
-          .
-        </p>
       </Section>
     </>
   );
