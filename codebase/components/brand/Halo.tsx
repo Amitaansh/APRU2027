@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
 
 /**
@@ -327,6 +328,21 @@ function buildTorus() {
 
 export function Halo() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  /**
+   * The halo outlives the pages it decorates: it is mounted once by the root
+   * layout, so a client-side navigation swaps the whole of <main> underneath a
+   * WebGL context that is never torn down. Everything the choreography reads --
+   * the lane sections, the guards either side of them -- is held as element
+   * references, and after a navigation those elements are detached: their rects
+   * come back as zeros, so the ring has no lanes to run and nothing to draw. A
+   * reload hid it, because a reload is a fresh mount.
+   *
+   * So the route is a re-measure, not a remount. Rebuilding the context per page
+   * would throw away the texture and the mesh, and browsers cap how many live
+   * contexts a document may hold.
+   */
+  const remeasureRef = useRef<(() => void) | null>(null);
+  const pathname = usePathname();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -900,6 +916,20 @@ export function Halo() {
 
     measure();
 
+    /**
+     * A new page. The retry budget is refilled because the incoming grid is as
+     * unlaid-out as the first one was, and the docked turn is dropped because
+     * the ring arrives at the top of a page that has not been scrolled yet --
+     * carrying a turn across would start it mid-rotation. One draw follows, for
+     * the reduced-motion path, which has no loop to pick the new numbers up.
+     */
+    remeasureRef.current = () => {
+      retry = 3;
+      spinExtra = 0;
+      measure();
+      draw();
+    };
+
     if (reduced) {
       const render = () => {
         measure();
@@ -908,6 +938,7 @@ export function Halo() {
       image.addEventListener("load", render);
       window.addEventListener("resize", render);
       return () => {
+        remeasureRef.current = null;
         image.removeEventListener("load", render);
         window.removeEventListener("resize", render);
       };
@@ -928,10 +959,20 @@ export function Halo() {
     document.fonts?.ready.then(measure);
 
     return () => {
+      remeasureRef.current = null;
       cancelAnimationFrame(frame);
       window.removeEventListener("resize", onResize);
     };
   }, []);
+
+  /**
+   * After the commit that put the new page in the DOM. The lane sections are
+   * present by now, but the fonts may still be swapping and the reveals have not
+   * been released, so `measure` leans on its own retry budget from here.
+   */
+  useEffect(() => {
+    remeasureRef.current?.();
+  }, [pathname]);
 
   return <canvas ref={canvasRef} aria-hidden="true" className="halo-layer" />;
 }
