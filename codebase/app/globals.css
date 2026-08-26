@@ -676,48 +676,71 @@
    * -------------------------------------------------------------------------
    * THE WORDMARK
    * -------------------------------------------------------------------------
-   * The last screen of every page: four serif capitals, gutter to gutter, with
-   * the halo docked behind them. Set in the display face rather than drawn as
-   * paths -- at this size Hedvig's thick/thin contrast IS the abstraction, and
-   * typesetting it keeps faith with the note in components/brand/Logos.tsx
+   * The last screen of every page: four capitals gutter to gutter, with the
+   * halo arcing across the bottom of the screen behind them. Set in the sans at
+   * 500, the weight the header lockup already uses for APRU, so the giant
+   * version is the same four letters and not a second identity. Typeset rather
+   * than drawn, which keeps faith with the note in components/brand/Logos.tsx
    * about not reconstructing an institution's mark.
    *
-   * vw, not rem, and this is the one place on the site that is not on the rem
-   * system. The root font size is CLAMPED, so a rem mark would stop growing
-   * past 2304px and stop shrinking below 1728px and lose its fit at exactly
-   * the sizes where a full-bleed mark is most conspicuous. In vw the letters
-   * and the gutters scale together, so `justify-content: space-between`
-   * distributes the residual identically at every width.
-   *
-   * The line height is the cap height, near enough: there are no descenders in
-   * APRU, so the mask can hug the caps and the letters sit on the bottom edge
-   * of the document the way the reference's do.
+   * It carries its own gutters rather than sitting in a .ctr, because it has to
+   * be outside that container's stacking context to blend -- see the BLEND note
+   * below. The padding is .ctr's, to the pixel.
    */
   .mark {
-    font-family: var(--font-hedvig), ui-serif, Georgia, serif;
+    font-family: var(--font-switzer), ui-sans-serif, system-ui, sans-serif;
+    font-weight: 500;
+    padding: 0 30rem;
 
     /*
-     * Solved, not eyeballed. A P R U advance 2.715em together in Hedvig, the
-     * gutter is 30rem a side against a root font size that is 1px at 1920, so
-     * at 33vw the four caps take ~92% of the container and `space-between`
-     * spends the remaining 8% on three gaps of about 2.5% each -- tight, even,
-     * and near enough the reference's own tracking.
+     * Solved, not eyeballed. A P R U advance 2.613em together in Switzer at
+     * 500, the gutter is 30rem a side against a root font size that is 1px at
+     * 1920, so at 34vw the four caps take ~92% of the container and
+     * `space-between` spends the remaining 8% on three gaps of about 2.7% each
+     * -- tight, even, and near enough the reference's own tracking.
      *
      * One value, no breakpoint: the gutter is itself proportional, so the gap
-     * holds between 2.2% and 2.6% of the container from 1280 all the way to
-     * 2560. The clamp on the root font size is exactly why this cannot be rem.
+     * holds within half a percent of that from 1280 all the way to 2560. The
+     * clamp on the root font size is exactly why this cannot be rem.
      */
-    font-size: 33vw;
+    font-size: 34vw;
 
     /*
-     * The cap height is 0.7em and the leading is 0.72em, so the line box is the
-     * caps and almost nothing else: the mask hugs them, and APRU has no
-     * descender to buy room for. Tracking is off because `space-between` is
-     * already doing that job, and a trailing negative would only bias the U off
-     * the right gutter.
+     * Switzer's cap height is 0.738em at this weight and the leading is 0.74em,
+     * so the line box is the caps and almost nothing else: the mask hugs them,
+     * and APRU has no descender to buy room for. Tracking is off because
+     * `space-between` is already doing that job, and a trailing negative would
+     * only bias the U off the right gutter.
      */
-    line-height: 0.72;
+    line-height: 0.74;
     letter-spacing: 0;
+
+    /*
+     * BLEND. The same gesture the header plays over the hero: the type does not
+     * sit on the halo, it inverts against it, so the ring's colour reads
+     * straight through the letters and moves as the ring turns.
+     *
+     * `difference` and not `screen`, which is what this looks like but cannot
+     * be: screen against white is white, so white capitals over the ring would
+     * come out unchanged and the effect would be invisible. Difference leaves
+     * them white over the black ground -- 1 - 0 -- and swings them to the
+     * ring's complement exactly where it passes behind.
+     *
+     * For this to reach the halo at all the mark has to be a sibling of the
+     * canvas in the ROOT stacking context, painted after it. z-index 41 against
+     * the canvas's 40 does that; being inside footer .ctr, which is itself a
+     * stacking context at 41, would confine the blend to the footer's own
+     * contents and nothing would happen.
+     */
+    position: relative;
+    z-index: 41;
+    mix-blend-mode: difference;
+  }
+
+  @media (max-width: 767.98px) {
+    .mark {
+      padding: 0 15rem;
+    }
   }
 
   /*
@@ -877,15 +900,17 @@
 }
 
 /*
- * The one place the halo goes UNDER the type instead of over it. The footer is
- * the ring's terminal dock (see components/brand/Halo.tsx), and a mark that
- * paints over its own name is not a lockup.
+ * The footer is where the halo goes UNDER the type instead of over it. It is
+ * the ring's terminal dock (see components/brand/Halo.tsx), and an arc that
+ * paints over the directory would take the links with it.
  *
- * Only the container is lifted. The footer's own black comes from the
- * [data-ground="dark"] rule above, painted by the <footer> element itself at
- * z-index auto -- so the ground stays BELOW the canvas and the ring is visible
- * against it, while every line of footer type sits above. That also stops the
- * ring washing over the link columns on its way down.
+ * Only the containers are lifted, and the footer's own black is deliberately
+ * not: it comes from the [data-ground="dark"] rule above, painted by the
+ * <footer> element itself at z-index auto, so the ground stays BELOW the canvas
+ * and the ring is visible against it while every line of type sits above.
+ *
+ * The wordmark is lifted separately, to the same 41, because it must NOT be
+ * inside this stacking context -- see BLEND in .mark.
  */
 footer[data-ground="dark"] .ctr {
   position: relative;

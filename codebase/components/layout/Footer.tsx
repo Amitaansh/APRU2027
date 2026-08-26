@@ -25,10 +25,11 @@ import { usePhase } from "@/lib/usePhase";
  * element on the site the halo is allowed to sit UNDER; see `.mark` and the
  * `footer .ctr` stacking rule in globals.css, and THE DOCK in Halo.tsx.
  *
- * Structure is load-bearing beyond layout: the halo reads this footer's first
- * `.ctr` as the bottom guard rail for every lane on every page (Halo's `step`).
- * Keeping one `.ctr` directly inside `<footer>`, below the same `pt-[160rem]`,
- * is what keeps that rail where it has always been.
+ * Structure is load-bearing beyond layout: the halo reads this footer's FIRST
+ * `.ctr` as the bottom guard rail for every lane on every page (Halo's `step`,
+ * which takes `querySelector`). There are two containers now, with the mark
+ * between them, and the first one still opens directly below the same
+ * `pt-[160rem]` — which is what keeps that rail where it has always been.
  */
 
 const WORDMARK = ["A", "P", "R", "U"];
@@ -162,21 +163,30 @@ export function Footer() {
           ))}
         </Reveal>
 
-        {/*
-         * Band three: the mark. `.ln-mask` is `display: block; overflow: hidden`
-         * in the components layer and Tailwind's `flex` overrides only the
-         * display, so the clip survives and each letter arrives with the same
-         * rise every other line of display type on the site uses — no new
-         * animation mechanism, and reduced motion is already handled.
-         */}
-        <Reveal dock className="mark ln-mask mt-[300rem] flex justify-between max-md:mt-[100rem]">
-          {WORDMARK.map((letter, i) => (
-            <span key={letter} className="wd" style={{ transitionDelay: i * 0.09 + "s" }}>
-              {letter}
-            </span>
-          ))}
-        </Reveal>
+      </div>
 
+      {/*
+       * Band three: the mark, and it sits OUTSIDE the container on purpose. It
+       * blends against the halo canvas, and a blend only reaches as far as its
+       * nearest stacking context — inside `.ctr`, which is one, it would find
+       * nothing but the footer's own contents behind it. So it carries `.ctr`'s
+       * gutters itself instead. See BLEND in globals.css.
+       *
+       * `.ln-mask` is `display: block; overflow: hidden` in the components layer
+       * and Tailwind's `flex` overrides only the display, so the clip survives
+       * and each letter arrives with the same rise every other line of display
+       * type on the site uses — no new animation mechanism, and reduced motion
+       * is already handled.
+       */}
+      <Reveal dock className="mark ln-mask mt-[300rem] flex justify-between max-md:mt-[100rem]">
+        {WORDMARK.map((letter, i) => (
+          <span key={letter} className="wd" style={{ transitionDelay: i * 0.09 + "s" }}>
+            {letter}
+          </span>
+        ))}
+      </Reveal>
+
+      <div className="ctr">
         <Reveal className="grd ftr-meta t-b2 dim rise pt-[40rem] max-md:pt-[24rem] max-md:leading-[1.6]">
           <p>{site.seriesName}</p>
           <p>{site.host}</p>
