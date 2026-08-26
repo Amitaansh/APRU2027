@@ -25,13 +25,13 @@ const TEASERS = [
   {
     number: "01",
     title: "The theme",
-    href: "/about",
+    href: "/theme",
     body: "How different knowledges and practices connect and coalesce in advancing social, cultural, and environmental resilience — and how bridging is itself a form of resilience.",
   },
   {
     number: "02",
     title: "The programme",
-    href: "/program",
+    href: "/programme",
     body: "Keynotes, thematic sessions, eleven working groups, a student symposium, and field visits across Singapore.",
   },
   {

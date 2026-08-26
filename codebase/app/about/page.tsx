@@ -10,7 +10,7 @@ import { pageMetadata } from "@/lib/seo";
 export const metadata = pageMetadata({
   title: "About the conference",
   description:
-    "Bridging Resilience(s) explores how different knowledges and practices connect and coalesce in advancing social, cultural, and environmental resilience across the Pacific Rim.",
+    "The 10th APRU Sustainable Cities and Landscapes conference, hosted by the NUS Department of Architecture — ten years of the network, and the committee organising the 2027 edition.",
   path: "/about",
 });
 
@@ -19,45 +19,28 @@ export default function AboutPage() {
     <>
       <PageHead
         label="About"
-        title={["Bridging", "Resilience(s)"]}
+        title={["The tenth", "conference"]}
         lede={site.intro}
       />
 
-      <Section label="The theme" halo="right">
+      <Section label="The conference" halo="right">
         <div className="flex gap-[40rem] max-md:flex-col">
           <div className="flex-1">
             <Reveal>
               <div className="t-b1 flex flex-col gap-[26rem]">
                 <p className="rise">
-                  Amid climate change, economic and technological uncertainties, and social and
-                  environmental disruptions, cities and communities across the Pacific Rim are
-                  facing profound and unprecedented challenges. In addressing these challenges,
-                  however, the knowledge and practices of sustainable planning, governance, and
-                  design often remain siloed and fragmented.
+                  The 2027 conference takes the theme of Bridging Resilience(s): how different
+                  knowledges and practices can connect and coalesce in advancing social,
+                  cultural, and environmental resilience in cities and communities across the
+                  Pacific Rim.
                 </p>
-                <p className="rise" style={{ transitionDelay: "0.08s" }}>
-                  With the theme of Bridging Resilience(s), the 2027 APRU-SCL conference will
-                  explore how different knowledges and practices can connect and coalesce in
-                  advancing social, cultural, and environmental resilience in cities and
-                  communities. It will further examine how bridging itself — the ability to network,
-                  organize, co-create, and forge connections — can represent a form of resilience in
-                  the face of crisis and disruption.
-                </p>
-                <p className="rise" style={{ transitionDelay: "0.16s" }}>
-                  Singapore, with its unique institutional structure along with the challenges of
-                  density and land scarcity, provides a setting for this discussion. For the 2027
-                  conference, we welcome submissions of papers, posters, and panels that examine
-                  solutions and challenges facing urban and environmental sustainability in the
-                  Pacific Rim through transdisciplinary collaboration, comparative studies, and
-                  cross-cultural investigation.
-                </p>
-                <p className="t-b2 dim rise" style={{ transitionDelay: "0.24s" }}>
+                <p className="t-b2 dim rise" style={{ transitionDelay: "0.08s" }}>
                   Read the{" "}
-                  <Link href="/call-for-abstracts" className="link">
-                    call for abstracts
+                  <Link href="/theme" className="link">
+                    theme in full
                   </Link>{" "}
                   or the{" "}
-                  <Link href="/program" className="link">
+                  <Link href="/programme" className="link">
                     programme outline
                   </Link>
                   .

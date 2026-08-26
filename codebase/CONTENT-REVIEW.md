@@ -18,10 +18,10 @@ something is not confirmed, the page says so.
 
 | Where | Source |
 |---|---|
-| `/about` — the four theme paragraphs | `APRU-SCL27_Theme_draft.pdf`, used essentially verbatim |
+| `/theme` — the four theme paragraphs | `APRU-SCL27_Theme_draft.pdf`, used essentially verbatim |
 | Home — opening paragraph (`site.intro`) | Same, first paragraph |
-| `/program` — working group introduction | `2027 Working Group Proposals_Updated 8.20.26.pdf`, introduction section |
-| `/program` — all 11 working group titles, convenors, and descriptions | Same PDF. Convenor **email addresses were deliberately not published** |
+| `/programme` — working group introduction | `2027 Working Group Proposals_Updated 8.20.26.pdf`, introduction section |
+| `/programme` — all 11 working group titles, convenors, and descriptions | Same PDF. Convenor **email addresses were deliberately not published** |
 | `/about` — organising committee roster (11 names, NUS Department of Architecture) | `Website sitemap.pdf`. **Individual emails deliberately not published** — see open item 3 |
 | Prior editions (8th SFU Vancouver 2025, 9th Shanghai Jiao Tong 2026) | PRD §5.1 |
 
@@ -29,14 +29,14 @@ something is not confirmed, the page says so.
 
 | Where | What was written | Why |
 |---|---|---|
-| `/program` — intro paragraph | Describes the three-day format, symposium and field visits | No program copy existed |
-| `/program` — five format block summaries | "What to expect" for keynotes, thematic sessions, working groups, student symposium, field visits | Derived from the APRU-SCL format and the client sitemap |
+| `/programme` — intro paragraph | Describes the three-day format, symposium and field visits | No program copy existed |
+| `/programme` — five format block summaries | "What to expect" for keynotes, thematic sessions, working groups, student symposium, field visits | Derived from the APRU-SCL format and the client sitemap |
 | `/venue` — Singapore section | Density, land scarcity, water self-sufficiency framing | Extends the theme document's own framing of Singapore |
 | `/venue` — NUS section, getting here, visas | Kent Ridge location, Changi connections, ICA visa pointer | Standard attendee guidance. **Check the visa wording and the invitation-letter promise** |
 | `/register` — what registration will include | Three blocks: conference access, student rate, field visits | No fees or figures are stated anywhere |
 | `/call-for-abstracts` — submission formats | Papers, posters, panels | The three formats named in the theme document |
 | `/contact` — all 8 FAQ answers | Dates, audience, APRU-SCL, abstracts, students, working groups, registration, staying informed | Only questions answerable today are included |
-| Home — three section teasers | Short lead-ins to About, Program, Call for Abstracts | Navigation copy |
+| Home — three section teasers | Short lead-ins to About, Programme, Call for Abstracts | Navigation copy |
 | All TBA block wording | Phrased as intentionally early rather than unfinished | PRD §6 |
 
 ### Points to check specifically
@@ -44,7 +44,7 @@ something is not confirmed, the page says so.
 1. **`/venue` visa section** promises "the organising committee can provide a
    letter of invitation to registered participants." Confirm you will offer this.
 2. **`/venue` accommodation and exact venue** are TBA blocks — no hotels named.
-3. **`/program` schedule** shows no timetable, only the note that detail follows.
+3. **`/programme` schedule** shows no timetable, only the note that detail follows.
 4. **`/contact` FAQ on abstracts** says submission will be through "the
    conference submission platform" rather than naming UVENTs, since the URL is
    not live yet. Say the word and it will name UVENTs explicitly.

@@ -69,10 +69,10 @@ Almost everything is a data edit, not a code change:
 | To do this | Edit this |
 |---|---|
 | Add a confirmed speaker | `content/speakers.json` — the page fills and promotes into the navbar automatically |
-| Publish the schedule | `content/program.json`, then set `active: true` on Program in `content/nav.json` |
+| Publish the schedule | `content/program.json` — Programme is already in the navbar via `active: true` in `content/nav.json` |
 | Open registration | `registrationOpens` in `content/phases.ts` + `NEXT_PUBLIC_REGISTRATION_URL` |
 | Open abstracts | `abstractsOpen` / `abstractsClose` + `NEXT_PUBLIC_UVENTS_URL` |
-| Publish a deadline | `content/phases.ts` — the dates table on Program, Register and Call for Abstracts derives from it |
+| Publish a deadline | `content/phases.ts` — the dates table on Programme, Register and Call for Abstracts derives from it |
 | Fill in a venue detail | `content/venue.json`, flip `status` to `confirmed` |
 | Add a FAQ | `content/faq.json` |
 

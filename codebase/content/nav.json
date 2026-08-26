@@ -1,14 +1,15 @@
 [
   { "label": "Home", "route": "/", "group": "primary" },
   { "label": "About", "route": "/about", "group": "primary" },
-  { "label": "Venue & Travel", "route": "/venue", "group": "primary" },
-  { "label": "Contact", "route": "/contact", "group": "primary" },
+  { "label": "Theme", "route": "/theme", "group": "primary" },
   {
-    "label": "Program",
-    "route": "/program",
+    "label": "Programme",
+    "route": "/programme",
     "group": "footer-only",
-    "active": false
+    "active": true
   },
+  { "label": "Venue", "route": "/venue", "group": "primary" },
+  { "label": "Contact", "route": "/contact", "group": "primary" },
   {
     "label": "Speakers",
     "route": "/speakers",

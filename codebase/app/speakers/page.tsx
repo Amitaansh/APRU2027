@@ -24,7 +24,7 @@ export default function SpeakersPage() {
         <SpeakerGrid />
         <p className="t-b2 dim pt-[40rem]">
           Meanwhile, see the{" "}
-          <Link href="/program" className="link">
+          <Link href="/programme" className="link">
             programme outline
           </Link>{" "}
           and the eleven working groups.

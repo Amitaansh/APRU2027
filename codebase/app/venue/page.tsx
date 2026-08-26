@@ -58,7 +58,7 @@ export default function VenuePage() {
 
         <p className="t-b2 dim pt-[40rem]">
           Planning around the schedule?{" "}
-          <Link href="/program" className="link">
+          <Link href="/programme" className="link">
             See the programme outline
           </Link>
           .

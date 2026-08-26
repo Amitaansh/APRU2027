@@ -2,7 +2,8 @@
 const PAGE_KEYS: Record<string, string> = {
   "/": "home",
   "/about": "about",
-  "/program": "program",
+  "/theme": "theme",
+  "/programme": "programme",
   "/speakers": "speakers",
   "/register": "register",
   "/call-for-abstracts": "cfa",
