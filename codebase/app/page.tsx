@@ -56,15 +56,15 @@ export default function HomePage() {
       <Hero />
 
       {/*
-       * The statement is set in the SANS while the headings elsewhere are serif.
-       * That flip is deliberate: it stops the page becoming wall-to-wall serif
-       * and makes this one sentence read as a title rather than a heading.
+       * The statement is the display type of the page, set in the serif at the
+       * H2 of the scale rather than at a size of its own -- the indent on the
+       * second line is what makes it read as a title rather than a heading.
        */}
       <Section id="theme" halo="right">
         <div className="flex flex-col gap-[60rem] max-md:gap-[40rem]">
           <MaskLines
             as="h2"
-            className="f-sans text-[120rem] font-normal leading-[0.85] tracking-[-0.045em] max-md:text-[38rem] max-md:leading-[0.95] max-md:tracking-[-0.035em]"
+            className="t-h2"
             lines={[
               "Sustainable",
               <span key="b" className="block pl-[1.6em] max-md:pl-[0.9em]">
@@ -155,6 +155,7 @@ export default function HomePage() {
               number={String(edition.edition).padStart(2, "0")}
               title={edition.theme}
               body={edition.host}
+              centreBody
               meta={<span className="tnum">{edition.year}</span>}
             />
           ))}

@@ -86,6 +86,11 @@
    * or not .e-lh is in play. */
   --off: 0.22em;
 
+  /* Height of the fixed header: 24 of pad, three 19rem lines, 24 of pad. It has
+   * no background of its own, so anything that has to clear it has to be told
+   * how tall it is -- see the curtain's vertical label. */
+  --hdr: 105rem;
+
   color-scheme: light;
 }
 
@@ -431,8 +436,17 @@
    * BUTTON
    * -------------------------------------------------------------------------
    * A rectangle and a rule. No radius, no shadow, no icon.
+   *
+   * The fill is a pair of tokens rather than two literals, for the same reason
+   * .idx-row's is: the button has to be able to sit on the dark half of the
+   * site. A hard-coded black fill is invisible on the footer -- which is the
+   * one permanently dark surface on the site, and carries the primary CTA on
+   * every page -- so all that shows there is the label, inset by the padding.
    */
   .btn {
+    --btn-fill: var(--bk);
+    --btn-ink: var(--wh);
+
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -451,19 +465,25 @@
   }
 
   .btn:hover {
-    background-color: var(--bk);
-    color: var(--wh);
+    background-color: var(--btn-fill);
+    color: var(--btn-ink);
   }
 
   .btn-fill {
-    background-color: var(--bk);
-    color: var(--wh);
-    border-color: var(--bk);
+    background-color: var(--btn-fill);
+    color: var(--btn-ink);
+    border-color: var(--btn-fill);
   }
 
   .btn-fill:hover {
     background-color: transparent;
-    color: var(--bk);
+    color: inherit;
+    border-color: currentColor;
+  }
+
+  [data-ground="dark"] .btn {
+    --btn-fill: var(--wh);
+    --btn-ink: var(--bk);
   }
 
   @media (max-width: 767.98px) {
@@ -664,6 +684,16 @@
   background-color: var(--wh);
 }
 
+/*
+ * Both this and [data-ground="dark"] are unlayered and both are (0,1,0), so
+ * source order decides and .curtain's white would win -- which is what made the
+ * section flash back to paper the instant the wipe completed and Curtain.tsx
+ * handed over to the real ground: white type, white rules, white ground.
+ */
+.curtain[data-ground="dark"] {
+  background-color: var(--bk);
+}
+
 .curtain-pin {
   position: sticky;
   top: 0;
@@ -686,6 +716,16 @@
   pointer-events: none;
 }
 
+/*
+ * The face centres its content in the pinned 100vh, so on a short window a tall
+ * list pushes the label up under the fixed wordmark -- which has no background
+ * to protect it. Held below the header rather than centred with the rows. Both
+ * faces are .curtain-face, so the two copies stay in register.
+ */
+.curtain-face .sec-label {
+  margin-top: calc(var(--hdr) + 20rem);
+}
+
 /* No room to pin on a phone, so the section is simply dark. */
 @media (max-width: 767.98px) {
   .curtain {
@@ -702,6 +742,10 @@
 
   .curtain-veil {
     display: none;
+  }
+
+  .curtain-face .sec-label {
+    margin-top: 0;
   }
 }
 
@@ -923,6 +967,24 @@
 
 html[data-entered] .hero-clip {
   clip-path: inset(0 0 0 0);
+}
+
+/*
+ * This is not a scrim over the artwork for its own sake -- it is what the header
+ * blends against. `mix-blend-mode: difference` over a mid-tone returns another
+ * mid-tone, so the wordmark and the nav went muddy against the dither exactly
+ * where they had no other ground to fall back on. Darkening the top band pushes
+ * the difference back to near-white and costs the image nothing below it.
+ *
+ * Inside .hero-clip, so it opens with the band. Outside it, it would show as a
+ * grey wash over the paper the preloader panels are still retracting from.
+ */
+.hero-scrim {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 300rem;
+  background-image: linear-gradient(to bottom, rgb(0 0 0 / 0.62), rgb(0 0 0 / 0));
+  pointer-events: none;
 }
 
 /*

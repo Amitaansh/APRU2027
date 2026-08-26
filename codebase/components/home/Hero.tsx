@@ -9,9 +9,15 @@ import { site } from "@/lib/content";
  * monochrome. The title is deliberately not set at display scale here: the
  * image is the statement, and the big type arrives in the section after it.
  *
- * No scrim over the image. The header inverts itself with `mix-blend-mode` and
- * the title is set in white directly on the artwork, which is dark enough
- * across its full area to carry it.
+ * The title is set in white directly on the artwork, which is dark enough across
+ * its full area to carry it, and takes no scrim of its own.
+ *
+ * The band at the top is a different matter. The header inverts itself with
+ * `mix-blend-mode: difference`, and a difference against a mid-tone returns
+ * another mid-tone -- so the wordmark and the nav dissolved into the dither.
+ * `.hero-scrim` darkens only the strip they sit in, which is what gives the
+ * blend something to invert against. It lives inside the clip so it arrives with
+ * the band rather than washing the paper the preloader is still retracting from.
  *
  * The artwork arrives as a band. `.hero-clip` is closed to a zero-height sliver
  * at the centre line until the preloader's two panels split, and opens to full
@@ -38,6 +44,8 @@ export function Hero() {
             height={1080}
           />
         </picture>
+
+        <div aria-hidden="true" className="hero-scrim" />
       </div>
 
       <div className="ctr relative z-[2] flex h-full flex-col justify-end pb-[38rem] max-md:pb-[20rem]">

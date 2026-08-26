@@ -69,6 +69,7 @@ export function IndexRow({
   action,
   swatch,
   variant = "display",
+  centreBody = false,
   index = 0,
 }: {
   href?: string;
@@ -80,6 +81,16 @@ export function IndexRow({
   swatch?: string;
   /** "display" sets the title in the serif; "data" keeps it at text size. */
   variant?: "display" | "data";
+  /**
+   * Centres the body cell against the title instead of sitting it on the title's
+   * first baseline. For lists whose titles run to two or three lines, where the
+   * baseline leaves the secondary column stranded at the top of the row.
+   *
+   * Safe for the hover sweep: `.idx-in` is height-auto, so the flex line's cross
+   * size is the title's height in the live row and in the `.idx-veil` duplicate
+   * alike, and the centred cell lands on the same pixel in both.
+   */
+  centreBody?: boolean;
   /** Position in the list, injected by RuleList. Drives the cascade only. */
   index?: number;
 }) {
@@ -97,7 +108,15 @@ export function IndexRow({
       )}
       {number && <span className="t-b2 dim tnum w-[70rem] flex-none max-md:w-auto">{number}</span>}
       <span className={titleClass}>{title}</span>
-      {body && <span className="t-b2 dim max-w-[60ch] flex-1 max-md:w-full">{body}</span>}
+      {body && (
+        <span
+          className={
+            "t-b2 dim max-w-[60ch] flex-1 max-md:w-full" + (centreBody ? " self-center" : "")
+          }
+        >
+          {body}
+        </span>
+      )}
       {meta && <span className="t-b2 ml-auto flex-none max-md:ml-0">{meta}</span>}
       {action && (
         <span className="t-b2 ml-auto flex-none self-center max-md:hidden">

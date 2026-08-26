@@ -47,9 +47,11 @@ export function CTAButton({
   const base = "btn " + (variant === "primary" ? "btn-fill " : "") + className;
 
   if (!action.url) {
+    // Outline, never the fill: the fill's ink is the ground's own colour, and
+    // this state overrides it with .dim, which would leave grey on white.
     return (
       <span
-        className={base + " dim cursor-default"}
+        className={"btn dim cursor-default " + className}
         title="This link will be published shortly"
       >
         {action.label} <span className="dim">— soon</span>

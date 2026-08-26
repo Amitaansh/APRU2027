@@ -16,6 +16,14 @@ import { usePhase } from "@/lib/usePhase";
  * is black on white and white on black for free. It is also why the header has
  * no theme logic even though the site goes dark.
  *
+ * The blend only pays off against a ground near one end of the range. The hero
+ * artwork is neither, so the hero darkens the strip the header sits in rather
+ * than the header taking a state of its own -- see `.hero-scrim`. Both the
+ * wordmark and the nav are set at 500 for the same reason: they have to hold
+ * their shape over a dither. Switzer is loaded as a variable face, so that is a
+ * real weight rather than a synthesised one, which `font-synthesis-weight: none`
+ * would refuse to draw anyway.
+ *
  * The blend has to be turned off while the mobile menu is open, because the menu
  * is a real surface and the header must sit on it normally rather than invert
  * against it.
@@ -54,7 +62,7 @@ export function Header() {
         }
       >
         <div className="ctr flex w-full items-start justify-between">
-          <Link href="/" className="pointer-events-auto block text-[19rem] leading-none tracking-[-0.02em] max-md:text-[14rem]">
+          <Link href="/" className="pointer-events-auto block text-[19rem] leading-none tracking-[-0.02em] [font-weight:500] max-md:text-[14rem]">
             <span className="block">APRU</span>
             <span className="block">Sustainable Cities</span>
             <span className="f-serif block">&amp; Landscapes</span>
@@ -65,7 +73,7 @@ export function Header() {
            * the link text so the underline sweep runs under it too.
            */}
           <nav aria-label="Primary" className="t-b2 pointer-events-auto max-md:hidden">
-            <ul className="flex items-center gap-[0.5em]">
+            <ul className="flex items-center gap-[0.5em] [font-weight:500]">
               {items.map((item, i) => (
                 <li key={item.route}>
                   <Link
