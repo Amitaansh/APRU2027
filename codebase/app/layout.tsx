@@ -88,6 +88,7 @@ export default function RootLayout({
           <style>{
             ".ln-mask > .ln, .ln-mask > .wd { transform: none !important }" +
             ".rise { opacity: 1 !important; transform: none !important }" +
+            ".rule-draw { transform: none !important }" +
             ".preload { display: none !important }" +
             ".hero-clip { clip-path: none !important }"
           }</style>

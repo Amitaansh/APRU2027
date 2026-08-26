@@ -10,6 +10,11 @@ import { MaskLines, Reveal } from "@/components/motion/Reveal";
  *
  * The lede sits in the right-hand columns rather than under the title, so the
  * opening reads as a spread rather than as a stacked header.
+ *
+ * The rule underneath draws itself across once the masks have landed — the
+ * delay is what makes it read as the close of the opening rather than as part
+ * of it. Every page opens with this same component, so this is the one gesture
+ * they all share.
  */
 export function PageHead({
   label,
@@ -38,6 +43,12 @@ export function PageHead({
             </div>
           )}
         </div>
+
+        {/* Gated on the fonts like the title, not on the scroll — it is already
+            on screen, and an observer would release it before the type. */}
+        <Reveal immediate className="pt-[80rem] max-md:pt-[40rem]">
+          <div className="rule-solid rule-draw" style={{ transitionDelay: "0.3s" }} />
+        </Reveal>
       </div>
     </section>
   );

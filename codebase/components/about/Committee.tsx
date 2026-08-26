@@ -38,8 +38,8 @@ export function Committee() {
 
       <div>
         <p className="t-lbl dim pb-[26rem]">Organising committee</p>
-        <div className="rule-solid" />
         <Reveal>
+          <div className="rule-solid rule-draw" />
           <ul className="grd rise pt-[30rem]">
             {members.map((member) => (
               <li
@@ -65,8 +65,8 @@ export function Committee() {
           />
         ) : (
           <>
-            <div className="rule-solid" />
             <Reveal>
+              <div className="rule-solid rule-draw" />
               <ul className="grd rise pt-[30rem]">
                 {committee.scientific.map((member) => (
                   <li

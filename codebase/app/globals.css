@@ -341,6 +341,32 @@
   }
 
   /*
+   * A hairline that draws itself in from the left, on the same 1.109s as the
+   * link underline below -- it is that gesture applied structurally rather than
+   * to a word. Released by `.is-in`, so it cascades with whatever Reveal it
+   * sits in.
+   *
+   * FOR STANDALONE RULES ONLY. The rules inside a RuleList are borders on the
+   * rows, and for a documented reason -- see IndexRow.tsx. A border cannot be
+   * scaled, and a hairline element put back between the rows would not invert
+   * with a filled row.
+   *
+   * It must be inside a Reveal. There is nothing to release it otherwise and it
+   * would sit at scaleX(0) forever, which reads as a missing rule rather than
+   * as a bug.
+   */
+  .rule-draw {
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 1.109s var(--ease-ref);
+  }
+
+  .is-in .rule-draw,
+  .is-in.rule-draw {
+    transform: scaleX(1);
+  }
+
+  /*
    * -------------------------------------------------------------------------
    * LINK
    * -------------------------------------------------------------------------
@@ -757,6 +783,11 @@
 
   .rise {
     opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* Rules are structure, not decoration: they are simply already drawn. */
+  .rule-draw {
     transform: none !important;
   }
 

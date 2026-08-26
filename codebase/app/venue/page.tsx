@@ -32,7 +32,7 @@ export default function VenuePage() {
         <div className="flex flex-col">
           {venue.map((section, i) => (
             <Reveal key={section.id}>
-              <div className="rule-solid" />
+              <div className="rule-solid rule-draw" />
               <div
                 className="rise flex gap-[20rem] py-[50rem] max-md:flex-col max-md:gap-[14rem] max-md:py-[34rem]"
                 style={{ transitionDelay: Math.min(i * 0.05, 0.3) + "s" }}
@@ -51,7 +51,9 @@ export default function VenuePage() {
               </div>
             </Reveal>
           ))}
-          <div className="rule-solid" />
+          <Reveal>
+            <div className="rule-solid rule-draw" />
+          </Reveal>
         </div>
 
         <p className="t-b2 dim pt-[40rem]">

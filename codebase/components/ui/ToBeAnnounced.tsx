@@ -26,7 +26,7 @@ export function StatusBlock({
 }) {
   return (
     <Reveal>
-      <div className="rule-solid" />
+      <div className="rule-solid rule-draw" />
       <div className="rise flex gap-[20rem] py-[50rem] max-md:flex-col max-md:gap-[16rem] max-md:py-[34rem]">
         <p className={"t-lbl w-[180rem] flex-none max-md:w-auto " + (live ? "live" : "dim")}>
           {status}
@@ -39,7 +39,7 @@ export function StatusBlock({
           {children && <div className="pt-[36rem]">{children}</div>}
         </div>
       </div>
-      <div className="rule-solid" />
+      <div className="rule-solid rule-draw" />
     </Reveal>
   );
 }
