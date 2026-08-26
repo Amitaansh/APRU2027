@@ -642,6 +642,27 @@
     }
   }
 
+  /*
+   * The spine holds below the header while its section's body scrolls past it,
+   * then leaves with the section. A grid item stretches to its row by default
+   * and a stretched box has nothing to stick within, so `align-self: start` is
+   * not a nicety here -- without it the rule does nothing at all.
+   *
+   * Desktop only, and not because of the header: under 768px .grd is a block
+   * stack and .sec-label is already lying flat above the body, where sticking
+   * it would pin a heading over the type it introduces.
+   *
+   * Section opts in; Curtain does not. Its label lives in a pinned 100vh face
+   * that is already holding still, and is placed by .curtain-face .sec-label.
+   */
+  @media (min-width: 768px) {
+    .sec-spine {
+      position: sticky;
+      top: calc(var(--hdr) + 40rem);
+      align-self: start;
+    }
+  }
+
   .dim {
     color: var(--gr3);
   }

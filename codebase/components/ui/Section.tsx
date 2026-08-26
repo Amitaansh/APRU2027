@@ -37,10 +37,17 @@ const COLUMNS: Record<"none" | HaloLane, { label: string; body: string }> = {
 export function SectionGrid({
   label,
   halo,
+  spine = false,
   children,
 }: {
   label?: string;
   halo?: HaloLane;
+  /**
+   * Sticks the label to the top of the viewport for the length of the section
+   * — see `.sec-spine`. Section opts in; Curtain deliberately does not, because
+   * its face is already pinned.
+   */
+  spine?: boolean;
   children: ReactNode;
 }) {
   const columns = COLUMNS[halo ?? "none"];
@@ -50,7 +57,10 @@ export function SectionGrid({
   return (
     <div className="grd">
       {label && (
-        <div className="max-md:mb-[24rem]" style={{ gridColumn: columns.label }}>
+        <div
+          className={"max-md:mb-[24rem]" + (spine ? " sec-spine" : "")}
+          style={{ gridColumn: columns.label }}
+        >
           <SectionLabel>{label}</SectionLabel>
         </div>
       )}
@@ -84,7 +94,7 @@ export function Section({
       className={"pad " + (flow ? "pad-flow " : "") + className}
     >
       <div className="ctr">
-        <SectionGrid label={label} halo={halo}>
+        <SectionGrid label={label} halo={halo} spine>
           {children}
         </SectionGrid>
       </div>
