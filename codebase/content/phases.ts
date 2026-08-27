@@ -14,6 +14,12 @@ export interface CTATarget {
   url: string;
   /** Plausible goal name. */
   event: "InterestClick" | "RegisterClick" | "AbstractClick" | "ContactClick";
+  /**
+   * The label already states that the action is not open yet, so the button
+   * renders it alone. Without this the unset-URL branch appends its own
+   * "— soon" and "Registration open soon" comes out saying soon twice.
+   */
+  pending?: boolean;
 }
 
 export interface PhaseMilestones {
@@ -49,9 +55,13 @@ export const phases: PhaseConfig = {
   },
   cta: {
     notify: {
-      label: "Register your interest",
+      // A placeholder until the registration route exists. With no URL set this
+      // renders as a stated status rather than a button that goes nowhere; fill
+      // NEXT_PUBLIC_INTEREST_FORM_URL and drop `pending` to make it live.
+      label: "Registration open soon",
       url: process.env.NEXT_PUBLIC_INTEREST_FORM_URL ?? "",
       event: "InterestClick",
+      pending: true,
     },
     register: {
       label: "Register now",

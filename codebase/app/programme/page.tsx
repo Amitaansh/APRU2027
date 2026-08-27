@@ -1,13 +1,10 @@
 import Link from "next/link";
-import { WorkingGroups } from "@/components/program/WorkingGroups";
-import { Curtain } from "@/components/motion/Curtain";
 import { Reveal } from "@/components/motion/Reveal";
 import { IndexRow, RuleList } from "@/components/ui/IndexRow";
-import { ImportantDates } from "@/components/ui/ImportantDates";
 import { PageHead } from "@/components/ui/PageHead";
 import { Section } from "@/components/ui/Section";
 import { ToBeAnnounced } from "@/components/ui/ToBeAnnounced";
-import { forums, program } from "@/lib/content";
+import { program } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
@@ -18,19 +15,15 @@ export const metadata = pageMetadata({
 });
 
 /**
- * GROUND. Light until the working groups, where the curtain wipes it black, and
- * dark from there into the footer. That is why the groups now sit at the foot of
- * the page rather than in the middle of it: the curtain is a one-way door, and
- * darkening only to cut straight back to paper would read worse than the hard
- * seam it replaces.
+ * The outline, and only the outline.
  *
- * The eleven groups themselves stay BELOW the curtain, not inside it. The
- * curtain's face is a pinned 100vh with `overflow: hidden`, and an accordion
- * opening inside it would have its answer clipped.
+ * It used to carry the key dates table and the whole eleven-group accordion as
+ * well — two pages of material on one page. Both have pages of their own under
+ * Highlight now, and this one links to them instead.
  *
- * HALO. The lane alternates right, left, right, left down the page -- a half
- * turn of the mark at each seam -- and the sequence ends at the curtain, after
- * which the page runs full width.
+ * GROUND. Light throughout; the page is short enough that the darkening would
+ * be a gesture with nothing to reveal. HALO. The lane alternates right then
+ * left, and the sequence ends before the footer.
  */
 export default function ProgramPage() {
   return (
@@ -57,6 +50,24 @@ export default function ProgramPage() {
             />
           ))}
         </RuleList>
+
+        <Reveal className="rise pt-[40rem]">
+          <p className="t-b2 dim">
+            See the{" "}
+            <Link href="/highlights/working-groups" className="link">
+              eleven working groups
+            </Link>
+            , the{" "}
+            <Link href="/highlights/keynotes" className="link">
+              keynotes
+            </Link>
+            , or the{" "}
+            <Link href="/highlights/key-dates" className="link">
+              key dates
+            </Link>
+            .
+          </p>
+        </Reveal>
       </Section>
 
       {program.scheduleStatus === "tba" ? (
@@ -67,39 +78,6 @@ export default function ProgramPage() {
           />
         </Section>
       ) : null}
-
-      {/*
-       * Pays the full rhythm rather than flowing on from the schedule above it,
-       * as it used to. Both are lane sections now, and the halo turns edge-on in
-       * the gap between them -- with no gap there is nowhere to make the turn.
-       */}
-      <Section label="Key dates" halo="right">
-        <ImportantDates />
-      </Section>
-
-      {/* The darkening. 200vh, pinned, black rising from the bottom edge. */}
-      <Curtain label="Working groups" halo="left">
-        <Reveal className="rise">
-          <p className="t-b1 dim max-w-[70ch]">{forums.intro}</p>
-        </Reveal>
-      </Curtain>
-
-      {/*
-       * The one page where colour carries information: each working group gets a
-       * swatch from a ramp between the halo blue and the key-art orange. The
-       * number and the title still identify the group, so the colour is a second
-       * channel rather than the only one.
-       */}
-      <Section ground="dark">
-        <WorkingGroups />
-        <p className="t-b2 dim pt-[40rem]">
-          Details on joining a working group will be published with the full programme.{" "}
-          <Link href="/call-for-abstracts" className="link">
-            See the call for abstracts
-          </Link>
-          .
-        </p>
-      </Section>
     </>
   );
 }

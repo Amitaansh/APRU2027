@@ -6,6 +6,8 @@
   "outputDirectory": "out",
   "trailingSlash": true,
   "redirects": [
-    { "source": "/program", "destination": "/programme", "permanent": true }
+    { "source": "/program", "destination": "/programme", "permanent": true },
+    { "source": "/theme", "destination": "/", "permanent": true },
+    { "source": "/speakers", "destination": "/highlights/keynotes", "permanent": true }
   ]
 }

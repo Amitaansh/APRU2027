@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { Committee } from "@/components/about/Committee";
 import { Reveal } from "@/components/motion/Reveal";
 import { IndexRow, RuleList } from "@/components/ui/IndexRow";
@@ -10,10 +9,20 @@ import { pageMetadata } from "@/lib/seo";
 export const metadata = pageMetadata({
   title: "About the conference",
   description:
-    "The 10th APRU Sustainable Cities and Landscapes conference, hosted by the NUS Department of Architecture — ten years of the network, and the committee organising the 2027 edition.",
+    "The organising and scientific committees for the 10th APRU Sustainable Cities and Landscapes conference, hosted by the NUS Department of Architecture.",
   path: "/about",
 });
 
+/**
+ * The page opens straight into the committee.
+ *
+ * It used to lead with a conference summary — dates, location, host, the theme
+ * in brief — which is what the homepage already says, and says first. About is
+ * for the people behind it.
+ *
+ * The series sits at the foot rather than in the middle: ten years of prior
+ * editions is context for the tenth, not the reason to be on this page.
+ */
 export default function AboutPage() {
   return (
     <>
@@ -23,57 +32,14 @@ export default function AboutPage() {
         lede={site.intro}
       />
 
-      <Section label="The conference" halo="right">
-        <div className="flex gap-[40rem] max-md:flex-col">
-          <div className="flex-1">
-            <Reveal>
-              <div className="t-b1 flex flex-col gap-[26rem]">
-                <p className="rise">
-                  The 2027 conference takes the theme of Bridging Resilience(s): how different
-                  knowledges and practices can connect and coalesce in advancing social,
-                  cultural, and environmental resilience in cities and communities across the
-                  Pacific Rim.
-                </p>
-                <p className="t-b2 dim rise" style={{ transitionDelay: "0.08s" }}>
-                  Read the{" "}
-                  <Link href="/theme" className="link">
-                    theme in full
-                  </Link>{" "}
-                  or the{" "}
-                  <Link href="/programme" className="link">
-                    programme outline
-                  </Link>
-                  .
-                </p>
-              </div>
-            </Reveal>
-          </div>
-
-          <div className="w-[280rem] flex-none max-md:mt-[50rem] max-md:w-full">
-            <Reveal>
-              <dl className="flex flex-col gap-[26rem]">
-                {[
-                  ["Dates", site.dates],
-                  ["Location", site.location],
-                  ["Host", site.host],
-                  [
-                    "Network",
-                    "Association of Pacific Rim Universities · Sustainable Cities and Landscapes",
-                  ],
-                ].map(([term, value], i) => (
-                  <div
-                    key={term}
-                    className="rise flex flex-col gap-[6rem]"
-                    style={{ transitionDelay: i * 0.06 + "s" }}
-                  >
-                    <dt className="t-lbl dim">{term}</dt>
-                    <dd className="t-b2">{value}</dd>
-                  </div>
-                ))}
-              </dl>
-            </Reveal>
-          </div>
-        </div>
+      <Section label="Committee" halo="right">
+        <Reveal className="rise pb-[60rem] max-md:pb-[36rem]">
+          <p className="t-b1 dim max-w-[70ch]">
+            The 2027 conference is organised by the Department of Architecture at the National
+            University of Singapore, host of the tenth APRU-SCL conference.
+          </p>
+        </Reveal>
+        <Committee />
       </Section>
 
       <Section label="The series" ground="dark" halo="left">
@@ -95,16 +61,6 @@ export default function AboutPage() {
             />
           ))}
         </RuleList>
-      </Section>
-
-      <Section label="Committee" halo="right">
-        <Reveal className="rise pb-[60rem] max-md:pb-[36rem]">
-          <p className="t-b1 dim max-w-[70ch]">
-            The 2027 conference is organised by the Department of Architecture at the National
-            University of Singapore, host of the tenth APRU-SCL conference.
-          </p>
-        </Reveal>
-        <Committee />
       </Section>
     </>
   );

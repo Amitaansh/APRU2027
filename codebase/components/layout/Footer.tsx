@@ -1,24 +1,17 @@
-"use client";
-
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Fragment, type ReactNode } from "react";
 import { LogoNUS } from "@/components/brand/Logos";
+import { Social } from "@/components/brand/Social";
 import { Reveal } from "@/components/motion/Reveal";
-import { CTAButton } from "@/components/ui/CTAButton";
-import { nav, site } from "@/lib/content";
-import { pageKeyFor } from "@/lib/routes";
-import { usePhase } from "@/lib/usePhase";
+import { site } from "@/lib/content";
 
 /**
- * App Flow §2 — the footer carries the always-present CTA and lists all eight
- * routes regardless of phase, which is what keeps the de-emphasized pages
- * reachable while they are out of the primary nav.
+ * A colophon, not a directory.
  *
- * It is the site's one permanently dark surface, and it reads as three bands:
- * the ask, the directory, and the mark. Column headings are set in the serif at
- * text size, which is the reference's signature: a small serif word standing
- * beside sans data, instead of an uppercase mono caption.
+ * It used to carry three bands — an ask with the CTA, a four-column route
+ * listing, and the mark. The listing duplicated the navbar, which now carries
+ * every route including the submenus, and the ask put a second copy of the one
+ * call to action on every page. Both are gone: what is left is where we are on
+ * the left, how to reach us on the right, and the mark.
  *
  * THE MARK is the last screen of every page on the site — four serif capitals
  * gutter to gutter, with the halo docked behind them, turning. It is the one
@@ -27,75 +20,18 @@ import { usePhase } from "@/lib/usePhase";
  *
  * Structure is load-bearing beyond layout: the halo reads this footer's FIRST
  * `.ctr` as the bottom guard rail for every lane on every page (Halo's `step`,
- * which takes `querySelector`). There are two containers now, with the mark
- * between them, and the first one still opens directly below the same
- * `pt-[160rem]` — which is what keeps that rail where it has always been.
+ * which takes `querySelector`). There are two containers, with the mark between
+ * them, and the first one still opens directly below the same `pt-[160rem]` —
+ * which is what keeps that rail where it has always been.
+ *
+ * It is also the site's one permanently dark surface, which is why every page
+ * has to arrive here already dark. See the curtain on the homepage.
  */
 
 const WORDMARK = ["A", "P", "R", "U"];
 
 export function Footer() {
-  const pathname = usePathname();
-  const { cta } = usePhase();
-  const page = pageKeyFor(pathname);
   const contactEmail = process.env.NEXT_PUBLIC_CONTACT_EMAIL;
-
-  /*
-   * Four label/list pairs, against the reference's Navigation / Media /
-   * Address / Hours. Navigation is every route in nav.json rather than a
-   * curated subset — this is the one place nothing may be unreachable — and
-   * the rest is read out of site.json, so no fact is spelled twice.
-   */
-  const directory: { heading: string; items: ReactNode[] }[] = [
-    {
-      heading: "Navigation",
-      items: nav.map((item) => (
-        <Link key={item.route} href={item.route} className="t-b2 link">
-          {item.label}
-        </Link>
-      )),
-    },
-    {
-      heading: "Connect",
-      items: [
-        ...(contactEmail
-          ? [
-              <a key="email" href={"mailto:" + contactEmail} className="t-b2 link">
-                Email
-              </a>,
-            ]
-          : []),
-        <Link key="contact" href="/contact" className="t-b2 link">
-          Contact
-        </Link>,
-      ],
-    },
-    {
-      heading: "Venue",
-      items: [
-        <Link key="venue" href="/venue" className="t-b2 link">
-          Kent Ridge campus
-        </Link>,
-        <p key="host" className="t-b2">
-          {site.hostShort}
-        </p>,
-        <p key="location" className="t-b2">
-          {site.location}
-        </p>,
-      ],
-    },
-    {
-      heading: "Dates",
-      items: [
-        <p key="dates" className="t-b2 tnum">
-          {site.dates}
-        </p>,
-        <p key="series" className="t-b2">
-          {site.seriesName}
-        </p>,
-      ],
-    },
-  ];
 
   return (
     <footer
@@ -103,74 +39,43 @@ export function Footer() {
       className="pb-[38rem] pt-[160rem] max-md:pb-[24rem] max-md:pt-[80rem]"
     >
       <div className="ctr">
-        {/* Band one: the ask. */}
-        <Reveal className="grd pb-[100rem] max-md:pb-[50rem]">
-          <div className="ftr-ask rise">
-            <p className="t-lbl dim pb-[26rem]">Get in touch</p>
-            {contactEmail ? (
-              <a href={"mailto:" + contactEmail} className="t-h3 link">
-                {contactEmail}
-              </a>
-            ) : (
-              <Link href="/contact" className="t-h3 link">
-                Contact the committee
-              </Link>
-            )}
+        {/*
+         * One band. Venue left, contact right — set as a single row on the
+         * fifteen rather than as columns, because two facts do not make a
+         * directory.
+         */}
+        <Reveal className="grd pb-[40rem] max-md:pb-[30rem]">
+          <div className="ftr-venue rise">
+            <LogoNUS />
+            <p className="t-b2 dim pt-[20rem]">
+              Kent Ridge campus, {site.location}
+            </p>
           </div>
 
           <div
-            className="ftr-cta rise flex flex-wrap items-end gap-[16rem] max-md:pt-[40rem]"
-            style={{ transitionDelay: "0.12s" }}
+            className="ftr-reach rise flex flex-col items-end gap-[18rem] max-md:items-start max-md:pt-[40rem]"
+            style={{ transitionDelay: "0.1s" }}
           >
-            <CTAButton page={page} surface="footer" />
-            {cta.secondary && (
-              <CTAButton page={page} surface="footer" variant="secondary" target={cta.secondary} />
+            {contactEmail ? (
+              <a href={"mailto:" + contactEmail} className="t-b1 link">
+                {contactEmail}
+              </a>
+            ) : (
+              <Link href="/contact" className="t-b1 link">
+                Contact us
+              </Link>
             )}
+            <Social />
           </div>
         </Reveal>
-
-        <div className="rule" />
-
-        {/* Band two: the directory. */}
-        <Reveal className="grd ftr-dir pt-[60rem] max-md:pt-[40rem]">
-          <div className="ftr-brand rise">
-            <Link
-              href="/"
-              className="block text-[19rem] leading-none tracking-[-0.02em] [font-weight:500] max-md:text-[16rem]"
-            >
-              <span className="block">APRU</span>
-              <span className="block">Sustainable Cities</span>
-              <span className="f-serif block">&amp; Landscapes</span>
-            </Link>
-            <LogoNUS className="pt-[44rem] max-md:pt-[28rem]" />
-          </div>
-
-          {directory.map((column, i) => (
-            <Fragment key={column.heading}>
-              <p
-                className={"t-lbl dim rise ftr-lbl-" + (i + 1)}
-                style={{ transitionDelay: 0.06 + i * 0.05 + "s" }}
-              >
-                {column.heading}
-              </p>
-              <div
-                className={"rise flex flex-col gap-[10rem] ftr-list-" + (i + 1)}
-                style={{ transitionDelay: 0.1 + i * 0.05 + "s" }}
-              >
-                {column.items}
-              </div>
-            </Fragment>
-          ))}
-        </Reveal>
-
       </div>
 
       {/*
-       * Band three: the mark, and it sits OUTSIDE the container on purpose. It
-       * blends against the halo canvas, and a blend only reaches as far as its
-       * nearest stacking context — inside `.ctr`, which is one, it would find
-       * nothing but the footer's own contents behind it. So it carries `.ctr`'s
-       * gutters itself instead. See BLEND in globals.css.
+       * The mark, and it sits OUTSIDE the container on purpose. It blends
+       * against the halo canvas, and a blend only reaches as far as its nearest
+       * stacking context — inside `.ctr`, which is one, it would find nothing
+       * but the footer's own contents behind it. So it carries `.ctr`'s gutters
+       * itself instead. See BLEND in globals.css.
        *
        * `.ln-mask` is `display: block; overflow: hidden` in the components layer
        * and Tailwind's `flex` overrides only the display, so the clip survives
@@ -178,7 +83,7 @@ export function Footer() {
        * type on the site uses — no new animation mechanism, and reduced motion
        * is already handled.
        */}
-      <Reveal dock className="mark ln-mask mt-[300rem] flex justify-between max-md:mt-[100rem]">
+      <Reveal dock className="mark ln-mask mt-[200rem] flex justify-between max-md:mt-[100rem]">
         {WORDMARK.map((letter, i) => (
           <span key={letter} className="wd" style={{ transitionDelay: i * 0.09 + "s" }}>
             {letter}

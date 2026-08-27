@@ -745,49 +745,23 @@
 
   /*
    * -------------------------------------------------------------------------
-   * FOOTER DIRECTORY
+   * FOOTER
    * -------------------------------------------------------------------------
-   * Placement only, and it lives here rather than at the call site for two
-   * reasons: the component generates these names from a loop index, so Tailwind
-   * cannot see them to generate utilities; and inline styles cannot be
-   * media-queried, which this grid needs -- it rearranges completely below
-   * 768px. The reference's own footer solves it the same way.
+   * Placement only, and it lives here rather than at the call site because
+   * inline styles cannot be media-queried and this row does rearrange below
+   * 768px, where .grd collapses to a block stack and the two cells simply
+   * follow each other.
    *
-   * A label in one column with its list in the two beside it, four pairs
-   * marching across the fifteen.
+   * The four-column directory this used to carry is gone -- the navbar lists
+   * every route now, submenus included, so a second copy of it in the footer
+   * was duplication rather than a safety net. Two facts remain: where we are,
+   * and how to reach us.
    */
-  .ftr-ask {
-    grid-column: 1 / span 8;
+  .ftr-venue {
+    grid-column: 1 / span 6;
   }
-  .ftr-cta {
-    grid-column: 10 / span 6;
-  }
-  .ftr-brand {
-    grid-column: 1 / span 3;
-  }
-  .ftr-lbl-1 {
-    grid-column: 4;
-  }
-  .ftr-list-1 {
-    grid-column: 5 / span 2;
-  }
-  .ftr-lbl-2 {
-    grid-column: 7;
-  }
-  .ftr-list-2 {
-    grid-column: 8 / span 2;
-  }
-  .ftr-lbl-3 {
-    grid-column: 10;
-  }
-  .ftr-list-3 {
-    grid-column: 11 / span 2;
-  }
-  .ftr-lbl-4 {
-    grid-column: 13;
-  }
-  .ftr-list-4 {
-    grid-column: 14 / span 2;
+  .ftr-reach {
+    grid-column: 11 / span 5;
   }
 
   .ftr-meta > :nth-child(1) {
@@ -804,56 +778,51 @@
   }
 
   /*
-   * .grd is a block stack below 768px, which is right for a section of prose
-   * and wrong for a directory -- eight lists stacked is a page of its own. The
-   * footer keeps a grid there, two columns wide, and every pair takes an
-   * explicit cell: labels on one row, their lists on the next, two bands of
-   * two. Everything else in the footer takes the block stack as normal.
+   * -------------------------------------------------------------------------
+   * NAV SUBMENU
+   * -------------------------------------------------------------------------
+   * The one panel on the site that carries an opaque ground of its own, and it
+   * has to: it is drawn OUTSIDE the header precisely because the header's
+   * mix-blend-difference would turn it into a rectangle of inverted page (see
+   * Header.tsx). Sitting outside that blend, it has nothing inverting it, so it
+   * needs real ink and a real ground -- the same bargain the mobile menu makes.
+   *
+   * Paper, not black, in both grounds. A dark section under it would otherwise
+   * need the panel to know which ground it was over, and this component was
+   * built specifically to avoid that question.
+   *
+   * The top padding is the hover bridge: the panel is positioned flush to its
+   * trigger's bottom edge, so the pointer never crosses a gap on the way down.
    */
-  @media (max-width: 767.98px) {
-    .ftr-dir {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10rem 15rem;
+  .nav-menu {
+    background: var(--wh);
+    color: var(--bk);
+    /*
+     * The hairline is not decoration. On the hero the panel reads against the
+     * artwork on its own, but on a white page a white panel has no edge at all
+     * and the links look like loose type dropped on the page. 1px of
+     * currentColor is the same rule `.rule-solid` draws everywhere else, so the
+     * box is defined without introducing a border style of its own.
+     */
+    border: 1px solid currentColor;
+    padding: 20rem 26rem 22rem 20rem;
+    animation: nav-menu-in 0.22s var(--ease-ref) both;
+  }
+
+  @keyframes nav-menu-in {
+    from {
+      opacity: 0;
+      transform: translateY(-6rem);
     }
-    .ftr-brand {
-      grid-column: 1 / -1;
-      grid-row: 1;
-      margin-bottom: 24rem;
+    to {
+      opacity: 1;
+      transform: none;
     }
-    .ftr-lbl-1 {
-      grid-column: 1;
-      grid-row: 2;
-    }
-    .ftr-lbl-2 {
-      grid-column: 2;
-      grid-row: 2;
-    }
-    .ftr-list-1 {
-      grid-column: 1;
-      grid-row: 3;
-    }
-    .ftr-list-2 {
-      grid-column: 2;
-      grid-row: 3;
-    }
-    .ftr-lbl-3 {
-      grid-column: 1;
-      grid-row: 4;
-      margin-top: 24rem;
-    }
-    .ftr-lbl-4 {
-      grid-column: 2;
-      grid-row: 4;
-      margin-top: 24rem;
-    }
-    .ftr-list-3 {
-      grid-column: 1;
-      grid-row: 5;
-    }
-    .ftr-list-4 {
-      grid-column: 2;
-      grid-row: 5;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nav-menu {
+      animation: none;
     }
   }
 }

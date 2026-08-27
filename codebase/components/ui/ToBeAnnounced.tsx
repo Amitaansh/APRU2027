@@ -54,3 +54,16 @@ export function ToBeAnnounced({
 }) {
   return <StatusBlock status="To be announced" title={label} note={note} />;
 }
+
+/**
+ * The structural placeholder, distinct from ToBeAnnounced on purpose.
+ *
+ * ToBeAnnounced is a promise to the visitor: this exists and is being
+ * confirmed. This one is a note to ourselves — the page is in the sitemap so
+ * the structure can be reviewed, and the copy has not been written yet. It
+ * reuses StatusBlock so an empty page still arrives with the drawn hairlines
+ * and the reveal, rather than reading as a page that failed.
+ */
+export function Pending({ note }: { note?: string }) {
+  return <StatusBlock status="Pending" title="[pending from team]" note={note} />;
+}

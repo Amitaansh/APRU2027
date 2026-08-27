@@ -54,7 +54,10 @@ export function CTAButton({
         className={"btn dim cursor-default " + className}
         title="This link will be published shortly"
       >
-        {action.label} <span className="dim">— soon</span>
+        {action.label}
+        {/* A label that already says it is not open yet does not need telling
+            twice — see `pending` in content/phases.ts. */}
+        {!action.pending && <span className="dim"> — soon</span>}
       </span>
     );
   }

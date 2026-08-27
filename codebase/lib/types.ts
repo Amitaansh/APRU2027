@@ -36,12 +36,21 @@ export interface SiteConfig {
 
 export interface NavItem {
   label: string;
-  route: string;
+  /**
+   * Omitted only for a parent that exists to open a submenu and has no page of
+   * its own — Participate. Every item a visitor can land on has one.
+   */
+  route?: string;
   group: "primary" | "footer-only";
   /** Promotes into the primary nav once the resolved phase reaches this id. */
   activeFrom?: PhaseId;
   /** Manual override for content-gated pages (Program). Speakers is derived. */
   active?: boolean;
+  /**
+   * One level, deliberately. The navbar draws a single dropdown, never a tree,
+   * and `flattenNav` in lib/content.ts is what everything else reads instead.
+   */
+  children?: NavItem[];
 }
 
 export interface Speaker {

@@ -1,30 +1,26 @@
 [
   { "label": "Home", "route": "/", "group": "primary" },
   { "label": "About", "route": "/about", "group": "primary" },
-  { "label": "Theme", "route": "/theme", "group": "primary" },
   {
-    "label": "Programme",
-    "route": "/programme",
-    "group": "footer-only",
-    "active": true
+    "label": "Highlight",
+    "route": "/highlights",
+    "group": "primary",
+    "children": [
+      { "label": "Key dates", "route": "/highlights/key-dates", "group": "primary" },
+      { "label": "Working Groups", "route": "/highlights/working-groups", "group": "primary" },
+      { "label": "Keynotes", "route": "/highlights/keynotes", "group": "primary" },
+      { "label": "Field Trip", "route": "/highlights/field-trip", "group": "primary" }
+    ]
   },
+  {
+    "label": "Participate",
+    "group": "primary",
+    "children": [
+      { "label": "Call for Abstracts", "route": "/call-for-abstracts", "group": "primary" },
+      { "label": "Registration", "route": "/register", "group": "primary" }
+    ]
+  },
+  { "label": "Programme", "route": "/programme", "group": "primary" },
   { "label": "Venue", "route": "/venue", "group": "primary" },
-  { "label": "Contact", "route": "/contact", "group": "primary" },
-  {
-    "label": "Speakers",
-    "route": "/speakers",
-    "group": "footer-only"
-  },
-  {
-    "label": "Register",
-    "route": "/register",
-    "group": "footer-only",
-    "activeFrom": "P1"
-  },
-  {
-    "label": "Call for Abstracts",
-    "route": "/call-for-abstracts",
-    "group": "footer-only",
-    "activeFrom": "P2"
-  }
+  { "label": "Contact", "route": "/contact", "group": "primary" }
 ]

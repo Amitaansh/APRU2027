@@ -38,11 +38,12 @@ export const venue = venueJson as VenueSection[];
 export const committee = committeeJson as CommitteeConfig;
 
 /**
- * Speakers drive their own nav promotion — no manual flag to forget. Program
- * keeps an explicit flag because "populated enough to promote" is a judgement
- * call about the schedule, not a row count.
+ * Speakers used to drive their own nav promotion, back when /speakers was a
+ * route that hid itself until the roster landed. It is /highlights/keynotes
+ * now, and the navbar shows the whole structure unconditionally — the point of
+ * the site at this stage is that the team can see every page exists. The roster
+ * still gates what that page renders; see SpeakerGrid.
  */
-export const hasSpeakers = speakers.length > 0;
 
 /**
  * Important dates for display.
@@ -66,8 +67,23 @@ export const dates: ImportantDate[] = (datesJson as ImportantDate[]).map(
       : row,
 );
 
-/** Footer lists every route, always — nothing is ever unreachable. */
-export const allRoutes = nav.map((item) => item.route);
+/**
+ * The nav is a tree now — one level of submenus under Highlight and Participate.
+ * Everything that is not the navbar itself wants the flat list: the sitemap, the
+ * duplicate-route check, and any reachability audit. Flattening in one place is
+ * what stops a child route from being validated or indexed by half the codebase.
+ */
+export function flattenNav(items: NavItem[] = nav): NavItem[] {
+  return items.flatMap((item) => [
+    item,
+    ...(item.children ? flattenNav(item.children) : []),
+  ]);
+}
+
+/** Every route the site actually serves, parents and children alike. */
+export const allRoutes = flattenNav()
+  .map((item) => item.route)
+  .filter((route): route is string => Boolean(route));
 
 // ---------------------------------------------------------------------------
 // Build-time integrity checks (Backend Schema §7)
@@ -86,11 +102,23 @@ function assertContent(): void {
   }
 
   const routes = new Set<string>();
-  for (const item of nav) {
-    if (routes.has(item.route)) fail("duplicate nav route " + item.route);
-    routes.add(item.route);
+  for (const item of flattenNav()) {
+    // A parent that only opens a submenu has no route to collide with, but it
+    // still needs children — otherwise it is a nav item that does nothing.
+    if (!item.route) {
+      if (!item.children?.length) {
+        fail("nav item " + item.label + " has neither a route nor children");
+      }
+    } else {
+      if (routes.has(item.route)) fail("duplicate nav route " + item.route);
+      routes.add(item.route);
+    }
     if (item.group !== "primary" && item.group !== "footer-only") {
-      fail("nav item " + item.route + " has an unknown group");
+      fail("nav item " + item.label + " has an unknown group");
+    }
+    // One level only: the navbar has no markup for a third.
+    if (item.children?.some((child) => child.children)) {
+      fail("nav item " + item.label + " nests more than one level deep");
     }
   }
 
