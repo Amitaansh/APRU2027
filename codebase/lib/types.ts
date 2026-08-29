@@ -127,6 +127,13 @@ export interface CommitteeMember {
   affiliation: string;
   /** Published only when `showEmails` is true — consent-gated (Backend Schema §3.9). */
   email?: string;
+  /**
+   * Basename of the portrait in /public/images/committee, without extension —
+   * both an .avif and a .webp are written there by `npm run imagery`. Omitted
+   * for members with no published staff photo; the roster draws a monogram in
+   * their place rather than leaving a hole.
+   */
+  photo?: string;
 }
 
 export interface CommitteeConfig {

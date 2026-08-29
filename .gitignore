@@ -16,3 +16,9 @@ _claude_tmp/
 APRU-SCL-2027-*.md
 APRU-SCL-2027-DesignBrief-v2.html
 apru-icon.jpg
+
+# Committee portrait originals as downloaded from the DOA staff directory. Same
+# rule as the design art above: sources stay local, the repo ships only the
+# derivatives (codebase/public/images/committee), and `npm run imagery`
+# regenerates those. See committee-source/SOURCE.md for the provenance table.
+committee-source/

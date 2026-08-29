@@ -2,16 +2,19 @@
  * Imagery pipeline (Design Brief §05).
  *
  * Static export disables Next's image optimizer, so every asset has to arrive
- * pre-optimized. This script also applies the signature treatment: satellite /
- * terrain imagery as a grainy two-colour dither, orange over blue. The grain is
- * the point — it comes from an ordered Bayer threshold, not a smooth gradient.
+ * pre-optimized.
+ *
+ * The hero is the supplied key art and nothing else — see buildHero. The dither
+ * below is still what draws the Open Graph card, where the art is a ground for
+ * type rather than the statement itself: a grainy two-colour threshold, orange
+ * over blue, from an ordered Bayer matrix rather than a smooth gradient.
  *
  *   npm run imagery
  *
  * Re-run it when the final art lands; nothing else in the build changes.
  */
 import sharp from "sharp";
-import { mkdir, stat, writeFile } from "node:fs/promises";
+import { mkdir, readdir, stat, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import path from "node:path";
 
@@ -23,7 +26,16 @@ const OUT = path.join(process.cwd(), "public", "images");
 const APP = path.join(process.cwd(), "app");
 const PUB = path.join(process.cwd(), "public");
 
+const PORTRAIT_SOURCE = process.env.PORTRAIT_SOURCE ?? "D:/APRU/committee-source";
+
 const WIDTHS = [768, 1280, 1920];
+/** Committee portraits: 4:5, one size, big enough for the 110rem box at 4x. */
+const PORTRAIT = { w: 440, h: 550 };
+/**
+ * The portraits are desaturated to match the page they sit on. Set to false and
+ * re-run to publish them in colour.
+ */
+const PORTRAIT_MONO = true;
 const HERO_RATIO = 16 / 9;
 
 // Duotone pair — orange ink over a deep brand blue.
@@ -60,32 +72,43 @@ function dither(grey, width, height) {
   return rgb;
 }
 
-async function duotone(width) {
-  const height = Math.round(width / HERO_RATIO);
-  const { data, info } = await sharp(SOURCE, { limitInputPixels: false })
-    .resize(width, height, { fit: "cover", position: "attention" })
-    .greyscale()
-    // Lift contrast before thresholding, or the dither turns to mud.
-    .normalise()
-    .linear(1.15, -12)
-    .raw()
-    .toBuffer({ resolveWithObject: true });
-
-  return sharp(dither(data, info.width, info.height), {
-    raw: { width: info.width, height: info.height, channels: 3 },
-  });
-}
-
+/**
+ * The hero: the supplied art, resized and encoded, and nothing else.
+ *
+ * It used to run through the dither, which cost it its colour. The key art is
+ * already a two-colour piece; greyscaling it threw that away and the Bayer map
+ * then re-derived a palette of its own — a deep navy under a muted orange, in
+ * place of the cerulean and saffron actually drawn. So no treatment here.
+ *
+ * The source is a CMYK JPEG carrying a 640 KB profile; sharp transforms through
+ * it on the way to sRGB. The 3:2 frame gives up 11% of its height to 16:9, and
+ * that band is taken from the centre rather than by `position: "attention"` —
+ * entropy picks a different crop whenever the art is redrawn, and this image has
+ * no subject for it to find.
+ *
+ * Encoded from one decode: the source is 134 MB, so it is read and resized once
+ * and both formats are written off the result.
+ */
 async function buildHero() {
   for (const width of WIDTHS) {
-    const image = await duotone(width);
-    await image
-      .clone()
-      .avif({ quality: 58, effort: 6 })
+    const height = Math.round(width / HERO_RATIO);
+    const { data, info } = await sharp(SOURCE, { limitInputPixels: false })
+      .resize(width, height, { fit: "cover", position: "centre" })
+      .toColourspace("srgb")
+      .removeAlpha()
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+    const raw = { raw: { width: info.width, height: info.height, channels: info.channels } };
+
+    // Quality measured rather than guessed. The art is dense speckle, which is
+    // the worst case for a transform codec: at 1920 the AVIF runs 433 KB at q45,
+    // 684 KB at q55 and 1.29 MB at q72. q55 holds the fine grain against q72 at
+    // half the bytes; q45 visibly thins the orange flecks in the blue field.
+    await sharp(data, raw)
+      .avif({ quality: 55, effort: 6 })
       .toFile(path.join(OUT, "hero-" + width + ".avif"));
-    await image
-      .clone()
-      .webp({ quality: 62 })
+    await sharp(data, raw)
+      .webp({ quality: 80 })
       .toFile(path.join(OUT, "hero-" + width + ".webp"));
     console.log("hero " + width + "px written");
   }
@@ -137,6 +160,52 @@ async function buildOG() {
     .png({ quality: 90 })
     .toFile(path.join(OUT, "..", "og", "default.png"));
   console.log("og card written");
+}
+
+/**
+ * Committee portraits.
+ *
+ * The nine sources are the DOA staff studio set: vertical, dark-ground, shot at
+ * wildly different sizes (207px wide to 1772px). Three things follow from that.
+ *
+ * TOP-ANCHORED. Every source is a seated or standing three-quarter portrait with
+ * the head in the upper third, so a square-ish crop taken from the top lands the
+ * face between a quarter and a third of the way down in all nine — measured, not
+ * assumed. `position: "attention"` was the alternative and is rejected for the
+ * same reason it is on the hero: it re-picks a different crop per image, and here
+ * that means nine faces sitting at nine different heights.
+ *
+ * ONE OUTPUT SIZE. The box is 110rem wide, so 440px covers it to 4x and there is
+ * no srcset to carry. The narrowest source enlarges about 2x to reach it, which
+ * is why the resize is followed by a light sharpen — at this display size that
+ * reads as crisp rather than as upscaled.
+ *
+ * DESATURATED. Six studio setups, six colour temperatures; the page below the
+ * hero is monochrome anyway (see components/home/Hero.tsx). Greyscale makes the
+ * set look like one commission and lets the monogram tiles that stand in for the
+ * three members with no staff photo sit beside them without clashing.
+ */
+async function buildPortraits() {
+  if (!existsSync(PORTRAIT_SOURCE)) {
+    console.log("no portrait source at " + PORTRAIT_SOURCE + " — skipping portraits");
+    return;
+  }
+  const dir = path.join(OUT, "committee");
+  await mkdir(dir, { recursive: true });
+  const sources = (await readdir(PORTRAIT_SOURCE)).filter((f) => /\.(jpe?g|png|webp|avif)$/i.test(f));
+  for (const file of sources) {
+    const slug = file.replace(/\.[^.]+$/, "");
+    let pipe = sharp(path.join(PORTRAIT_SOURCE, file))
+      .resize(PORTRAIT.w, PORTRAIT.h, { fit: "cover", position: "top" })
+      .sharpen({ sigma: 0.6 });
+    if (PORTRAIT_MONO) pipe = pipe.greyscale();
+    const { data, info } = await pipe.toColourspace("srgb").raw().toBuffer({ resolveWithObject: true });
+    const raw = { raw: { width: info.width, height: info.height, channels: info.channels } };
+    await sharp(data, raw).avif({ quality: 60, effort: 6 }).toFile(path.join(dir, slug + ".avif"));
+    await sharp(data, raw).webp({ quality: 82 }).toFile(path.join(dir, slug + ".webp"));
+    console.log("portrait " + slug + " written");
+  }
+  return sources.length;
 }
 
 async function buildIcons() {
@@ -437,6 +506,7 @@ async function main() {
   if (!process.env.SKIP_HERO) await buildHero();
   await buildOG();
   await buildIcons();
+  await buildPortraits();
   await buildHaloTexture();
   await writeFile(
     path.join(OUT, "SOURCE.md"),
@@ -446,8 +516,12 @@ async function main() {
       "Everything in this folder is produced by `npm run imagery`. Do not hand-edit.",
       "",
       "- Source: " + SOURCE,
-      "- Treatment: greyscale, contrast lift, ordered 8x8 Bayer dither, two-colour map (#f89c2c over #143a5c) — Design Brief §05.",
+      "- Hero: the source as supplied — resized to 16:9 from the centre, CMYK transformed to sRGB, no treatment.",
+      "- OG card: greyscale, contrast lift, ordered 8x8 Bayer dither, two-colour map (#f89c2c over #143a5c) — Design Brief §05.",
       "- Widths: " + WIDTHS.join(", ") + " (AVIF + WebP), OG card 1200x630 PNG.",
+      "- Committee portraits: " + PORTRAIT_SOURCE + " — 4:5 crop from the top, " +
+        (PORTRAIT_MONO ? "greyscale, " : "") +
+        PORTRAIT.w + "x" + PORTRAIT.h + " (AVIF + WebP) in ./committee.",
       "",
       "Re-run after final art is supplied.",
       "",

@@ -31,7 +31,7 @@ app/            one folder per route, all statically exported
 components/     ui/ primitives, layout/ shell, plus per-page pieces
 content/        the entire data layer — typed JSON, plus phases.ts
 lib/            phase engine, content loaders, SEO, analytics
-scripts/        imagery pipeline (duotone dither, OG card, icons)
+scripts/        imagery pipeline (hero, dithered OG card, icons)
 ```
 
 There is no database. `content/*.json` is the data layer, typed by

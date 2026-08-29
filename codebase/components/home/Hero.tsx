@@ -4,17 +4,19 @@ import { site } from "@/lib/content";
 /**
  * The supplied key art, full bleed, with the title sitting on it.
  *
- * The artwork is the only colour event above the fold and the only place the
- * orange-over-blue dither appears at size — everything below this section is
- * monochrome. The title is deliberately not set at display scale here: the
- * image is the statement, and the big type arrives in the section after it.
+ * The artwork is the only colour event above the fold — everything below this
+ * section is monochrome. It is the art exactly as supplied, cerulean and
+ * saffron, with no treatment over it: the dither this used to run through
+ * rebuilt its palette out of a greyscale and lost the colour that makes it the
+ * statement. The title is deliberately not set at display scale here: the image
+ * is the statement, and the big type arrives in the section after it.
  *
  * The title is set in white directly on the artwork, which is dark enough across
  * its full area to carry it, and takes no scrim of its own.
  *
  * The band at the top is a different matter. The header inverts itself with
  * `mix-blend-mode: difference`, and a difference against a mid-tone returns
- * another mid-tone -- so the wordmark and the nav dissolved into the dither.
+ * another mid-tone -- so the wordmark and the nav dissolved into the artwork.
  * `.hero-scrim` darkens only the strip they sit in, which is what gives the
  * blend something to invert against. It lives inside the clip so it arrives with
  * the band rather than washing the paper the preloader is still retracting from.
@@ -38,7 +40,7 @@ export function Hero() {
           />
           <img
             src="/images/hero-768.webp"
-            alt="Dithered terrain artwork in orange over blue — the visual identity of the 10th APRU Sustainable Cities and Landscapes conference."
+            alt="Aerial terrain artwork in saffron over cerulean — the visual identity of the 10th APRU Sustainable Cities and Landscapes conference."
             className="absolute inset-0 size-full object-cover"
             width={1920}
             height={1080}

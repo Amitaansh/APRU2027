@@ -21,7 +21,7 @@ import { usePhase } from "@/lib/usePhase";
  * artwork is neither, so the hero darkens the strip the header sits in rather
  * than the header taking a state of its own -- see `.hero-scrim`. Both the
  * wordmark and the nav are set at 500 for the same reason: they have to hold
- * their shape over a dither. Switzer is loaded as a variable face, so that is a
+ * their shape over the artwork. Switzer is loaded as a variable face, so that is
  * real weight rather than a synthesised one, which `font-synthesis-weight: none`
  * would refuse to draw anyway.
  *

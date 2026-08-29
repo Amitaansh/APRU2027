@@ -1196,7 +1196,7 @@ html[data-entered] .hero-clip {
 /*
  * This is not a scrim over the artwork for its own sake -- it is what the header
  * blends against. `mix-blend-mode: difference` over a mid-tone returns another
- * mid-tone, so the wordmark and the nav went muddy against the dither exactly
+ * mid-tone, so the wordmark and the nav went muddy against the artwork exactly
  * where they had no other ground to fall back on. Darkening the top band pushes
  * the difference back to near-white and costs the image nothing below it.
  *

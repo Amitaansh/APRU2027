@@ -67,8 +67,12 @@ of the official logos — deliberately, because recreating an institution's logo
 on its own conference site is a brand-compliance risk. Supply the official files
 and they drop into `components/brand/Logos.tsx`.
 
-The hero and Open Graph imagery is generated from `DOA-APRU-MainImage.jpg` with
-the Design Brief §05 duotone dither treatment. The Open Graph card's type
+The hero and Open Graph imagery is generated from `DOA-APRU-MainImage.jpg`.
+The hero is that art as supplied, with no treatment over it — the Design Brief
+§05 duotone dither was applied to it and then removed, because the art is
+already a two-colour piece and re-deriving a palette from its greyscale cost it
+the cerulean and saffron it is drawn in. The dither still draws the Open Graph
+card, where the art is a ground for type. The Open Graph card's type
 currently renders in a system grotesque rather than Archivo, because Archivo is
 not installed on the machine that generated it — re-run `npm run imagery` on a
 machine with Archivo installed, or supply final art, for an exact match.

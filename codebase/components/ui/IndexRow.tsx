@@ -62,6 +62,7 @@ export function RuleList({
  */
 export function IndexRow({
   href,
+  media,
   number,
   title,
   body,
@@ -73,6 +74,13 @@ export function IndexRow({
   index = 0,
 }: {
   href?: string;
+  /**
+   * A fixed-width block set before the title — a portrait, on the committee
+   * roster. It is rendered into the `.idx-veil` duplicate too, like every other
+   * cell, so it holds still while the hover fill sweeps past it instead of
+   * inverting with the type around it.
+   */
+  media?: ReactNode;
   number?: string;
   title: ReactNode;
   body?: ReactNode;
@@ -99,6 +107,7 @@ export function IndexRow({
 
   const cells = (
     <>
+      {media && <span className="w-[110rem] flex-none max-md:w-[86rem]">{media}</span>}
       {swatch && (
         <span
           aria-hidden="true"

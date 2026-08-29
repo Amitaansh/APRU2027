@@ -1,5 +1,6 @@
 import { Reveal } from "@/components/motion/Reveal";
 import { IndexRow, RuleList } from "@/components/ui/IndexRow";
+import { Portrait } from "@/components/ui/Portrait";
 import { ToBeAnnounced } from "@/components/ui/ToBeAnnounced";
 import { committee } from "@/lib/content";
 
@@ -10,6 +11,11 @@ import { committee } from "@/lib/content";
  *
  * Co-leads get their own ruled rows at display size; the rest of the committee
  * is a column list, which is the right density for a roster of names.
+ *
+ * Both carry a portrait. Six of the nine are on the DOA staff directory and are
+ * graded to match the page by `npm run imagery`; the three who are not get a
+ * monogram in the same box, so the grid stays regular either way — see
+ * components/ui/Portrait.tsx.
  */
 export function Committee() {
   const leads = committee.organising.filter((m) => m.role === "Co-lead");
@@ -21,8 +27,10 @@ export function Committee() {
         {leads.map((member) => (
           <IndexRow
             key={member.name}
+            media={<Portrait name={member.name} photo={member.photo} />}
             title={member.name}
             body={member.affiliation}
+            centreBody
             meta={
               committee.showEmails && member.email ? (
                 <a href={"mailto:" + member.email} className="link">
@@ -44,12 +52,17 @@ export function Committee() {
             {members.map((member) => (
               <li
                 key={member.name}
-                className="t-b2 max-md:mb-[18rem]"
+                className="t-b2 flex gap-[16rem] max-md:mb-[18rem]"
                 style={{ gridColumn: "span 5" }}
               >
-                <span>{member.name}</span>
-                <br />
-                <span className="dim">{member.affiliation}</span>
+                <span className="w-[110rem] flex-none max-md:w-[86rem]">
+                  <Portrait name={member.name} photo={member.photo} />
+                </span>
+                <span className="flex-1">
+                  <span>{member.name}</span>
+                  <br />
+                  <span className="dim">{member.affiliation}</span>
+                </span>
               </li>
             ))}
           </ul>
@@ -71,12 +84,17 @@ export function Committee() {
                 {committee.scientific.map((member) => (
                   <li
                     key={member.name}
-                    className="t-b2 max-md:mb-[18rem]"
+                    className="t-b2 flex gap-[16rem] max-md:mb-[18rem]"
                     style={{ gridColumn: "span 5" }}
                   >
-                    <span>{member.name}</span>
-                    <br />
-                    <span className="dim">{member.affiliation}</span>
+                    <span className="w-[110rem] flex-none max-md:w-[86rem]">
+                      <Portrait name={member.name} photo={member.photo} />
+                    </span>
+                    <span className="flex-1">
+                      <span>{member.name}</span>
+                      <br />
+                      <span className="dim">{member.affiliation}</span>
+                    </span>
                   </li>
                 ))}
               </ul>
