@@ -52,12 +52,20 @@ export function Hero() {
 
       <div className="ctr relative z-[2] flex h-full flex-col justify-end pb-[38rem] max-md:pb-[20rem]">
         <div className="flex items-end justify-between gap-[20rem] text-wh max-md:flex-col max-md:items-start max-md:gap-[24rem]">
-          <MaskLines
-            as="h1"
-            gate="entered"
-            className="t-h3"
-            lines={["Bridging", "Resilience(s)"]}
-          />
+          <div>
+            <MaskLines
+              as="h1"
+              gate="entered"
+              className="t-h3"
+              lines={["Bridging", "Resilience(s)"]}
+            />
+            {/* The full conference name. The title above is the theme, which is
+                the statement; this is what the theme is attached to, and it is
+                far too long to be set at display size. */}
+            <Reveal gate="entered" className="t-b2 rise pt-[18rem] max-md:pt-[12rem]">
+              <p className="max-w-[34ch]">{site.subtitle}</p>
+            </Reveal>
+          </div>
           <Reveal gate="entered" className="t-b2 rise text-right max-md:text-left">
             <p>{site.dates}</p>
             <p>{site.hostShort}</p>

@@ -6,9 +6,11 @@ import { forums } from "@/lib/content";
 import { workingGroupColour } from "@/lib/wg-colour";
 
 /**
- * The eleven confirmed working groups (client roster, 20 Aug 2026). Leads are
- * named with their institution; contact addresses are deliberately not published
- * here — enquiries route through the organising committee.
+ * The twelve confirmed working groups (client roster, 20 Aug 2026). Leads are
+ * named with their institution and, where the proposals document gives one, an
+ * address — these are the contacts a prospective member is meant to write to,
+ * which is the opposite of the committee roster, where addresses are withheld
+ * behind `showEmails`. A lead with no address published is simply not a link.
  *
  * The open panel is animated with `grid-template-rows: 0fr -> 1fr`, which
  * transitions to auto height in CSS without measuring anything, so the accordion
@@ -76,7 +78,13 @@ export function WorkingGroups() {
                     <ul className="flex flex-col gap-[8rem] pt-[24rem]">
                       {group.leads.map((lead) => (
                         <li key={lead.name} className="t-b2">
-                          {lead.name}
+                          {lead.email ? (
+                            <a href={"mailto:" + lead.email} className="link">
+                              {lead.name}
+                            </a>
+                          ) : (
+                            lead.name
+                          )}
                           <span className="dim"> — {lead.institution}</span>
                         </li>
                       ))}

@@ -16,6 +16,9 @@ import { committee } from "@/lib/content";
  * graded to match the page by `npm run imagery`; the three who are not get a
  * monogram in the same box, so the grid stays regular either way — see
  * components/ui/Portrait.tsx.
+ *
+ * The scientific committee is set differently, as a linked text roster. See the
+ * note at that block for why.
  */
 export function Committee() {
   const leads = committee.organising.filter((m) => m.role === "Co-lead");
@@ -77,29 +80,41 @@ export function Committee() {
             note="The scientific committee for the 10th conference is being finalised and will be published here."
           />
         ) : (
-          <>
-            <Reveal>
-              <div className="rule-solid rule-draw" />
-              <ul className="grd rise pt-[30rem]">
-                {committee.scientific.map((member) => (
-                  <li
-                    key={member.name}
-                    className="t-b2 flex gap-[16rem] max-md:mb-[18rem]"
-                    style={{ gridColumn: "span 5" }}
-                  >
-                    <span className="w-[110rem] flex-none max-md:w-[86rem]">
-                      <Portrait name={member.name} photo={member.photo} />
-                    </span>
-                    <span className="flex-1">
-                      <span>{member.name}</span>
-                      <br />
-                      <span className="dim">{member.affiliation}</span>
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </Reveal>
-          </>
+          <Reveal>
+            <div className="rule-solid rule-draw" />
+            {/*
+             * No portrait column here, unlike the organising committee. These
+             * members sit at eight different institutions and none of them are
+             * on the DOA staff directory, so every one would draw a monogram —
+             * a grid of nine initials that says nothing. The name carries a link
+             * to their own faculty page instead, which is both the authority on
+             * how they are titled and the thing a reader actually wants.
+             */}
+            <ul className="grd rise pt-[30rem]">
+              {committee.scientific.map((member) => (
+                <li
+                  key={member.name}
+                  className="t-b2 max-md:mb-[18rem]"
+                  style={{ gridColumn: "span 5" }}
+                >
+                  {member.profileUrl ? (
+                    <a
+                      href={member.profileUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="link"
+                    >
+                      {member.name}
+                    </a>
+                  ) : (
+                    <span>{member.name}</span>
+                  )}
+                  <br />
+                  <span className="dim">{member.affiliation}</span>
+                </li>
+              ))}
+            </ul>
+          </Reveal>
         )}
       </div>
     </div>

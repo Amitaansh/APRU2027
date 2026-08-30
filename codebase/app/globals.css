@@ -259,6 +259,23 @@
     line-height: 1.2;
   }
 
+  /*
+   * Descender headroom for a multi-line .t-h1.
+   *
+   * The scale sets .t-h1 at line-height 0.85 -- tighter than the em box, which
+   * is what gives a one- or two-word page title its density. Set a line that
+   * ENDS in a descender above a line that opens on a cap, though, and the two
+   * collide: "Singapore," over "2027." is the reported case. 0.95 is not a new
+   * value, it is what the same class already uses below 768px.
+   *
+   * Deliberately not applied to .t-h1 itself. Every PageHead title is one or two
+   * words chosen to sit at that density, and loosening all of them to fix one
+   * headline would be paying for the fix on every page.
+   */
+  .lh-clear {
+    line-height: 0.95;
+  }
+
   @media (max-width: 767.98px) {
     .t-d1 {
       font-size: 46rem;
@@ -899,7 +916,10 @@ footer[data-ground="dark"] .ctr {
  */
 .curtain {
   position: relative;
-  height: 200vh;
+  /* 200vh is one screen of hold plus one screen of wipe. A page whose curtain
+   * carries reading matter rather than a statement wants less hold before the
+   * content below it arrives -- see the `height` prop on Curtain.tsx. */
+  height: var(--curtain-h, 200vh);
   background-color: var(--wh);
 }
 

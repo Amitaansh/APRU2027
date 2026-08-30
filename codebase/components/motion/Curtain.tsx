@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef, type CSSProperties, type ReactNode } from "react";
 import { SectionGrid, type HaloLane } from "@/components/ui/Section";
 
 /**
@@ -33,11 +33,19 @@ export function Curtain({
   id,
   label,
   halo,
+  height,
   children,
 }: {
   id?: string;
   label?: string;
   halo?: HaloLane;
+  /**
+   * Total scroll length of the section, default 200vh. The wipe is measured
+   * against `rect.height - innerHeight`, so shortening this shortens the hold
+   * and the wipe together and nothing else has to be told. Anything at or below
+   * 100vh has no travel to wipe across and the section is simply dark.
+   */
+  height?: string;
   children: ReactNode;
 }) {
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -89,7 +97,13 @@ export function Curtain({
   }, []);
 
   return (
-    <section ref={sectionRef} id={id} data-halo-lane={halo} className="curtain">
+    <section
+      ref={sectionRef}
+      id={id}
+      data-halo-lane={halo}
+      className="curtain"
+      style={height ? ({ "--curtain-h": height } as CSSProperties) : undefined}
+    >
       <div className="curtain-pin">
         <div className="curtain-face">
           <div className="ctr">

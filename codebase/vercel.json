@@ -8,6 +8,7 @@
   "redirects": [
     { "source": "/program", "destination": "/programme", "permanent": true },
     { "source": "/theme", "destination": "/", "permanent": true },
-    { "source": "/speakers", "destination": "/highlights/keynotes", "permanent": true }
+    { "source": "/speakers", "destination": "/highlights/keynotes", "permanent": true },
+    { "source": "/venue", "destination": "/visitor-resources", "permanent": true }
   ]
 }

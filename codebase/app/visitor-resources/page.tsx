@@ -6,29 +6,33 @@ import { venue } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
-  title: "Venue and travel",
+  title: "Visitor resources",
   description:
-    "Attendee information for the 10th APRU-SCL conference: Singapore, the NUS Kent Ridge campus, getting here, accommodation, and entry requirements.",
-  path: "/venue",
+    "Attendee information for the 10th APRU-SCL conference: the SDE3 venue on the NUS Kent Ridge campus, getting here, getting around Singapore, practicalities, accommodation, and entry requirements.",
+  path: "/visitor-resources",
 });
 
+/**
+ * Not a venue page. It answers what a visitor arriving in an unfamiliar city
+ * needs — where the rooms are, how the transport works, what the plugs and the
+ * weather are like — which is why getting around lives here rather than on a
+ * page of its own.
+ */
 const TBA_NOTES: Record<string, string> = {
-  "exact-venue":
-    "The exact conference venue within the NUS Kent Ridge campus is being confirmed and will be published here, with room-level detail, ahead of the conference.",
   accommodation:
     "Recommended hotels and any negotiated conference rates are being arranged. Guidance on where to stay, and how to get from each area to campus, will follow.",
 };
 
-export default function VenuePage() {
+export default function VisitorResourcesPage() {
   return (
     <>
       <PageHead
         label="Attendee information"
-        title={["Venue", "and travel"]}
-        lede="Practical information for getting to Singapore and to the NUS Kent Ridge campus. Sections fill in as arrangements are confirmed."
+        title={["Visitor", "resources"]}
+        lede="Getting to Singapore, getting around it, and what to expect when you arrive. Sections fill in as arrangements are confirmed."
       />
 
-      <Section label="Getting here">
+      <Section label="Your visit">
         <div className="flex flex-col">
           {venue.map((section, i) => (
             <Reveal key={section.id}>

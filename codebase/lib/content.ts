@@ -52,6 +52,13 @@ export const committee = committeeJson as CommitteeConfig;
  * milestone; these rows are derived from it so the human-facing table can never
  * drift from the engine (Backend Schema §4.3). Rows the engine does not know
  * about — early-bird, notification — keep whatever `dates.json` says.
+ *
+ * An UNSET milestone defers to `dates.json` rather than blanking the row. The
+ * published schedule and the phase engine are two different commitments: a date
+ * can be announced long before we are willing to let it flip the site's CTA. So
+ * the table can state 15 Sep 2026 while `abstractsOpen` stays null and the site
+ * holds at P0. Filling the milestone still overrides the authored value, which
+ * is what keeps the engine authoritative once it is switched on.
  */
 const DERIVED_FROM_MILESTONES: Record<string, string | null> = {
   "abstracts-open": phases.milestones.abstractsOpen,
@@ -63,7 +70,7 @@ const DERIVED_FROM_MILESTONES: Record<string, string | null> = {
 export const dates: ImportantDate[] = (datesJson as ImportantDate[]).map(
   (row) =>
     row.id in DERIVED_FROM_MILESTONES
-      ? { ...row, date: DERIVED_FROM_MILESTONES[row.id] }
+      ? { ...row, date: DERIVED_FROM_MILESTONES[row.id] ?? row.date }
       : row,
 );
 

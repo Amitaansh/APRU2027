@@ -21,6 +21,6 @@
     ]
   },
   { "label": "Programme", "route": "/programme", "group": "primary" },
-  { "label": "Venue", "route": "/venue", "group": "primary" },
-  { "label": "Contact", "route": "/contact", "group": "primary" }
+  { "label": "Visitor Resources", "route": "/visitor-resources", "group": "primary" },
+  { "label": "Contact", "route": "/contact", "group": "footer-only" }
 ]

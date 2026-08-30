@@ -10,7 +10,7 @@ const PAGE_KEYS: Record<string, string> = {
   "/programme": "programme",
   "/register": "register",
   "/call-for-abstracts": "cfa",
-  "/venue": "venue",
+  "/visitor-resources": "visitor-resources",
   "/contact": "contact",
 };
 

@@ -56,8 +56,8 @@ export default function RegisterPage() {
         <ImportantDates />
         <p className="t-b2 dim pt-[40rem]">
           Planning travel?{" "}
-          <Link href="/venue" className="link">
-            Venue and travel information
+          <Link href="/visitor-resources" className="link">
+            Visitor resources
           </Link>
           .
         </p>

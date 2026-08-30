@@ -31,7 +31,10 @@ import { site } from "@/lib/content";
 const WORDMARK = ["A", "P", "R", "U"];
 
 export function Footer() {
-  const contactEmail = process.env.NEXT_PUBLIC_CONTACT_EMAIL;
+  // Content, not env: the navbar no longer carries Contact, so this is the
+  // site's primary contact affordance and cannot depend on a variable being set
+  // at deploy time. NEXT_PUBLIC_CONTACT_EMAIL still overrides it if present.
+  const contactEmail = process.env.NEXT_PUBLIC_CONTACT_EMAIL || site.contactEmail;
 
   return (
     <footer
@@ -45,26 +48,51 @@ export function Footer() {
          * directory.
          */}
         <Reveal className="grd pb-[40rem] max-md:pb-[30rem]">
+          {/*
+           * The department, not the conference venue. This address is SDE1,
+           * where the Department of Architecture sits; the conference itself is
+           * in SDE3, which /visitor-resources carries. Both are on Architecture
+           * Drive, which is exactly why they are worth keeping apart.
+           */}
           <div className="ftr-venue rise">
-            <LogoNUS />
-            <p className="t-b2 dim pt-[20rem]">
-              Kent Ridge campus, {site.location}
-            </p>
+            <a
+              href="https://cde.nus.edu.sg/arch/"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-block"
+            >
+              <LogoNUS />
+            </a>
+            <address className="t-b2 dim not-italic pt-[20rem] leading-[1.6]">
+              National University of Singapore
+              <br />
+              College of Design and Engineering
+              <br />
+              4 Architecture Drive, SDE1 #03-01
+              <br />
+              Singapore 117 566
+              <br />
+              <a href="tel:+6565168736" className="link">
+                +65 6516 8736
+              </a>
+            </address>
           </div>
 
           <div
             className="ftr-reach rise flex flex-col items-end gap-[18rem] max-md:items-start max-md:pt-[40rem]"
             style={{ transitionDelay: "0.1s" }}
           >
-            {contactEmail ? (
-              <a href={"mailto:" + contactEmail} className="t-b1 link">
-                {contactEmail}
-              </a>
-            ) : (
-              <Link href="/contact" className="t-b1 link">
-                Contact us
-              </Link>
-            )}
+            <a href={"mailto:" + contactEmail} className="t-b1 link">
+              {contactEmail}
+            </a>
+            {/*
+             * Contact came out of the navbar at the client's request, and this
+             * footer deliberately carries no route listing — so without this
+             * line the FAQ would be reachable only from the sitemap.
+             */}
+            <Link href="/contact" className="t-b2 link">
+              Contact and FAQ
+            </Link>
             <Social />
           </div>
         </Reveal>

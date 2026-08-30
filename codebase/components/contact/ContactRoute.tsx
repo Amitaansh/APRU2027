@@ -1,17 +1,22 @@
 "use client";
 
 import { StatusBlock } from "@/components/ui/ToBeAnnounced";
+import { site } from "@/lib/content";
 import { track } from "@/lib/analytics";
 import { usePhase } from "@/lib/usePhase";
 
 /**
  * The contact route is a mailto, not a form (TRD §9) — still outbound, still no
- * capture. Until the committee inbox is supplied, this renders the same labelled
- * coming-soon state the rest of the site uses rather than a dead link.
+ * capture.
+ *
+ * The inbox is content now (site.contactEmail) rather than an environment
+ * variable, so the coming-soon branch below is effectively unreachable. It is
+ * kept because the address being absent is still a state the page should survive
+ * — an emptied content field should degrade, not render "mailto:undefined".
  */
 export function ContactRoute() {
   const { phase } = usePhase();
-  const email = process.env.NEXT_PUBLIC_CONTACT_EMAIL;
+  const email = process.env.NEXT_PUBLIC_CONTACT_EMAIL || site.contactEmail;
 
   if (!email) {
     return (

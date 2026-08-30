@@ -93,7 +93,7 @@ export default function HomePage() {
             <dl className="flex flex-col gap-[34rem] max-md:gap-[26rem]">
               {[
                 ["Dates", site.dates],
-                ["Location", "Kent Ridge campus, " + site.location],
+                ["Location", site.venueAddress],
                 ["Host", site.host],
                 ["Series", site.seriesName],
               ].map(([term, value], i) => (
@@ -122,7 +122,7 @@ export default function HomePage() {
        * footer already dark.
        */}
       <Curtain id="join" halo="right">
-        <MaskLines as="h2" className="t-h1" lines={["Join us in", "Singapore, 2027."]} />
+        <MaskLines as="h2" className="t-h1 lh-clear" lines={["Join us in", "Singapore, 2027."]} />
         <Reveal className="rise flex flex-wrap gap-[16rem] pt-[60rem] max-md:pt-[40rem]">
           <CTAButton page="home" surface="hero" />
         </Reveal>

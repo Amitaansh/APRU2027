@@ -2,27 +2,27 @@
   {
     "id": "abstracts-open",
     "label": "Call for abstracts opens",
-    "date": null
+    "date": "2026-09-15"
   },
   {
     "id": "abstracts-close",
-    "label": "Abstract submission deadline",
-    "date": null
+    "label": "Abstract submission deadline (UTC+8)",
+    "date": "2026-11-15"
   },
   {
     "id": "notification",
     "label": "Notification of acceptance",
-    "date": null
+    "date": "2027-01-15"
   },
   {
     "id": "registration-opens",
     "label": "Registration opens",
-    "date": null
+    "date": "2027-02-01"
   },
   {
     "id": "early-bird",
     "label": "Early-bird registration closes",
-    "date": null
+    "date": "2027-03-01"
   },
   {
     "id": "conference",
