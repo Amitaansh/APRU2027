@@ -928,6 +928,141 @@ footer[data-ground="dark"] .ctr {
 
 /*
  * ===========================================================================
+ * BELT
+ * ===========================================================================
+ * A strip of repeated content translated sideways, wrapped at one set's width.
+ * The mechanics are here and generic; the sponsor band's own sizing is below.
+ *
+ * The transform is written per frame by components/motion/Belt.tsx. Everything
+ * this file has to do is keep the track on one line, let it exceed the screen,
+ * and clip it at the edges.
+ */
+.belt {
+  /*
+   * Hard clip, no fade: the marks are cut at the screen edge like a panel that
+   * happens to be exactly as wide as the window.
+   *
+   * `clip` rather than `hidden`, and that is a correctness fix rather than a
+   * preference. `hidden` makes this a scroll container, so tabbing to a link
+   * that the drift has carried off the left edge scrolls the box to reveal it --
+   * and the belt is then permanently offset from the transform driving it, with
+   * a gap at the right edge that nothing ever closes. `clip` creates no scroll
+   * container, so there is nothing for focus to move. Belt.tsx freezes on
+   * focusin as well, so the link a keyboard reader lands on holds still.
+   */
+  overflow: clip;
+}
+
+.belt-track {
+  display: flex;
+  /* max-content, or flex would fit the sets to the screen and the wrap in
+   * Belt.tsx -- which is measured off ONE set -- would be wrong by the amount
+   * they had been squeezed. */
+  width: max-content;
+  will-change: transform;
+}
+
+/*
+ * Reduced motion. The loop never starts, so the track would otherwise sit at
+ * offset zero showing four identical sets running off the edge; this collapses
+ * it to the one honest row, centred. The copies are aria-hidden already, so
+ * nothing is lost with them.
+ */
+.belt[data-static] .belt-track {
+  width: 100%;
+  justify-content: center;
+  transform: none !important;
+}
+
+.belt[data-static] .belt-track > *:not(:first-child) {
+  display: none;
+}
+
+/*
+ * THE SPONSOR BAND.
+ *
+ * A fixed cell rather than a divided measure, which is the opposite of what the
+ * old wrapped row needed and for the same underlying reason: that row had to fit
+ * a container, and this one has no container to fit. The rhythm is what matters
+ * instead -- an even beat of mark, dot, mark -- so the cell and both gaps are
+ * constants and the belt is simply as long as it is.
+ */
+.spon-cell {
+  width: 220rem;
+  flex: none;
+}
+
+.spon-set {
+  display: flex;
+  align-items: center;
+  gap: 36rem;
+  /* The seam. Without it the last dot of one set butts straight up against the
+   * first mark of the next, and the one place the loop could be seen is the one
+   * place it must not be. It is inside the measured width, which is what makes
+   * it the repeat period rather than a fudge. */
+  padding-right: 36rem;
+}
+
+.spon-set > li {
+  display: flex;
+  align-items: center;
+  gap: 36rem;
+  flex: none;
+}
+
+/*
+ * A dot after EVERY mark, the last of a set included -- that is what carries the
+ * beat across the seam. Coloured to .dim rather than to the type: the belt only
+ * ever runs on the dark ground, where a dot in currentColor would be white and
+ * would read as punctuation between the marks instead of as spacing.
+ */
+.spon-set > li::after {
+  content: "\00b7";
+  color: var(--gr3-dark);
+  font-size: 16rem;
+  line-height: 1;
+}
+
+@media (max-width: 767.98px) {
+  .spon-cell {
+    width: 130rem;
+  }
+
+  .spon-set,
+  .spon-set > li {
+    gap: 20rem;
+  }
+
+  .spon-set {
+    padding-right: 20rem;
+  }
+}
+
+/*
+ * The footer's own opening pad, halved, on the one page that ends on the band.
+ *
+ * #sponsors is dark and the footer is permanently dark, so 180 of section pad
+ * meeting 160 of footer pad does not read as a boundary between two blocks --
+ * it reads as one void with some logos stranded above it. The band gives up
+ * most of its bottom pad in Sponsors.tsx and the footer gives up most of its
+ * top pad here.
+ *
+ * :has() because every other page ends on something that still wants the full
+ * 160rem of air, and because <main> and <footer> are siblings -- see
+ * app/layout.tsx.
+ */
+#main:has(#sponsors) + footer {
+  padding-top: 80rem;
+}
+
+@media (max-width: 767.98px) {
+  #main:has(#sponsors) + footer {
+    padding-top: 56rem;
+  }
+}
+
+/*
+ * ===========================================================================
  * CURTAIN
  * ===========================================================================
  * 200vh of section with a pinned 100vh inner: the screen holds still while

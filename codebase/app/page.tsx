@@ -153,12 +153,12 @@ export default function HomePage() {
        * reads as its lower guard rail, which is the mechanism that holds the
        * departing ring off this type. See guards.below in Halo.tsx.
        *
-       * Dark, because the curtain has already gone black and the footer below is
-       * permanently so; a light section here would be a hole in the run.
+       * It brings its own <section> rather than taking a <Section>, because the
+       * belt inside it has to run off both edges of the screen and `.ctr`'s
+       * gutters are exactly what would stop it. The dark ground and the pads
+       * travel with it. The `.ctr` the halo needs is still in there.
        */}
-      <Section id="sponsors" ground="dark">
-        <Sponsors />
-      </Section>
+      <Sponsors />
     </>
   );
 }

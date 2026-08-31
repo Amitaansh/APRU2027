@@ -1,7 +1,11 @@
 [
-  { "slug": "jtc", "name": "JTC" },
-  { "slug": "singhealth", "name": "SingHealth" },
-  { "slug": "henning-larsen", "name": "Henning Larsen" },
-  { "slug": "tierra-design", "name": "Tierra Design" },
-  { "slug": "ground-up-initiative", "name": "Ground-Up Initiative" }
+  { "slug": "jtc", "name": "JTC", "url": "https://www.jtc.gov.sg/" },
+  { "slug": "singhealth", "name": "SingHealth", "url": "https://www.singhealth.com.sg/" },
+  { "slug": "henning-larsen", "name": "Henning Larsen", "url": "https://henninglarsen.com/" },
+  { "slug": "tierra-design", "name": "Tierra Design", "url": "https://tierradesign.com.sg/" },
+  {
+    "slug": "ground-up-initiative",
+    "name": "Ground-Up Initiative",
+    "url": "https://www.groundupinitiative.org/"
+  }
 ]
