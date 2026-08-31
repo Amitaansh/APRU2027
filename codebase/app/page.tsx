@@ -118,29 +118,19 @@ export default function HomePage() {
       </Section>
 
       {/*
-       * Sponsors sit between the facts and the invitation, which is where the
-       * client asked for them and also the only place they can go: they are an
-       * acknowledgement, so they belong after the page has said what it is and
-       * before it asks for anything. No halo lane — the row runs the full
-       * measure, and a mark colliding with the turning halo is the one thing
-       * this section cannot afford.
-       */}
-      <Section id="sponsors" label="Sponsors">
-        <Sponsors />
-      </Section>
-
-      {/*
        * The darkening. 200vh, pinned, black rising from the bottom edge — and
        * it is the invitation that carries it now, so the page arrives at the
        * footer already dark.
+       *
+       * The sponsor marks ride in its foot band rather than in a section of
+       * their own. They had one, between the facts and the invitation, and it
+       * declared no halo lane — which does not keep the ring away, it only
+       * removes the constraint on it, and the ring crosses lanes through exactly
+       * that gap. In the foot they sit in the same columns as the statement,
+       * where the lane guarantees they cannot be reached. See Curtain's `foot`.
        */}
-      <Curtain id="join" halo="right">
-        {/* Three explicit lines, never two that wrap — see .lh-clear. */}
-        <MaskLines
-          as="h2"
-          className="t-h1 lh-clear"
-          lines={["Join us in", "Singapore,", "2027."]}
-        />
+      <Curtain id="join" halo="right" foot={<Sponsors />}>
+        <MaskLines as="h2" className="t-h1 lh-clear" lines={["Join us in", "Singapore, 2027."]} />
         <Reveal className="rise flex flex-wrap gap-[16rem] pt-[60rem] max-md:pt-[40rem]">
           <CTAButton page="home" surface="hero" />
         </Reveal>

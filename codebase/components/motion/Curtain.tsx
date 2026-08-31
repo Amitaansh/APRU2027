@@ -28,12 +28,20 @@ import { SectionGrid, type HaloLane } from "@/components/ui/Section";
  * completes, the duplicate is dropped and the section itself takes
  * `data-ground="dark"` — so links, focus rings and screen readers are always
  * working against one live copy, never the overlay.
+ *
+ * `foot` is a second band, pinned to the bottom of the pinned screen instead of
+ * being added to the centred stack. It gets a SectionGrid of its own so that it
+ * takes the same content columns as the statement — and it has to come AFTER
+ * the statement's `.ctr` in the markup, because the halo finds a section's lane
+ * with `querySelector(".grd")` and measures the free space beside whichever
+ * grid it hits first. See readSlot in components/brand/Halo.tsx.
  */
 export function Curtain({
   id,
   label,
   halo,
   height,
+  foot,
   children,
 }: {
   id?: string;
@@ -46,6 +54,12 @@ export function Curtain({
    * 100vh has no travel to wipe across and the section is simply dark.
    */
   height?: string;
+  /**
+   * A band held at the foot of the pinned screen, for anything that belongs on
+   * this screen without belonging to its statement. Rendered into both faces so
+   * that it wipes with everything else.
+   */
+  foot?: ReactNode;
   children: ReactNode;
 }) {
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -96,6 +110,16 @@ export function Curtain({
     return () => cancelAnimationFrame(frame);
   }, []);
 
+  // Authored once and rendered into both faces, like `children` above it: two
+  // copies that could drift apart is exactly what would show as a seam.
+  const band = foot ? (
+    <div className="curtain-foot">
+      <div className="ctr">
+        <SectionGrid halo={halo}>{foot}</SectionGrid>
+      </div>
+    </div>
+  ) : null;
+
   return (
     <section
       ref={sectionRef}
@@ -105,25 +129,27 @@ export function Curtain({
       style={height ? ({ "--curtain-h": height } as CSSProperties) : undefined}
     >
       <div className="curtain-pin">
-        <div className="curtain-face">
+        <div className={"curtain-face" + (foot ? " has-foot" : "")}>
           <div className="ctr">
             <SectionGrid label={label} halo={halo}>
               {children}
             </SectionGrid>
           </div>
+          {band}
         </div>
 
         <div
           ref={overlayRef}
           aria-hidden="true"
           data-ground="dark"
-          className="curtain-face curtain-veil"
+          className={"curtain-face curtain-veil" + (foot ? " has-foot" : "")}
         >
           <div className="ctr">
             <SectionGrid label={label} halo={halo}>
               {children}
             </SectionGrid>
           </div>
+          {band}
         </div>
       </div>
     </section>

@@ -208,21 +208,11 @@
     line-height: 0.82;
   }
 
-  /*
-   * NOTE ON DISPLAY LEADING. A masked line does not sit `line-height` from its
-   * neighbour. `.e-lh .ln-mask` pads each line by `--off` top and bottom and
-   * pulls it back with equal negative margins -- but adjacent negative margins
-   * COLLAPSE to one while both paddings still apply, so every mask-to-mask gap
-   * is `line-height + --off`, currently 0.68 + 0.22 = 0.90em. Every title below
-   * breaks onto a lowercase second line, so the clearance that matters is
-   * x-height, not cap height, and 0.90em leaves room for the descender above.
-   * Read these numbers as leading + 0.22em, not as leading.
-   */
   .t-h1 {
     font-family: var(--font-hedvig), ui-serif, Georgia, serif;
     font-size: 175rem;
     letter-spacing: -0.03em;
-    line-height: 0.68;
+    line-height: 0.85;
   }
 
   .t-h2 {
@@ -270,21 +260,20 @@
   }
 
   /*
-   * The homepage invitation, which is the one display line that breaks onto a
-   * CAPITAL second and third line -- "Singapore," then "2027." -- and so needs
-   * more room under the descenders than a page title does.
+   * Descender headroom for a multi-line .t-h1.
    *
-   * 0.78 + --off puts the gaps at 1.00em. Read the note above .t-h1 first: the
-   * uneven spacing this replaced was not a leading problem at all. The line was
-   * authored as two entries, "Join us in" and "Singapore, 2027.", and the second
-   * one WRAPPED. A wrap inside a single mask is spaced at bare `line-height`,
-   * while the gap to the mask above it also carries `--off` -- so the same
-   * headline had one loose gap and one tight one, which is exactly what was
-   * reported. Authoring all three lines explicitly is what makes them even; this
-   * value only sets how even.
+   * The scale sets .t-h1 at line-height 0.85 -- tighter than the em box, which
+   * is what gives a one- or two-word page title its density. Set a line that
+   * ENDS in a descender above a line that opens on a cap, though, and the two
+   * collide: "Singapore," over "2027." is the reported case. 0.95 is not a new
+   * value, it is what the same class already uses below 768px.
+   *
+   * Deliberately not applied to .t-h1 itself. Every PageHead title is one or two
+   * words chosen to sit at that density, and loosening all of them to fix one
+   * headline would be paying for the fix on every page.
    */
   .lh-clear {
-    line-height: 0.78;
+    line-height: 0.95;
   }
 
   @media (max-width: 767.98px) {
@@ -879,6 +868,21 @@
   color: var(--orange);
 }
 
+/*
+ * The sponsor marks are written near-black on transparent by `npm run imagery`,
+ * which is correct on paper and invisible on the dark ground. Inverting the RGB
+ * leaves alpha untouched, so the antialiased edges survive and a monochrome mark
+ * comes out clean white.
+ *
+ * It flips with the ground exactly as .dim does, which is why it belongs here
+ * rather than in the curtain: the veil face carries data-ground="dark" always,
+ * and the live face inherits it the moment the wipe hands over -- so the row is
+ * black on the paper half of the curtain and white on the black half, for free.
+ */
+[data-ground="dark"] .spon-mark {
+  filter: invert(1);
+}
+
 [data-ground="dark"] ::selection {
   background: var(--orange);
   color: var(--bk);
@@ -959,6 +963,39 @@ footer[data-ground="dark"] .ctr {
   height: 100%;
   flex-direction: column;
   justify-content: center;
+  /* Containing block for .curtain-foot, so the band is clipped by the veil's
+   * own clip-path rather than by .curtain-pin's. */
+  position: relative;
+}
+
+/*
+ * THE FOOT BAND. Taken out of the centred stack rather than appended to it:
+ * .curtain-pin hides its overflow, so a taller stack would clip on a short or
+ * an ultrawide window long before it would push, and the invitation should not
+ * move to make room for an acknowledgement anyway.
+ *
+ * It sits inside a SectionGrid of its own -- see Curtain.tsx -- so it takes the
+ * same content columns as the statement and stays out of the halo's lane.
+ */
+.curtain-foot {
+  position: absolute;
+  left: 0;
+  right: 0;
+  /* vh as well as rem, and that is the whole trick of this band. Every length
+   * on the site scales with the viewport WIDTH, while the face it sits in is
+   * 100vh -- so on a 21:9 window the type grows and the room for it does not.
+   * min() lets the band give way on exactly those viewports and nowhere else. */
+  bottom: min(70rem, 6vh);
+}
+
+/*
+ * Reserve the band's height out of the centring, so the invitation centres in
+ * what is left rather than behind it -- .curtain-pin hides its overflow, so the
+ * two competing for the same screen would show as a clipped headline, not as a
+ * push. Both terms are measured from the band above and capped in vh with it.
+ */
+.curtain-face.has-foot > .ctr {
+  padding-bottom: min(220rem, 19vh);
 }
 
 .curtain-veil {
@@ -996,6 +1033,16 @@ footer[data-ground="dark"] .ctr {
 
   .curtain-face .sec-label {
     margin-top: 0;
+  }
+
+  /* Nothing to pin the band to, so it simply follows the statement. */
+  .curtain-foot {
+    position: static;
+    padding-top: 60rem;
+  }
+
+  .curtain-face.has-foot > .ctr {
+    padding-bottom: 0;
   }
 }
 
