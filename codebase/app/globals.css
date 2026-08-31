@@ -208,11 +208,21 @@
     line-height: 0.82;
   }
 
+  /*
+   * NOTE ON DISPLAY LEADING. A masked line does not sit `line-height` from its
+   * neighbour. `.e-lh .ln-mask` pads each line by `--off` top and bottom and
+   * pulls it back with equal negative margins -- but adjacent negative margins
+   * COLLAPSE to one while both paddings still apply, so every mask-to-mask gap
+   * is `line-height + --off`, currently 0.68 + 0.22 = 0.90em. Every title below
+   * breaks onto a lowercase second line, so the clearance that matters is
+   * x-height, not cap height, and 0.90em leaves room for the descender above.
+   * Read these numbers as leading + 0.22em, not as leading.
+   */
   .t-h1 {
     font-family: var(--font-hedvig), ui-serif, Georgia, serif;
     font-size: 175rem;
     letter-spacing: -0.03em;
-    line-height: 0.85;
+    line-height: 0.68;
   }
 
   .t-h2 {
@@ -260,20 +270,21 @@
   }
 
   /*
-   * Descender headroom for a multi-line .t-h1.
+   * The homepage invitation, which is the one display line that breaks onto a
+   * CAPITAL second and third line -- "Singapore," then "2027." -- and so needs
+   * more room under the descenders than a page title does.
    *
-   * The scale sets .t-h1 at line-height 0.85 -- tighter than the em box, which
-   * is what gives a one- or two-word page title its density. Set a line that
-   * ENDS in a descender above a line that opens on a cap, though, and the two
-   * collide: "Singapore," over "2027." is the reported case. 0.95 is not a new
-   * value, it is what the same class already uses below 768px.
-   *
-   * Deliberately not applied to .t-h1 itself. Every PageHead title is one or two
-   * words chosen to sit at that density, and loosening all of them to fix one
-   * headline would be paying for the fix on every page.
+   * 0.78 + --off puts the gaps at 1.00em. Read the note above .t-h1 first: the
+   * uneven spacing this replaced was not a leading problem at all. The line was
+   * authored as two entries, "Join us in" and "Singapore, 2027.", and the second
+   * one WRAPPED. A wrap inside a single mask is spaced at bare `line-height`,
+   * while the gap to the mask above it also carries `--off` -- so the same
+   * headline had one loose gap and one tight one, which is exactly what was
+   * reported. Authoring all three lines explicitly is what makes them even; this
+   * value only sets how even.
    */
   .lh-clear {
-    line-height: 0.95;
+    line-height: 0.78;
   }
 
   @media (max-width: 767.98px) {

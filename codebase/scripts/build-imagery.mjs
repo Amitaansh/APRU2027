@@ -14,7 +14,7 @@
  * Re-run it when the final art lands; nothing else in the build changes.
  */
 import sharp from "sharp";
-import { mkdir, readdir, stat, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, stat, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import path from "node:path";
 
@@ -206,6 +206,171 @@ async function buildPortraits() {
     console.log("portrait " + slug + " written");
   }
   return sources.length;
+}
+
+/**
+ * Sponsor and partner logos.
+ *
+ * Five marks from five brand teams, in five formats, at five aspect ratios.
+ * They have to arrive on the page looking like one set, which needs two things
+ * doing to them.
+ *
+ * MONOCHROME, BY CURVE, NOT BY SILHOUETTE. Flattening each mark to a solid
+ * black shape via its alpha would be simpler and would destroy JTC, whose
+ * wordmark is white knocked out of a solid blob — the letters would go black on
+ * black. So the ink is pushed toward black with a gamma curve on luminance
+ * instead: the JTC blob and the SingHealth brushstroke land near-black, while
+ * every knockout and speckle stays white. White stays white at any gamma, which
+ * is the property that makes this safe.
+ *
+ * EQUAL AREA, NOT EQUAL HEIGHT. The marks run from 3.1:1 (Henning Larsen) to
+ * 0.68:1 (Tierra). Matching heights would make the wide one enormous and the
+ * tall one a stamp; matching areas is what reads as "the same size" to the eye.
+ * The caps then stop a very wide or very tall mark from running away.
+ */
+const SPONSOR_SOURCE =
+  process.env.SPONSOR_SOURCE ??
+  "C:/Users/amita/National University of Singapore/Chee Qian Ning - APRU 2027/Sponsor and Partners Logo";
+
+/**
+ * Every mark is written onto a canvas of IDENTICAL size, scaled to a matched
+ * optical area within it and centred. That is what lets the page render the set
+ * with one box size and still have them look evenly weighted — sizing by height
+ * in CSS would throw the area matching away and make the wide marks huge.
+ */
+const SPONSOR_CANVAS_W = 640;
+const SPONSOR_CANVAS_H = 400;
+/** Geometric mean each trimmed mark is scaled to, before the caps apply. */
+const SPONSOR_SIZE = 300;
+const SPONSOR_MAX_W = 580;
+const SPONSOR_MAX_H = 360;
+/** Pushes mid-tone brand colour to near-black and leaves white untouched. */
+const SPONSOR_GAMMA = 3.9;
+
+const SPONSORS = [
+  { slug: "ground-up-initiative", name: "Ground-Up Initiative", file: "GUI/GUI Logo 1C-01.png" },
+  { slug: "henning-larsen", name: "Henning Larsen", file: "Henning Larsen/HL Logo Black RGB.png" },
+  { slug: "jtc", name: "JTC", file: "JTC/JTC Logo_Tagline_RGB for Digital.png" },
+  // EPS: libvips has no PostScript delegate here, so the mark comes from the
+  // TIFF preview Illustrator embeds in the file. 448x332, which is enough for a
+  // logo row but is the reason this one is the least sharp of the five — ask
+  // the brand team for a PNG or SVG if it ever needs to run larger.
+  { slug: "singhealth", name: "SingHealth", file: "SingHealth/SingHealth_logo_CMYK.eps", eps: true },
+  // No alpha channel: black line art on a white JPEG ground. Its coverage is
+  // derived from luminance below rather than read from the file.
+  { slug: "tierra-design", name: "Tierra Design", file: "Tierra Design/Tierra Design_Black (HighRes).jpg", flat: true },
+];
+
+/** Pull the TIFF preview out of a DOS-header (C5D0D3C6) binary EPS. */
+async function epsPreview(file) {
+  const buffer = await readFile(file);
+  if (buffer.readUInt32LE(0) !== 0xc6d3d0c5) {
+    throw new Error("not a binary EPS with a DOS header: " + file);
+  }
+  const offset = buffer.readUInt32LE(20);
+  const length = buffer.readUInt32LE(24);
+  if (!offset || !length) throw new Error("EPS carries no TIFF preview: " + file);
+  return buffer.subarray(offset, offset + length);
+}
+
+async function buildSponsors() {
+  if (!existsSync(SPONSOR_SOURCE)) {
+    console.log("no sponsor source at " + SPONSOR_SOURCE + " — skipping sponsors");
+    return 0;
+  }
+  const dir = path.join(OUT, "sponsors");
+  await mkdir(dir, { recursive: true });
+
+  // out = 255 * (in/255)^gamma, precomputed.
+  const curve = new Uint8Array(256);
+  for (let i = 0; i < 256; i += 1) {
+    curve[i] = Math.round(255 * Math.pow(i / 255, SPONSOR_GAMMA));
+  }
+
+  let written = 0;
+  for (const sponsor of SPONSORS) {
+    const source = sponsor.eps
+      ? await epsPreview(path.join(SPONSOR_SOURCE, sponsor.file))
+      : path.join(SPONSOR_SOURCE, sponsor.file);
+
+    // failOn:'none' — the embedded previews carry warning-level TIFF tags that
+    // would otherwise abort the read.
+    const { data, info } = await sharp(source, { failOn: "none" })
+      .ensureAlpha()
+      .toColourspace("srgb")
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+
+    const px = info.width * info.height;
+    const out = Buffer.alloc(px * 4);
+    for (let i = 0; i < px; i += 1) {
+      const s = i * info.channels;
+      const luma = Math.round(
+        0.2126 * data[s] + 0.7152 * data[s + 1] + 0.0722 * data[s + 2],
+      );
+      const ink = curve[luma];
+      out[i * 4] = ink;
+      out[i * 4 + 1] = ink;
+      out[i * 4 + 2] = ink;
+      // A flat source has no alpha worth reading: white is the page, so
+      // coverage is the inverse of luminance and the ink itself is black.
+      out[i * 4 + 3] = sponsor.flat ? 255 - luma : data[s + 3];
+    }
+
+    const trimmed = await sharp(out, {
+      raw: { width: info.width, height: info.height, channels: 4 },
+    })
+      .trim({ threshold: 1 })
+      .toBuffer({ resolveWithObject: true });
+
+    const { width: tw, height: th } = trimmed.info;
+    const ratio = tw / th;
+    let w = Math.round(Math.sqrt(SPONSOR_SIZE * SPONSOR_SIZE * ratio));
+    let h = Math.round(w / ratio);
+    if (h > SPONSOR_MAX_H) {
+      h = SPONSOR_MAX_H;
+      w = Math.round(h * ratio);
+    }
+    if (w > SPONSOR_MAX_W) {
+      w = SPONSOR_MAX_W;
+      h = Math.round(w / ratio);
+    }
+
+    const scaled = await sharp(trimmed.data, {
+      raw: {
+        width: trimmed.info.width,
+        height: trimmed.info.height,
+        channels: trimmed.info.channels,
+      },
+    })
+      .resize(w, h, { fit: "fill" })
+      .png()
+      .toBuffer();
+
+    const canvas = sharp({
+      create: {
+        width: SPONSOR_CANVAS_W,
+        height: SPONSOR_CANVAS_H,
+        channels: 4,
+        background: { r: 0, g: 0, b: 0, alpha: 0 },
+      },
+    }).composite([{ input: scaled, gravity: "centre" }]);
+
+    const flat = await canvas.png().toBuffer();
+    // WebP first, PNG as the fallback source — the marks are flat black on
+    // transparency, where PNG stays honest and small.
+    await sharp(flat).webp({ quality: 90, alphaQuality: 100 }).toFile(path.join(dir, sponsor.slug + ".webp"));
+    await sharp(flat)
+      .png({ compressionLevel: 9, palette: true })
+      .toFile(path.join(dir, sponsor.slug + ".png"));
+
+    console.log(
+      "sponsor " + sponsor.slug + " mark " + w + "x" + h +
+        " on " + SPONSOR_CANVAS_W + "x" + SPONSOR_CANVAS_H,
+    );
+    written += 1;
+  }
+  return written;
 }
 
 async function buildIcons() {
@@ -507,6 +672,7 @@ async function main() {
   await buildOG();
   await buildIcons();
   await buildPortraits();
+  await buildSponsors();
   await buildHaloTexture();
   await writeFile(
     path.join(OUT, "SOURCE.md"),

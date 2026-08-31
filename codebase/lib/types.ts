@@ -137,6 +137,17 @@ export interface ImportantDate {
   date: string | null;
 }
 
+export interface Sponsor {
+  /**
+   * Basename of the mark in /public/images/sponsors, without extension —
+   * written by `npm run imagery` from the brand files in shared storage.
+   */
+  slug: string;
+  name: string;
+  /** Omitted until the partner supplies one; the mark then renders unlinked. */
+  url?: string;
+}
+
 export interface FAQItem {
   id: string;
   question: string;

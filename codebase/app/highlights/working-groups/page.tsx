@@ -40,10 +40,23 @@ export default function WorkingGroupsPage() {
        * nothing between them and the roster they came for.
        */}
       <Curtain label="Working groups" halo="right" height="130vh">
+        {/*
+         * Set in the serif rather than the sans: this paragraph is the only body
+         * copy on the site that gets a held screen to itself, and the sans reads
+         * as a caption at that scale.
+         *
+         * The SIZE is a constraint, not a preference. `.curtain-pin` is a 100vh
+         * box with `overflow: hidden`, so anything taller than the viewport is
+         * silently cut off at both ends — at h4 this ran ~780px and was clipped
+         * on any 1440x760 laptop. 32 with 1.2 leading holds the whole paragraph
+         * inside a 700px viewport. Lengthen this text and check it again.
+         */}
         <Reveal className="rise">
-          <p className="t-b1 dim max-w-[70ch]">{forums.intro}</p>
+          <p className="f-serif dim max-w-[56ch] text-[32rem] leading-[1.2] tracking-[-0.02em]">
+            {forums.intro}
+          </p>
           {forums.introLink && (
-            <p className="t-b1 dim max-w-[70ch] pt-[20rem]">
+            <p className="t-b1 dim max-w-[70ch] pt-[28rem]">
               {forums.introLink.lead}{" "}
               <a
                 href={forums.introLink.url}

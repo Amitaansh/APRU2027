@@ -1,4 +1,5 @@
 import { Hero } from "@/components/home/Hero";
+import { Sponsors } from "@/components/home/Sponsors";
 import { Curtain } from "@/components/motion/Curtain";
 import { Preloader } from "@/components/motion/Preloader";
 import { MaskLines, Reveal } from "@/components/motion/Reveal";
@@ -117,12 +118,29 @@ export default function HomePage() {
       </Section>
 
       {/*
+       * Sponsors sit between the facts and the invitation, which is where the
+       * client asked for them and also the only place they can go: they are an
+       * acknowledgement, so they belong after the page has said what it is and
+       * before it asks for anything. No halo lane — the row runs the full
+       * measure, and a mark colliding with the turning halo is the one thing
+       * this section cannot afford.
+       */}
+      <Section id="sponsors" label="Sponsors">
+        <Sponsors />
+      </Section>
+
+      {/*
        * The darkening. 200vh, pinned, black rising from the bottom edge — and
        * it is the invitation that carries it now, so the page arrives at the
        * footer already dark.
        */}
       <Curtain id="join" halo="right">
-        <MaskLines as="h2" className="t-h1 lh-clear" lines={["Join us in", "Singapore, 2027."]} />
+        {/* Three explicit lines, never two that wrap — see .lh-clear. */}
+        <MaskLines
+          as="h2"
+          className="t-h1 lh-clear"
+          lines={["Join us in", "Singapore,", "2027."]}
+        />
         <Reveal className="rise flex flex-wrap gap-[16rem] pt-[60rem] max-md:pt-[40rem]">
           <CTAButton page="home" surface="hero" />
         </Reveal>

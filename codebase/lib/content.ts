@@ -6,6 +6,7 @@ import forumsJson from "@/content/forums.json";
 import datesJson from "@/content/dates.json";
 import faqJson from "@/content/faq.json";
 import venueJson from "@/content/venue.json";
+import sponsorsJson from "@/content/sponsors.json";
 import committeeJson from "@/content/committee.json";
 import { phases } from "@/content/phases";
 import type {
@@ -17,6 +18,7 @@ import type {
   ProgramConfig,
   SiteConfig,
   Speaker,
+  Sponsor,
   VenueSection,
 } from "@/lib/types";
 
@@ -36,6 +38,7 @@ export const forums = forumsJson as ForumsConfig;
 export const faq = faqJson as FAQItem[];
 export const venue = venueJson as VenueSection[];
 export const committee = committeeJson as CommitteeConfig;
+export const sponsors = sponsorsJson as Sponsor[];
 
 /**
  * Speakers used to drive their own nav promotion, back when /speakers was a
