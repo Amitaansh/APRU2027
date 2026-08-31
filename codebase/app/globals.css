@@ -260,20 +260,28 @@
   }
 
   /*
-   * Descender headroom for a multi-line .t-h1.
+   * The homepage invitation, and the one place on the site where the leading has
+   * to be read as leading + --off rather than as leading.
    *
-   * The scale sets .t-h1 at line-height 0.85 -- tighter than the em box, which
-   * is what gives a one- or two-word page title its density. Set a line that
-   * ENDS in a descender above a line that opens on a cap, though, and the two
-   * collide: "Singapore," over "2027." is the reported case. 0.95 is not a new
-   * value, it is what the same class already uses below 768px.
+   * A masked line does not sit `line-height` from its neighbour: .e-lh .ln-mask
+   * pads each line by --off top and bottom and pulls it back with equal negative
+   * margins, and adjacent negative margins COLLAPSE to one while both paddings
+   * still apply. Every mask-to-mask gap is therefore `line-height + --off`.
+   *
+   * 0.78 puts the gaps at exactly 1.00em, which is what makes the three lines
+   * even. They were not: authored as two entries, "Join us in" and "Singapore,
+   * 2027.", the second one wrapped -- and a wrap INSIDE a mask is spaced at bare
+   * `line-height` while the gap above it also carries --off, so the headline had
+   * one gap of 1.17em and one of 0.95em. Authoring all three lines explicitly is
+   * what makes them even; this value only sets how even, and 1.00em is also what
+   * clears the descender on "Singapore," over the caps of "2027.".
    *
    * Deliberately not applied to .t-h1 itself. Every PageHead title is one or two
    * words chosen to sit at that density, and loosening all of them to fix one
    * headline would be paying for the fix on every page.
    */
   .lh-clear {
-    line-height: 0.95;
+    line-height: 0.78;
   }
 
   @media (max-width: 767.98px) {

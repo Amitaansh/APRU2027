@@ -122,19 +122,43 @@ export default function HomePage() {
        * it is the invitation that carries it now, so the page arrives at the
        * footer already dark.
        *
-       * The sponsor marks ride in its foot band rather than in a section of
-       * their own. They had one, between the facts and the invitation, and it
-       * declared no halo lane — which does not keep the ring away, it only
-       * removes the constraint on it, and the ring crosses lanes through exactly
-       * that gap. In the foot they sit in the same columns as the statement,
-       * where the lane guarantees they cannot be reached. See Curtain's `foot`.
        */}
-      <Curtain id="join" halo="right" foot={<Sponsors />}>
-        <MaskLines as="h2" className="t-h1 lh-clear" lines={["Join us in", "Singapore, 2027."]} />
-        <Reveal className="rise flex flex-wrap gap-[16rem] pt-[60rem] max-md:pt-[40rem]">
+      <Curtain id="join" halo="right">
+        {/*
+         * Three authored lines, never two that wrap. A wrapped line inside one
+         * mask is spaced at bare `line-height`, while the gap to the mask above
+         * it also carries `--off` -- so the same headline came out with one
+         * loose gap and one tight one. See .lh-clear.
+         */}
+        <MaskLines
+          as="h2"
+          className="t-h1 lh-clear"
+          lines={["Join us in", "Singapore,", "2027."]}
+        />
+        <Reveal className="rise flex flex-wrap gap-[16rem] pt-[32rem] max-md:pt-[40rem]">
           <CTAButton page="home" surface="hero" />
         </Reveal>
       </Curtain>
+
+      {/*
+       * The acknowledgement, on a screen of its own and after the ask.
+       *
+       * It declares no halo lane, and HERE that is safe where it was not before.
+       * The first attempt put these marks between the facts and the invitation,
+       * which is inside the crossing from one lane to the next — declaring no
+       * lane there did not move the ring away, it only removed the constraint on
+       * it, and the ring swept straight across the row. This sits past the last
+       * lane section instead, where `arrive` is already measuring the departure
+       * from #join's bottom and the ring has gone. It is also what the halo now
+       * reads as its lower guard rail, which is the mechanism that holds the
+       * departing ring off this type. See guards.below in Halo.tsx.
+       *
+       * Dark, because the curtain has already gone black and the footer below is
+       * permanently so; a light section here would be a hole in the run.
+       */}
+      <Section id="sponsors" ground="dark">
+        <Sponsors />
+      </Section>
     </>
   );
 }
