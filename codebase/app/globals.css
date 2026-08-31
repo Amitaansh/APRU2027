@@ -1012,15 +1012,23 @@ footer[data-ground="dark"] .ctr {
 
 /*
  * A dot after EVERY mark, the last of a set included -- that is what carries the
- * beat across the seam. Coloured to .dim rather than to the type: the belt only
- * ever runs on the dark ground, where a dot in currentColor would be white and
- * would read as punctuation between the marks instead of as spacing.
+ * beat across the seam.
+ *
+ * DRAWN, NOT TYPESET. It was a middle dot glyph, and a middle dot is about two
+ * pixels of ink inside a sixteen-pixel em box -- so it could only be made bigger
+ * by setting type at a size that then had to be corrected for everywhere else,
+ * and how much ink arrived depended on whichever face happened to be inherited.
+ * A box with a radius is the same mark with its size stated outright.
  */
 .spon-set > li::after {
-  content: "\00b7";
-  color: var(--gr3-dark);
-  font-size: 16rem;
-  line-height: 1;
+  content: "";
+  width: 8rem;
+  height: 8rem;
+  flex: none;
+  border-radius: 50%;
+  /* --gr2 rather than --gr3-dark: the beat has to hold its own against the
+   * marks it separates, and those are pure white. */
+  background-color: var(--gr2);
 }
 
 @media (max-width: 767.98px) {
@@ -1035,6 +1043,11 @@ footer[data-ground="dark"] .ctr {
 
   .spon-set {
     padding-right: 20rem;
+  }
+
+  .spon-set > li::after {
+    width: 6rem;
+    height: 6rem;
   }
 }
 

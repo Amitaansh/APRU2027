@@ -109,7 +109,12 @@ export function Sponsors() {
     >
       <Reveal>
         <div className="ctr">
-          <p className="t-lbl dim rise text-center">Sponsors and partners</p>
+          {/* Not .dim, and well up from .t-lbl's 16: this is the only piece of
+           * type on the band and it was reading as a caption to the marks rather
+           * than as the thing that names them. */}
+          <p className="t-lbl rise text-center text-[28rem] max-md:text-[19rem]">
+            Sponsors &amp; partners
+          </p>
         </div>
 
         {/* The rise is on the belt as a whole, not on the marks: a staggered
