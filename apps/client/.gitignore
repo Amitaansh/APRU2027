@@ -1,0 +1,12 @@
+/node_modules
+/.next/
+/out/
+.env*
+!.env.example
+*.tsbuildinfo
+next-env.d.ts
+.vercel
+
+# Mirrored from packages/assets by predev/prebuild — one source of truth.
+/public/images
+/public/og

@@ -1,0 +1,9 @@
+{
+  "name": "@apru/styles",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    "./base.css": "./base.css",
+    "./motion.css": "./motion.css"
+  }
+}

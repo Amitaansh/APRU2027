@@ -1,0 +1,1073 @@
+/*
+ * @apru/styles/base.css — the site, minus the edition.
+ *
+ * Tokens, the type scale, the fifteen-column grid, rules, links, buttons, the
+ * index row, the sponsor band and the dark-ground rules. Everything here is
+ * shared: it is the part of the design that carries information rather than
+ * character, so both editions import it unchanged.
+ *
+ * It deliberately contains no initial hidden states. `.rise` and `.ln-mask`
+ * are declared here as inert structure so the shared components in @apru/ui
+ * render correctly without motion.css; motion.css then adds the hidden state
+ * and the transition that release them. An app that imports base.css alone
+ * gets the same markup, still.
+ */
+
+/*
+ * ---------------------------------------------------------------------------
+ * FLUID ROOT
+ * ---------------------------------------------------------------------------
+ * The whole site is drawn at a fixed design basis and scaled by viewport width:
+ * 1rem === 1px at 1920 wide on desktop, and 1px at 375 wide on mobile. Every
+ * number in this file and in the components is therefore "px at design width",
+ * which is why nothing ever reflows between breakpoints -- it only scales.
+ *
+ * The clamp bounds are expressed in rem, not px, on purpose. On the root
+ * element `rem` resolves against the *initial* font-size, i.e. the reader's own
+ * browser default. So a visitor who has raised their base size still gets
+ * proportionally larger type everywhere, which a bare vw value would throw away.
+ *
+ *   0.05625rem = 0.9px at a 16px default   (floor,   ~1728 and below)
+ *   0.075rem   = 1.2px at a 16px default   (ceiling, ~2304 and above)
+ */
+:root {
+  font-size: clamp(0.05625rem, 0.0520833333vw, 0.075rem);
+}
+
+@media (max-width: 767.98px) {
+  :root {
+    font-size: clamp(0.05rem, 0.2666666667vw, 0.0725rem);
+  }
+}
+
+@theme {
+  /* Tailwind's own rem-based scales would resolve against a ~1px root, so the
+   * namespaces are cleared and replaced rather than extended. */
+  --text-*: initial;
+  --font-*: initial;
+  --spacing: 1rem;
+
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+
+  --font-sans: var(--font-switzer), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-hedvig), ui-serif, Georgia, serif;
+
+  --color-wh: #ffffff;
+  --color-bk: #000000;
+  --color-gr: #eeeeee;
+  --color-gr2: #e2e2e2;
+  --color-gr3: #6e6e6e;
+  --color-ac: #c2410c;
+  --color-orange: #f89c2c;
+
+  /* Every transition on the site uses this curve. Slow, no overshoot. */
+  --ease-ref: cubic-bezier(0.17, 0.84, 0.44, 1);
+}
+
+/*
+ * ---------------------------------------------------------------------------
+ * PALETTE
+ * ---------------------------------------------------------------------------
+ * Five neutrals and one accent. --ac has exactly one job -- live state, i.e. a
+ * deadline that is open or the date that is next -- and is never used for
+ * headings, links, borders, hovers or decoration. #c2410c clears 5.9:1 on
+ * white, so it is safe as text; the brand #f89c2c is not (1.9:1) and survives
+ * only inside the hero artwork.
+ */
+:root {
+  --wh: #ffffff;
+  --bk: #000000;
+  --gr: #eeeeee;
+  --gr2: #e2e2e2;
+  --gr3: #6e6e6e;
+
+  /* Secondary text on the dark ground. #929292 is the reference's grey and
+   * clears 6.7:1 on black, but only 3.1:1 on white -- hence the pair. */
+  --gr3-dark: #929292;
+  --ac: #c2410c;
+
+  /* The brand orange. Never used as text on white (1.9:1) -- only on the dark
+   * ground, where it clears 8.9:1, and inside the artwork and the halo. */
+  --orange: #f89c2c;
+
+  /* Descender headroom for masked lines. Sized from the font metrics; see the
+   * MASKED REVEAL block. Global because the reveal transform reads it whether
+   * or not .e-lh is in play. */
+  --off: 0.22em;
+
+  /* Height of the fixed header: 24 of pad, three 19rem lines, 24 of pad. It has
+   * no background of its own, so anything that has to clear it has to be told
+   * how tall it is -- see the curtain's vertical label. */
+  --hdr: 105rem;
+
+  color-scheme: light;
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    -webkit-text-size-adjust: none;
+    text-size-adjust: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    width: 100%;
+    min-height: 100%;
+    background-color: var(--wh);
+    color: var(--bk);
+    font-family: var(--font-switzer), ui-sans-serif, system-ui, sans-serif;
+    font-size: 18rem;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    font-synthesis-weight: none;
+  }
+
+  @media (max-width: 767.98px) {
+    body {
+      font-size: 15rem;
+    }
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-hedvig), ui-serif, Georgia, serif;
+    font-weight: 400;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  button {
+    background: none;
+    border: none;
+    color: inherit;
+    font: inherit;
+    letter-spacing: inherit;
+    cursor: pointer;
+  }
+
+  ul,
+  ol {
+    list-style: none;
+  }
+
+  img,
+  video {
+    max-width: 100%;
+    object-fit: cover;
+  }
+
+  ::selection {
+    background: var(--ac);
+    color: var(--wh);
+  }
+
+  :focus-visible {
+    outline: 1px solid currentColor;
+    outline-offset: 4rem;
+  }
+
+  /* Lenis owns the scroll position; these are its required host styles. */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+}
+
+@layer components {
+  /*
+   * -------------------------------------------------------------------------
+   * TYPE SCALE
+   * -------------------------------------------------------------------------
+   * Serif display, sans text. Leading tightens as size grows -- at display
+   * sizes the lines are meant to stack almost touching.
+   */
+  .t-d1 {
+    font-family: var(--font-hedvig), ui-serif, Georgia, serif;
+    font-size: 240rem;
+    letter-spacing: -0.03em;
+    line-height: 0.82;
+  }
+
+  .t-h1 {
+    font-family: var(--font-hedvig), ui-serif, Georgia, serif;
+    font-size: 175rem;
+    letter-spacing: -0.03em;
+    line-height: 0.85;
+  }
+
+  .t-h2 {
+    font-family: var(--font-hedvig), ui-serif, Georgia, serif;
+    font-size: 118rem;
+    letter-spacing: -0.03em;
+    line-height: 0.9;
+  }
+
+  .t-h3 {
+    font-family: var(--font-hedvig), ui-serif, Georgia, serif;
+    font-size: 80rem;
+    letter-spacing: -0.03em;
+    line-height: 0.92;
+  }
+
+  .t-h4 {
+    font-family: var(--font-hedvig), ui-serif, Georgia, serif;
+    font-size: 40rem;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+
+  .t-b1 {
+    font-family: var(--font-switzer), ui-sans-serif, system-ui, sans-serif;
+    font-size: 18rem;
+    letter-spacing: -0.02em;
+    line-height: 1.35;
+  }
+
+  .t-b2 {
+    font-family: var(--font-switzer), ui-sans-serif, system-ui, sans-serif;
+    font-size: 15rem;
+    letter-spacing: -0.02em;
+    line-height: 1.35;
+  }
+
+  /* Small serif label. The signature move of the reference: a tiny serif word
+   * sitting beside sans data, in place of an uppercase mono micro-caption. */
+  .t-lbl {
+    font-family: var(--font-hedvig), ui-serif, Georgia, serif;
+    font-size: 16rem;
+    letter-spacing: 0;
+    line-height: 1.2;
+  }
+
+  /*
+   * The homepage invitation, and the one place on the site where the leading has
+   * to be read as leading + --off rather than as leading.
+   *
+   * A masked line does not sit `line-height` from its neighbour: .e-lh .ln-mask
+   * pads each line by --off top and bottom and pulls it back with equal negative
+   * margins, and adjacent negative margins COLLAPSE to one while both paddings
+   * still apply. Every mask-to-mask gap is therefore `line-height + --off`.
+   *
+   * 0.78 puts the gaps at exactly 1.00em, which is what makes the three lines
+   * even. They were not: authored as two entries, "Join us in" and "Singapore,
+   * 2027.", the second one wrapped -- and a wrap INSIDE a mask is spaced at bare
+   * `line-height` while the gap above it also carries --off, so the headline had
+   * one gap of 1.17em and one of 0.95em. Authoring all three lines explicitly is
+   * what makes them even; this value only sets how even, and 1.00em is also what
+   * clears the descender on "Singapore," over the caps of "2027.".
+   *
+   * Deliberately not applied to .t-h1 itself. Every PageHead title is one or two
+   * words chosen to sit at that density, and loosening all of them to fix one
+   * headline would be paying for the fix on every page.
+   */
+  .lh-clear {
+    line-height: 0.78;
+  }
+
+  @media (max-width: 767.98px) {
+    .t-d1 {
+      font-size: 46rem;
+      line-height: 0.9;
+    }
+    .t-h1 {
+      font-size: 40rem;
+      line-height: 0.95;
+    }
+    .t-h2 {
+      font-size: 34rem;
+    }
+    .t-h3 {
+      font-size: 28rem;
+    }
+    .t-h4 {
+      font-size: 22rem;
+    }
+    .t-b1 {
+      font-size: 15rem;
+    }
+    .t-b2 {
+      font-size: 13rem;
+    }
+    .t-lbl {
+      font-size: 14rem;
+    }
+  }
+
+  .f-serif {
+    font-family: var(--font-hedvig), ui-serif, Georgia, serif;
+  }
+
+  .f-sans {
+    font-family: var(--font-switzer), ui-sans-serif, system-ui, sans-serif;
+  }
+
+  /*
+   * -------------------------------------------------------------------------
+   * LAYOUT
+   * -------------------------------------------------------------------------
+   * A 30px page gutter at 1920 -- content sits close to the edge, and text is
+   * kept readable by living inside a few of the fifteen columns rather than by
+   * centring a narrow container.
+   */
+  .ctr {
+    display: block;
+    width: 100%;
+    padding: 0 30rem;
+  }
+
+  .grd {
+    display: grid;
+    grid-template-columns: repeat(15, 1fr);
+    gap: 20rem;
+    width: 100%;
+  }
+
+  @media (max-width: 767.98px) {
+    .ctr {
+      padding: 0 15rem;
+    }
+    .grd {
+      display: block;
+    }
+  }
+
+  /* Hairline. 1 real pixel at every viewport, never scaled. */
+  .rule {
+    width: 100%;
+    height: 1px;
+    background-color: currentColor;
+    opacity: 0.16;
+  }
+
+  .rule-solid {
+    width: 100%;
+    height: 1px;
+    background-color: currentColor;
+  }
+
+
+  /*
+   * -------------------------------------------------------------------------
+   * LINK
+   * -------------------------------------------------------------------------
+   * A 1px rule that wipes in from the left over 1.109s and, on leave, retracts
+   * to the right. The absurd duration is the point -- it reads as deliberate
+   * rather than as a hover state.
+   */
+  .link {
+    position: relative;
+    display: inline-block;
+    width: fit-content;
+    cursor: pointer;
+  }
+
+  .link::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -0.08em;
+    width: 100%;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right center;
+    transition: transform 1.109s var(--ease-ref);
+    pointer-events: none;
+  }
+
+  .link:hover::before,
+  .link:focus-visible::before {
+    transform: scaleX(1);
+    transform-origin: left center;
+  }
+
+  /* Current page: rule already drawn, and it retracts on hover. */
+  .link[aria-current="page"]::before {
+    transform: scaleX(1);
+    transform-origin: left center;
+  }
+
+  .link[aria-current="page"]:hover::before {
+    transform: scaleX(0);
+    transform-origin: right center;
+  }
+
+  /*
+   * -------------------------------------------------------------------------
+   * BUTTON
+   * -------------------------------------------------------------------------
+   * A rectangle and a rule. No radius, no shadow, no icon.
+   *
+   * The fill is a pair of tokens rather than two literals, for the same reason
+   * .idx-row's is: the button has to be able to sit on the dark half of the
+   * site. A hard-coded black fill is invisible on the footer -- which is the
+   * one permanently dark surface on the site, and carries the primary CTA on
+   * every page -- so all that shows there is the label, inset by the padding.
+   */
+  .btn {
+    --btn-fill: var(--bk);
+    --btn-ink: var(--wh);
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12rem;
+    padding: 14rem 34rem;
+    border: 1px solid currentColor;
+    font-family: var(--font-switzer), ui-sans-serif, system-ui, sans-serif;
+    font-size: 16rem;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    background-color: transparent;
+    color: inherit;
+    transition:
+      background-color 0.6s var(--ease-ref),
+      color 0.6s var(--ease-ref);
+  }
+
+  .btn:hover {
+    background-color: var(--btn-fill);
+    color: var(--btn-ink);
+  }
+
+  .btn-fill {
+    background-color: var(--btn-fill);
+    color: var(--btn-ink);
+    border-color: var(--btn-fill);
+  }
+
+  .btn-fill:hover {
+    background-color: transparent;
+    color: inherit;
+    border-color: currentColor;
+  }
+
+  [data-ground="dark"] .btn {
+    --btn-fill: var(--wh);
+    --btn-ink: var(--bk);
+  }
+
+  @media (max-width: 767.98px) {
+    .btn {
+      padding: 16rem 28rem;
+      font-size: 14rem;
+    }
+  }
+
+  /* Live state -- the accent's only assignment. */
+  .live {
+    color: var(--ac);
+  }
+}
+
+@layer components {
+  /*
+   * -------------------------------------------------------------------------
+   * FOOTER
+   * -------------------------------------------------------------------------
+   * Placement only, and it lives here rather than at the call site because
+   * inline styles cannot be media-queried and this row does rearrange below
+   * 768px, where .grd collapses to a block stack and the two cells simply
+   * follow each other.
+   *
+   * The four-column directory this used to carry is gone -- the navbar lists
+   * every route now, submenus included, so a second copy of it in the footer
+   * was duplication rather than a safety net. Two facts remain: where we are,
+   * and how to reach us.
+   */
+  .ftr-venue {
+    grid-column: 1 / span 6;
+  }
+  .ftr-reach {
+    grid-column: 11 / span 5;
+  }
+
+  .ftr-meta > :nth-child(1) {
+    grid-column: 1 / span 4;
+  }
+  .ftr-meta > :nth-child(2) {
+    grid-column: 5 / span 5;
+  }
+  .ftr-meta > :nth-child(3) {
+    grid-column: 10 / span 3;
+  }
+  .ftr-meta > :nth-child(4) {
+    grid-column: 13 / span 3;
+  }
+
+  /*
+   * -------------------------------------------------------------------------
+   * NAV SUBMENU
+   * -------------------------------------------------------------------------
+   * The one panel on the site that carries an opaque ground of its own, and it
+   * has to: it is drawn OUTSIDE the header precisely because the header's
+   * mix-blend-difference would turn it into a rectangle of inverted page (see
+   * Header.tsx). Sitting outside that blend, it has nothing inverting it, so it
+   * needs real ink and a real ground -- the same bargain the mobile menu makes.
+   *
+   * Paper, not black, in both grounds. A dark section under it would otherwise
+   * need the panel to know which ground it was over, and this component was
+   * built specifically to avoid that question.
+   *
+   * The top padding is the hover bridge: the panel is positioned flush to its
+   * trigger's bottom edge, so the pointer never crosses a gap on the way down.
+   */
+  .nav-menu {
+    background: var(--wh);
+    color: var(--bk);
+    /*
+     * The hairline is not decoration. On the hero the panel reads against the
+     * artwork on its own, but on a white page a white panel has no edge at all
+     * and the links look like loose type dropped on the page. 1px of
+     * currentColor is the same rule `.rule-solid` draws everywhere else, so the
+     * box is defined without introducing a border style of its own.
+     */
+    border: 1px solid currentColor;
+    padding: 20rem 26rem 22rem 20rem;
+    animation: nav-menu-in 0.22s var(--ease-ref) both;
+  }
+
+  @keyframes nav-menu-in {
+    from {
+      opacity: 0;
+      transform: translateY(-6rem);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nav-menu {
+      animation: none;
+    }
+  }
+}
+
+/*
+ * ===========================================================================
+ * DARK SECTIONS
+ * ===========================================================================
+ * The site goes dark by painting individual sections, not by holding a theme.
+ * There is no state, no toggle and no JavaScript: a section opts in and every
+ * rule, link underline and button border inside it follows, because all of them
+ * are drawn in currentColor. The header needs no involvement either -- its
+ * mix-blend-mode difference already inverts it over any ground.
+ */
+[data-ground="dark"] {
+  background-color: var(--bk);
+  color: var(--wh);
+}
+
+[data-ground="dark"] .dim {
+  color: var(--gr3-dark);
+}
+
+/* On black the real brand orange clears 8.9:1, so live state can use it. */
+[data-ground="dark"] .live {
+  color: var(--orange);
+}
+
+/*
+ * The sponsor marks are written near-black on transparent by `npm run imagery`,
+ * which is correct on paper and invisible on the dark ground. Inverting the RGB
+ * leaves alpha untouched, so the antialiased edges survive and a monochrome mark
+ * comes out clean white.
+ *
+ * It flips with the ground exactly as .dim does, which is why it belongs here
+ * rather than in the curtain: the veil face carries data-ground="dark" always,
+ * and the live face inherits it the moment the wipe hands over -- so the row is
+ * black on the paper half of the curtain and white on the black half, for free.
+ */
+[data-ground="dark"] .spon-mark {
+  filter: invert(1);
+}
+
+[data-ground="dark"] ::selection {
+  background: var(--orange);
+  color: var(--bk);
+}
+
+/*
+ * ===========================================================================
+ * BELT
+ * ===========================================================================
+ * A strip of repeated content translated sideways, wrapped at one set's width.
+ * The mechanics are here and generic; the sponsor band's own sizing is below.
+ *
+ * The transform is written per frame by components/motion/Belt.tsx. Everything
+ * this file has to do is keep the track on one line, let it exceed the screen,
+ * and clip it at the edges.
+ */
+.belt {
+  /*
+   * Hard clip, no fade: the marks are cut at the screen edge like a panel that
+   * happens to be exactly as wide as the window.
+   *
+   * `clip` rather than `hidden`, and that is a correctness fix rather than a
+   * preference. `hidden` makes this a scroll container, so tabbing to a link
+   * that the drift has carried off the left edge scrolls the box to reveal it --
+   * and the belt is then permanently offset from the transform driving it, with
+   * a gap at the right edge that nothing ever closes. `clip` creates no scroll
+   * container, so there is nothing for focus to move. Belt.tsx freezes on
+   * focusin as well, so the link a keyboard reader lands on holds still.
+   */
+  overflow: clip;
+}
+
+.belt-track {
+  display: flex;
+  /* max-content, or flex would fit the sets to the screen and the wrap in
+   * Belt.tsx -- which is measured off ONE set -- would be wrong by the amount
+   * they had been squeezed. */
+  width: max-content;
+  will-change: transform;
+}
+
+/*
+ * Reduced motion. The loop never starts, so the track would otherwise sit at
+ * offset zero showing four identical sets running off the edge; this collapses
+ * it to the one honest row, centred. The copies are aria-hidden already, so
+ * nothing is lost with them.
+ */
+.belt[data-static] .belt-track {
+  width: 100%;
+  justify-content: center;
+  transform: none !important;
+}
+
+.belt[data-static] .belt-track > *:not(:first-child) {
+  display: none;
+}
+
+/*
+ * THE SPONSOR BAND.
+ *
+ * A fixed cell rather than a divided measure, which is the opposite of what the
+ * old wrapped row needed and for the same underlying reason: that row had to fit
+ * a container, and this one has no container to fit. The rhythm is what matters
+ * instead -- an even beat of mark, dot, mark -- so the cell and both gaps are
+ * constants and the belt is simply as long as it is.
+ */
+.spon-cell {
+  width: 220rem;
+  flex: none;
+}
+
+.spon-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 40rem;
+}
+
+@media (max-width: 767.98px) {
+  .spon-row {
+    gap: 26rem;
+  }
+}
+
+.spon-set {
+  display: flex;
+  align-items: center;
+  gap: 36rem;
+  /* The seam. Without it the last dot of one set butts straight up against the
+   * first mark of the next, and the one place the loop could be seen is the one
+   * place it must not be. It is inside the measured width, which is what makes
+   * it the repeat period rather than a fudge. */
+  padding-right: 36rem;
+}
+
+.spon-set > li {
+  display: flex;
+  align-items: center;
+  gap: 36rem;
+  flex: none;
+}
+
+/*
+ * A dot after EVERY mark, the last of a set included -- that is what carries the
+ * beat across the seam.
+ *
+ * DRAWN, NOT TYPESET. It was a middle dot glyph, and a middle dot is about two
+ * pixels of ink inside a sixteen-pixel em box -- so it could only be made bigger
+ * by setting type at a size that then had to be corrected for everywhere else,
+ * and how much ink arrived depended on whichever face happened to be inherited.
+ * A box with a radius is the same mark with its size stated outright.
+ */
+.spon-set > li::after {
+  content: "";
+  width: 8rem;
+  height: 8rem;
+  flex: none;
+  border-radius: 50%;
+  /* --gr2 rather than --gr3-dark: the beat has to hold its own against the
+   * marks it separates, and those are pure white. */
+  background-color: var(--gr2);
+}
+
+@media (max-width: 767.98px) {
+  .spon-cell {
+    width: 130rem;
+  }
+
+  .spon-set,
+  .spon-set > li {
+    gap: 20rem;
+  }
+
+  .spon-set {
+    padding-right: 20rem;
+  }
+
+  .spon-set > li::after {
+    width: 6rem;
+    height: 6rem;
+  }
+}
+
+/*
+ * The footer's own opening pad, halved, on the one page that ends on the band.
+ *
+ * #sponsors is dark and the footer is permanently dark, so 180 of section pad
+ * meeting 160 of footer pad does not read as a boundary between two blocks --
+ * it reads as one void with some logos stranded above it. The band gives up
+ * most of its bottom pad in Sponsors.tsx and the footer gives up most of its
+ * top pad here.
+ *
+ * :has() because every other page ends on something that still wants the full
+ * 160rem of air, and because <main> and <footer> are siblings -- see
+ * app/layout.tsx.
+ */
+#main:has(#sponsors) + footer {
+  padding-top: 80rem;
+}
+
+@media (max-width: 767.98px) {
+  #main:has(#sponsors) + footer {
+    padding-top: 56rem;
+  }
+}
+
+/*
+ * ===========================================================================
+ * INDEX ROW
+ * ===========================================================================
+ * The rule-separated row is the structural unit of the whole site -- it stands
+ * in for every card grid the old build used.
+ *
+ * THE HOVER. The row inverts, with the fill sweeping in from the left and
+ * retracting back to the left. It is a clip over a second copy of the row rather
+ * than a background plus a colour transition, because the type has to change as
+ * the edge passes it rather than all at once -- the same construction the
+ * curtain uses, for the reason set out there and in components/ui/IndexRow.tsx.
+ *
+ * THE RULES ARE BORDERS. They used to be `div.rule-solid` siblings between the
+ * rows, which a fill cannot cover: a standalone hairline is drawn in the
+ * parent's currentColor, so it would neither invert with the row nor sit under
+ * it, and every filled row would carry a seam top and bottom.
+ */
+@layer components {
+  .rulelist {
+    border-bottom: 1px solid currentColor;
+  }
+
+  .idx-row {
+    --row-pad: 34rem;
+
+    /*
+     * The inverted ground, as tokens rather than literals. This mirrors the way
+     * .dim and .live already flip under [data-ground="dark"], and it is what
+     * makes the sweep work at all on the dark half of the site: roughly half the
+     * lists here sit inside a dark section, where a hard-coded black fill would
+     * be invisible.
+     */
+    --row-fill: var(--bk);
+    --row-ink: var(--wh);
+    --row-dim: var(--gr3-dark);
+    --row-live: var(--orange);
+
+    display: block;
+    position: relative;
+    padding: var(--row-pad) 0;
+    border-top: 1px solid currentColor;
+  }
+
+  [data-ground="dark"] .idx-row {
+    --row-fill: var(--wh);
+    --row-ink: var(--bk);
+    --row-dim: var(--gr3);
+    --row-live: var(--ac);
+  }
+
+  /* Accordion headers keep their own rhythm; everything else is shared. */
+  .idx-row--fold {
+    --row-pad: 30rem;
+  }
+
+  .idx-in {
+    display: flex;
+    gap: 20rem;
+    align-items: baseline;
+  }
+
+  /*
+   * Grown a pixel past the row on both edges so the fill swallows its own
+   * hairline and the next row's, then given that pixel back as padding so its
+   * copy of .idx-in lands exactly on the live one underneath.
+   */
+  .idx-veil {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -1px;
+    height: calc(100% + 2px);
+    padding-top: calc(var(--row-pad) + 1px);
+    background-color: var(--row-fill);
+    color: var(--row-ink);
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path 0.72s var(--ease-ref);
+    pointer-events: none;
+  }
+
+  .idx-veil .dim {
+    color: var(--row-dim);
+  }
+
+  .idx-veil .live {
+    color: var(--row-live);
+  }
+
+  /*
+   * Enter and leave share an origin, so the fill comes in from the left and goes
+   * back out to the left rather than travelling across -- unlike .link, which
+   * flips its origin to sweep through.
+   */
+  @media (hover: hover) {
+    .idx-row:hover > .idx-veil {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+
+  .idx-row .arw {
+    display: inline-block;
+    transition: transform 0.9s var(--ease-ref);
+  }
+
+  .idx-row:hover .arw {
+    transform: translateX(10rem);
+  }
+
+  @media (max-width: 767.98px) {
+    .idx-row {
+      --row-pad: 22rem;
+    }
+
+    .idx-in {
+      flex-wrap: wrap;
+      gap: 8rem 14rem;
+    }
+  }
+}
+
+/*
+ * Structure the shared components depend on, with no motion in it.
+ *
+ * MaskLines renders `.ln-mask > .ln` for every display line on every page, so
+ * without these the client edition's page titles would run together inline
+ * instead of stacking. motion.css adds the transform that hides them; this is
+ * only the box they live in.
+ */
+@layer components {
+  /*
+   * -------------------------------------------------------------------------
+   * MASKED REVEAL
+   * -------------------------------------------------------------------------
+   * A single line of type rises out of a clipped wrapper.
+   *
+   * `overflow: hidden` clips to the MASK's padding box, so the descender room
+   * has to be bought there -- padding on the inner line cannot buy it. The mask
+   * is inflated by --off top and bottom and pulled back by an equal negative
+   * margin, which is net-zero: the mask's outer box stays exactly one
+   * line-height tall and layout is untouched, while its clip window is
+   * line-height + 2x--off.
+   *
+   * --off is sized from the real font metrics. Hedvig's ink spans 1.214em
+   * (-0.257 to +0.957), Switzer's 1.185em, so at the tightest leading on the
+   * site (0.82) the headroom needed per side is (1.214 - 0.82) / 2 = 0.197em.
+   * 0.22em clears every display size with margin to spare.
+   *
+   * MASKS ARE FOR SINGLE-LINE ELEMENTS ONLY. Anything that wraps gets .rise --
+   * a wrapping inline-block inside a mask breaks the arithmetic above, because
+   * the element is then taller than one line and the clip no longer
+   * corresponds to it.
+   */
+  .ln-mask {
+    display: block;
+    overflow: hidden;
+  }
+
+  .ln-mask > .ln {
+    display: block;
+    will-change: transform;
+  }
+
+  .ln-mask > .wd {
+    display: inline-block;
+    will-change: transform;
+  }
+
+  .e-lh .ln-mask {
+    padding-top: var(--off);
+    padding-bottom: var(--off);
+    margin-top: calc(var(--off) * -1);
+    margin-bottom: calc(var(--off) * -1);
+  }
+
+  /*
+   * =========================================================================
+   * SECTION RHYTHM
+   * =========================================================================
+   * .pad-flow is for a section that continues the one above it -- it drops the
+   * top pad so two ruled tables read as one table, instead of paying 180 twice
+   * at the seam.
+   */
+  /*
+   * How every page opens. Named rather than set at the call site because the
+   * two editions run different header heights and different display sizes, so
+   * the space above the first line of a page is an edition-level decision.
+   */
+  .pg-head {
+    padding-top: 240rem;
+    padding-bottom: 140rem;
+  }
+
+  @media (max-width: 767.98px) {
+    .pg-head {
+      padding-top: 130rem;
+      padding-bottom: 60rem;
+    }
+  }
+
+  .pad {
+    padding-top: 180rem;
+    padding-bottom: 180rem;
+  }
+
+  .pad-t {
+    padding-top: 180rem;
+  }
+
+  .pad-b {
+    padding-bottom: 180rem;
+  }
+
+  .pad-flow {
+    padding-top: 0;
+  }
+
+  @media (max-width: 767.98px) {
+    .pad {
+      padding-top: 80rem;
+      padding-bottom: 80rem;
+    }
+    .pad-t {
+      padding-top: 80rem;
+    }
+    .pad-b {
+      padding-bottom: 80rem;
+    }
+    .pad-flow {
+      padding-top: 0;
+    }
+  }
+
+  /*
+   * =========================================================================
+   * VERTICAL SECTION LABEL
+   * =========================================================================
+   * Reads bottom-to-top down the left column. writing-mode plus a 180 turn is
+   * what gets bottom-to-top -- vertical-rl on its own reads top-to-bottom.
+   */
+  .sec-label {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-family: var(--font-hedvig), ui-serif, Georgia, serif;
+    font-size: 80rem;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 767.98px) {
+    .sec-label {
+      writing-mode: horizontal-tb;
+      transform: none;
+      font-size: 22rem;
+    }
+  }
+
+  /*
+   * The spine holds below the header while its section's body scrolls past it,
+   * then leaves with the section. A grid item stretches to its row by default
+   * and a stretched box has nothing to stick within, so `align-self: start` is
+   * not a nicety here -- without it the rule does nothing at all.
+   *
+   * Desktop only, and not because of the header: under 768px .grd is a block
+   * stack and .sec-label is already lying flat above the body, where sticking
+   * it would pin a heading over the type it introduces.
+   *
+   * Section opts in; Curtain does not. Its label lives in a pinned 100vh face
+   * that is already holding still, and is placed by .curtain-face .sec-label.
+   */
+  @media (min-width: 768px) {
+    .sec-spine {
+      position: sticky;
+      top: calc(var(--hdr) + 40rem);
+      align-self: start;
+    }
+  }
+
+  .dim {
+    color: var(--gr3);
+  }
+
+  /* Digits that sit in columns have to line up. */
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+}

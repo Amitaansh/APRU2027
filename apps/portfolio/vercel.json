@@ -1,0 +1,18 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "npm install",
+  "buildCommand": "npm run build",
+  "outputDirectory": "out",
+  "trailingSlash": true,
+  "redirects": [
+    { "source": "/program", "destination": "/programme/schedule", "permanent": true },
+    { "source": "/programme", "destination": "/programme/key-dates", "permanent": true },
+    { "source": "/theme", "destination": "/", "permanent": true },
+    { "source": "/speakers", "destination": "/highlights/keynotes", "permanent": true },
+    { "source": "/venue", "destination": "/visitors", "permanent": true },
+    { "source": "/visitor-resources", "destination": "/visitors", "permanent": true },
+    { "source": "/highlights", "destination": "/highlights/working-groups", "permanent": true },
+    { "source": "/highlights/key-dates", "destination": "/programme/key-dates", "permanent": true }
+  ]
+}

@@ -1,0 +1,465 @@
+/*
+ * The portfolio edition's own layer: the parts the client asked us to remove.
+ *
+ * The halo canvas, the curtain darkening, the preloader, the hero band clip and
+ * the custom cursor, plus the full-bleed APRU wordmark in the footer. None of it
+ * is imported by apps/client — that is the whole difference between the two
+ * sites, and it is why it sits in one file rather than being scattered.
+ */
+@layer components {
+  /*
+   * -------------------------------------------------------------------------
+   * THE WORDMARK
+   * -------------------------------------------------------------------------
+   * The last screen of every page: four capitals gutter to gutter, with the
+   * halo arcing across the bottom of the screen behind them. Set in the sans at
+   * 500, the weight the header lockup already uses for APRU, so the giant
+   * version is the same four letters and not a second identity. Typeset rather
+   * than drawn, which keeps faith with the note in components/brand/Logos.tsx
+   * about not reconstructing an institution's mark.
+   *
+   * It carries its own gutters rather than sitting in a .ctr, because it has to
+   * be outside that container's stacking context to blend -- see the BLEND note
+   * below. The padding is .ctr's, to the pixel.
+   */
+  .mark {
+    font-family: var(--font-switzer), ui-sans-serif, system-ui, sans-serif;
+    font-weight: 500;
+    padding: 0 30rem;
+
+    /*
+     * Solved, not eyeballed. A P R U advance 2.613em together in Switzer at
+     * 500, the gutter is 30rem a side against a root font size that is 1px at
+     * 1920, so at 34vw the four caps take ~92% of the container and
+     * `space-between` spends the remaining 8% on three gaps of about 2.7% each
+     * -- tight, even, and near enough the reference's own tracking.
+     *
+     * One value, no breakpoint: the gutter is itself proportional, so the gap
+     * holds within half a percent of that from 1280 all the way to 2560. The
+     * clamp on the root font size is exactly why this cannot be rem.
+     */
+    font-size: 34vw;
+
+    /*
+     * Switzer's cap height is 0.738em at this weight and the leading is 0.74em,
+     * so the line box is the caps and almost nothing else: the mask hugs them,
+     * and APRU has no descender to buy room for. Tracking is off because
+     * `space-between` is already doing that job, and a trailing negative would
+     * only bias the U off the right gutter.
+     */
+    line-height: 0.74;
+    letter-spacing: 0;
+
+    /*
+     * BLEND. The same gesture the header plays over the hero: the type does not
+     * sit on the halo, it inverts against it, so the ring's colour reads
+     * straight through the letters and moves as the ring turns.
+     *
+     * `difference` and not `screen`, which is what this looks like but cannot
+     * be: screen against white is white, so white capitals over the ring would
+     * come out unchanged and the effect would be invisible. Difference leaves
+     * them white over the black ground -- 1 - 0 -- and swings them to the
+     * ring's complement exactly where it passes behind.
+     *
+     * For this to reach the halo at all the mark has to be a sibling of the
+     * canvas in the ROOT stacking context, painted after it. z-index 41 against
+     * the canvas's 40 does that; being inside footer .ctr, which is itself a
+     * stacking context at 41, would confine the blend to the footer's own
+     * contents and nothing would happen.
+     */
+    position: relative;
+    z-index: 41;
+    mix-blend-mode: difference;
+  }
+
+  @media (max-width: 767.98px) {
+    .mark {
+      padding: 0 15rem;
+    }
+  }
+
+}
+
+/*
+ * The halo canvas sits above every ground and every block of type. That is only
+ * safe because Section reserves it a lane and puts the content in the
+ * complement -- see components/ui/Section.tsx. It stays below the header.
+ */
+.halo-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+}
+
+/*
+ * The footer is where the halo goes UNDER the type instead of over it. It is
+ * the ring's terminal dock (see components/brand/Halo.tsx), and an arc that
+ * paints over the directory would take the links with it.
+ *
+ * Only the containers are lifted, and the footer's own black is deliberately
+ * not: it comes from the [data-ground="dark"] rule above, painted by the
+ * <footer> element itself at z-index auto, so the ground stays BELOW the canvas
+ * and the ring is visible against it while every line of type sits above.
+ *
+ * The wordmark is lifted separately, to the same 41, because it must NOT be
+ * inside this stacking context -- see BLEND in .mark.
+ */
+footer[data-ground="dark"] .ctr {
+  position: relative;
+  z-index: 41;
+}
+
+/*
+ * ===========================================================================
+ * CURTAIN
+ * ===========================================================================
+ * 200vh of section with a pinned 100vh inner: the screen holds still while
+ * black rises from the bottom edge to cover it. Both faces sit in the same grid
+ * cell so they are pixel-identical and the wipe cannot show a seam.
+ *
+ * --wipe is written by components/motion/Curtain.tsx and defaults to 100%, so
+ * the dark face is fully clipped before any script runs.
+ */
+.curtain {
+  position: relative;
+  /* 200vh is one screen of hold plus one screen of wipe. A page whose curtain
+   * carries reading matter rather than a statement wants less hold before the
+   * content below it arrives -- see the `height` prop on Curtain.tsx. */
+  height: var(--curtain-h, 200vh);
+  background-color: var(--wh);
+}
+
+/*
+ * Both this and [data-ground="dark"] are unlayered and both are (0,1,0), so
+ * source order decides and .curtain's white would win -- which is what made the
+ * section flash back to paper the instant the wipe completed and Curtain.tsx
+ * handed over to the real ground: white type, white rules, white ground.
+ */
+.curtain[data-ground="dark"] {
+  background-color: var(--bk);
+}
+
+.curtain-pin {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: grid;
+  overflow: hidden;
+}
+
+.curtain-face {
+  grid-area: 1 / 1;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  justify-content: center;
+  /* Containing block for .curtain-foot, so the band is clipped by the veil's
+   * own clip-path rather than by .curtain-pin's. */
+  position: relative;
+}
+
+/*
+ * THE FOOT BAND. Taken out of the centred stack rather than appended to it:
+ * .curtain-pin hides its overflow, so a taller stack would clip on a short or
+ * an ultrawide window long before it would push, and the invitation should not
+ * move to make room for an acknowledgement anyway.
+ *
+ * It sits inside a SectionGrid of its own -- see Curtain.tsx -- so it takes the
+ * same content columns as the statement and stays out of the halo's lane.
+ */
+.curtain-foot {
+  position: absolute;
+  left: 0;
+  right: 0;
+  /* vh as well as rem, and that is the whole trick of this band. Every length
+   * on the site scales with the viewport WIDTH, while the face it sits in is
+   * 100vh -- so on a 21:9 window the type grows and the room for it does not.
+   * min() lets the band give way on exactly those viewports and nowhere else. */
+  bottom: min(70rem, 6vh);
+}
+
+/*
+ * Reserve the band's height out of the centring, so the invitation centres in
+ * what is left rather than behind it -- .curtain-pin hides its overflow, so the
+ * two competing for the same screen would show as a clipped headline, not as a
+ * push. Both terms are measured from the band above and capped in vh with it.
+ */
+.curtain-face.has-foot > .ctr {
+  padding-bottom: min(220rem, 19vh);
+}
+
+.curtain-veil {
+  clip-path: inset(var(--wipe, 100%) 0 0 0);
+  pointer-events: none;
+}
+
+/*
+ * The face centres its content in the pinned 100vh, so on a short window a tall
+ * list pushes the label up under the fixed wordmark -- which has no background
+ * to protect it. Held below the header rather than centred with the rows. Both
+ * faces are .curtain-face, so the two copies stay in register.
+ */
+.curtain-face .sec-label {
+  margin-top: calc(var(--hdr) + 20rem);
+}
+
+/* No room to pin on a phone, so the section is simply dark. */
+@media (max-width: 767.98px) {
+  .curtain {
+    height: auto;
+  }
+
+  .curtain-pin {
+    position: static;
+    display: block;
+    height: auto;
+    padding-top: 80rem;
+    padding-bottom: 80rem;
+  }
+
+  .curtain-veil {
+    display: none;
+  }
+
+  .curtain-face .sec-label {
+    margin-top: 0;
+  }
+
+  /* Nothing to pin the band to, so it simply follows the statement. */
+  .curtain-foot {
+    position: static;
+    padding-top: 60rem;
+  }
+
+  .curtain-face.has-foot > .ctr {
+    padding-bottom: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ln-mask > .ln,
+  .ln-mask > .wd {
+    transform: none !important;
+  }
+
+  .rise {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* Rules are structure, not decoration: they are simply already drawn. */
+  .rule-draw {
+    transform: none !important;
+  }
+
+  /* No loading screen, and the hero is simply already open. */
+  .preload {
+    display: none !important;
+  }
+
+  .hero-clip {
+    clip-path: none !important;
+  }
+}
+
+/*
+ * ===========================================================================
+ * PRELOADER
+ * ===========================================================================
+ * Two panels meeting at the centre line, so the screen is solid paper at rest
+ * with nothing but a count in the corner. At 100 they retract to the top and
+ * bottom edges over 0.75s while .hero-clip opens over 1.15s.
+ *
+ * The panels have to be the faster of the two. Retract them at the same rate as
+ * the band opens and the band's edges track the panels' exactly, so it is never
+ * visible and the whole thing reads as a plain split reveal.
+ *
+ * Each panel is a pixel over half the viewport, so an odd viewport height cannot
+ * leave a hairline of hero showing down the middle before anything moves.
+ */
+.preload {
+  position: fixed;
+  inset: 0;
+  z-index: 90; /* above the skip link, which is 80 */
+  pointer-events: none;
+}
+
+.preload[hidden] {
+  display: none;
+}
+
+.pre-half {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: calc(50vh + 1px);
+  background-color: var(--wh);
+  transition: transform 0.75s var(--ease-ref);
+}
+
+.pre-half--t {
+  top: 0;
+}
+
+.pre-half--b {
+  bottom: 0;
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: 38rem;
+}
+
+.preload[data-open] .pre-half--t {
+  transform: translate3d(0, -100%, 0);
+}
+
+.preload[data-open] .pre-half--b {
+  transform: translate3d(0, 100%, 0);
+}
+
+@media (max-width: 767.98px) {
+  .pre-half--b {
+    padding-bottom: 20rem;
+  }
+}
+
+/*
+ * The hero opens from the seam the panels part at. Shut by default so it is
+ * already closed in the static HTML before any script runs -- the same
+ * defensive default .curtain-veil takes. layout.tsx unclips it for a visitor
+ * with no JavaScript; the reduced-motion block above unclips it for everyone
+ * who has asked for less movement.
+ */
+.hero-clip {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(50% 0 50% 0);
+  transition: clip-path 1.15s var(--ease-ref) 0.08s;
+}
+
+html[data-entered] .hero-clip {
+  clip-path: inset(0 0 0 0);
+}
+
+/*
+ * This is not a scrim over the artwork for its own sake -- it is what the header
+ * blends against. `mix-blend-mode: difference` over a mid-tone returns another
+ * mid-tone, so the wordmark and the nav went muddy against the artwork exactly
+ * where they had no other ground to fall back on. Darkening the top band pushes
+ * the difference back to near-white and costs the image nothing below it.
+ *
+ * Inside .hero-clip, so it opens with the band. Outside it, it would show as a
+ * grey wash over the paper the preloader panels are still retracting from.
+ */
+.hero-scrim {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 300rem;
+  background-image: linear-gradient(to bottom, rgb(0 0 0 / 0.62), rgb(0 0 0 / 0));
+  pointer-events: none;
+}
+
+/*
+ * ===========================================================================
+ * CURSOR
+ * ===========================================================================
+ * The dot tracks the pointer exactly; the halo ring lerps after it and turns on
+ * its own clock. JavaScript writes translate on .cur-pos and rotate on
+ * .cur-spin; CSS owns the scales, so the hover and press states get the site's
+ * curve without easing being reimplemented in the rAF loop.
+ *
+ * WHY THE MASK. /icon.png is an opaque 512px square -- the mark is drawn on
+ * white with no alpha channel, which is invisible on the paper ground and a
+ * glaring white tile on the dark half of the site. The annulus is cut out of it
+ * using the geometry Halo.tsx measured off the same file: centre at 50/50.2%,
+ * band from r=99 to r=144 against a 256 half-width, i.e. 38.7% to 56.3% under
+ * `closest-side`. The box is oversized to make up for the padding that leaves.
+ *
+ * Unlayered, like the grounds and the curtain above, so `cursor: none` beats the
+ * `cursor: pointer` that `button` and `.link` set from inside a layer.
+ */
+.cur {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 95;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s var(--ease-ref);
+}
+
+/* Set by Cursor.tsx once the device has been checked; see the note there. */
+.cur[data-live] {
+  display: block;
+}
+
+.cur[data-on] {
+  opacity: 1;
+}
+
+/* Zero-sized, so the origin is the pointer and the children hang off centre. */
+.cur-pos,
+.cur-spin {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  will-change: transform;
+}
+
+.cur-ring {
+  width: 64rem;
+  height: 64rem;
+  margin: -32rem 0 0 -32rem;
+  background-image: url("/icon.png");
+  background-size: 100% 100%;
+  transition: transform 0.6s var(--ease-ref);
+  -webkit-mask-image: radial-gradient(
+    circle closest-side at 50% 50.2%,
+    transparent 0 38.4%,
+    #000 39% 56%,
+    transparent 56.6%
+  );
+  mask-image: radial-gradient(
+    circle closest-side at 50% 50.2%,
+    transparent 0 38.4%,
+    #000 39% 56%,
+    transparent 56.6%
+  );
+}
+
+.cur-dot {
+  display: block;
+  width: 8rem;
+  height: 8rem;
+  margin: -4rem 0 0 -4rem;
+  border-radius: 50%;
+  background-color: var(--orange);
+  transition: transform 0.6s var(--ease-ref);
+}
+
+.cur[data-hot] .cur-ring {
+  transform: scale(1.7);
+}
+
+.cur[data-hot] .cur-dot {
+  transform: scale(0.4);
+}
+
+/* Press wins over hover: it is the more recent thing the visitor did. */
+.cur[data-down] .cur-ring {
+  transform: scale(1.3);
+}
+
+.cur[data-down] .cur-dot {
+  transform: scale(0.6);
+}
+
+html[data-cursor="on"],
+html[data-cursor="on"] * {
+  cursor: none;
+}
+

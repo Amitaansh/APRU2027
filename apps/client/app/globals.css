@@ -1,0 +1,173 @@
+@import "tailwindcss";
+
+@source "../app";
+@source "../components";
+@source "../../../packages/ui/src";
+
+/*
+ * The client edition.
+ *
+ * base.css is the whole design system minus the character: tokens, the type
+ * scale, the fifteen-column grid, rules, links, buttons, the index row.
+ *
+ * motion.css is DELIBERATELY NOT IMPORTED. That single omission is what makes
+ * this edition still: @apru/ui's Reveal still writes `.is-in` and MaskLines
+ * still renders `.ln-mask > .ln`, but with no hidden state declared there is
+ * nothing to release, so every page arrives at its end state. No component
+ * knows which edition it is rendering in.
+ *
+ * What follows is the whole of the client's "clean and calm" brief, expressed
+ * as token and type overrides rather than as different markup.
+ */
+@import "../../../packages/styles/base.css";
+
+/*
+ * ---------------------------------------------------------------------------
+ * INK
+ * ---------------------------------------------------------------------------
+ * "Use the same colour for all fonts." --gr3 is what `.dim` resolves to, so
+ * collapsing it onto the ink colour makes secondary text the same black as
+ * body text across the whole site. Reverting is one line.
+ *
+ * --ac was #c2410c, the darkened orange, and it is what paints the selection
+ * highlight — the "red highlight when highlighting words" the client asked us
+ * to drop. It is the halo's deep royal blue here, which clears 8.6:1 on white.
+ *
+ * TODO(brand): replace with the exact blue or orange from the designer's .ai
+ * file. This is the only line that needs to change.
+ */
+:root {
+  --gr3: #000000;
+  --ac: #1d35cc;
+
+  /*
+   * The header is a two-line lockup on a solid bar here, not the portfolio's
+   * three-line wordmark floating over the artwork. `.sec-spine` sticks against
+   * this, so it has to say so.
+   */
+  --hdr: 78rem;
+}
+
+@layer components {
+  /*
+   * "Change dates colour to black." `.live` is the accent's only assignment on
+   * the site — the confirmed key dates. The client wants those black, while the
+   * selection highlight keeps the accent, so the two part company here.
+   */
+  .live {
+    color: var(--bk);
+  }
+
+  /*
+   * ---------------------------------------------------------------------------
+   * TYPE: ONE FAMILY, TWO WEIGHTS
+   * ---------------------------------------------------------------------------
+   * "Use the same font style for all" — one family, with weight left to carry
+   * the hierarchy the serif/sans pairing used to carry. Every display role
+   * becomes the brand face at bold; every text role the same face at regular.
+   *
+   * TODO(brand): --font-brand is Switzer for now because it is already
+   * vendored. Point it at the designer's face in layout.tsx and re-tune the
+   * two tracking values below — a bold face is wider than Hedvig and the
+   * display tracking was measured against Hedvig's proportions.
+   */
+  .t-d1,
+  .t-h1,
+  .t-h2,
+  .t-h3,
+  .t-h4,
+  .f-serif,
+  .sec-label {
+    font-family: var(--font-brand), ui-sans-serif, system-ui, sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .t-b1,
+  .t-b2,
+  .f-sans {
+    font-family: var(--font-brand), ui-sans-serif, system-ui, sans-serif;
+    font-weight: 400;
+  }
+
+  /*
+   * The small label keeps its own job — a quiet word beside the thing it names.
+   * Bold at 16 next to bold headings stops reading as a label and starts
+   * competing with it, so this one stays regular and drops a step instead.
+   */
+  .t-lbl {
+    font-family: var(--font-brand), ui-sans-serif, system-ui, sans-serif;
+    font-weight: 400;
+    font-size: 13rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  /*
+   * "Adjust each page title font (smaller)." Guarded to desktop because
+   * base.css sets the mobile sizes in a max-width query that this file would
+   * otherwise override at every width.
+   */
+  @media (min-width: 768px) {
+    .t-h1 {
+      font-size: 88rem;
+      line-height: 0.95;
+    }
+    .t-h2 {
+      font-size: 64rem;
+      line-height: 1;
+    }
+    .t-h3 {
+      font-size: 44rem;
+    }
+    .t-h4 {
+      font-size: 28rem;
+    }
+  }
+
+  /*
+   * The vertical section label is a signature of the portfolio edition: a word
+   * set bottom-to-top down the left column at display size. It is decoration
+   * with a job, and the job survives being said plainly - which is what a brief
+   * asking for no oversized fonts and no heavy flourishes wants.
+   */
+  .sec-label {
+    writing-mode: horizontal-tb;
+    transform: none;
+    font-size: 13rem;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: normal;
+  }
+
+  /*
+   * "Possible to remove or adjust the size of the empty spaces between the page
+   * title and paragraph." The opening was measured for a 175rem serif title
+   * under a three-line wordmark; neither is true here.
+   */
+  .pg-head {
+    padding-top: 150rem;
+    padding-bottom: 70rem;
+  }
+
+  @media (max-width: 767.98px) {
+    .pg-head {
+      padding-top: 110rem;
+      padding-bottom: 40rem;
+    }
+  }
+
+  /*
+   * ---------------------------------------------------------------------------
+   * NO HOVER FILL
+   * ---------------------------------------------------------------------------
+   * "Remove the black highlight when hover over." The fill is `.idx-veil`, an
+   * aria-hidden duplicate of the row that a clip-path sweeps across on hover.
+   * Removing the element removes the gesture outright; the row keeps its rule
+   * and its padding, and IndexRow needs no branch for it.
+   */
+  .idx-veil {
+    display: none;
+  }
+}

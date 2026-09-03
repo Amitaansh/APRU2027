@@ -1,0 +1,93 @@
+/*
+ * @apru/styles/motion.css — the reveal system, and nothing else.
+ *
+ * Import this AFTER base.css to arm the reveals: masked display lines, the
+ * `.rise` fade-and-lift, drawn rules and the sticky section spine. Every one is
+ * a CSS transition released by a single `.is-in` class that @apru/ui's Reveal
+ * writes onto the node, so leaving this file out does not break anything — it
+ * only leaves the end state showing from the start.
+ *
+ * The reduced-motion block lives here because it is the same switch: it is what
+ * this file looks like when the visitor has asked for none of it.
+ */
+
+
+/*
+ * Reduced motion: reveals resolve to their end state instantly and Lenis is
+ * disabled from the provider, so the page is simply a static document.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+
+/*
+ * ===========================================================================
+ * REVEAL STATES
+ * ===========================================================================
+ * A [data-reveal] element gets .is-in once, which releases every mask and rise
+ * inside it. Stagger is done with transition-delay at the call site rather than
+ * with per-child selectors, so a section can order its own children.
+ */
+@layer components {
+  .ln-mask > .ln,
+  .ln-mask > .wd {
+    transform: translate3d(0, calc(100% + var(--off)), 0);
+    transition: transform 1.15s var(--ease-ref);
+  }
+
+  .is-in .ln-mask > .ln,
+  .is-in .ln-mask > .wd,
+  .is-in.ln-mask > .ln,
+  .is-in.ln-mask > .wd {
+    transform: translate3d(0, 0, 0);
+  }
+
+  .rise {
+    opacity: 0;
+    transform: translate3d(0, 24rem, 0);
+    transition:
+      opacity 1s var(--ease-ref),
+      transform 1s var(--ease-ref);
+  }
+
+  .is-in .rise,
+  .is-in.rise {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* The drawn hairline: scaleX(0) until its Reveal releases it. */
+  /*
+   * A hairline that draws itself in from the left, on the same 1.109s as the
+   * link underline below -- it is that gesture applied structurally rather than
+   * to a word. Released by `.is-in`, so it cascades with whatever Reveal it
+   * sits in.
+   *
+   * FOR STANDALONE RULES ONLY. The rules inside a RuleList are borders on the
+   * rows, and for a documented reason -- see IndexRow.tsx. A border cannot be
+   * scaled, and a hairline element put back between the rows would not invert
+   * with a filled row.
+   *
+   * It must be inside a Reveal. There is nothing to release it otherwise and it
+   * would sit at scaleX(0) forever, which reads as a missing rule rather than
+   * as a bug.
+   */
+  .rule-draw {
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 1.109s var(--ease-ref);
+  }
+
+  .is-in .rule-draw,
+  .is-in.rule-draw {
+    transform: scaleX(1);
+  }
+}

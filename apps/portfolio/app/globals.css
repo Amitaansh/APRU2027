@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+/*
+ * Tailwind v4 infers its content sources from this file's own directory, which
+ * stops at the app. Half the markup now lives in the workspace packages, so
+ * those roots have to be named or every utility used in @apru/ui is purged.
+ */
+@source "../app";
+@source "../components";
+@source "../../../packages/ui/src";
+
+/* The shared half of the design. */
+@import "../../../packages/styles/base.css";
+/* Armed: this edition keeps every reveal. */
+@import "../../../packages/styles/motion.css";
+/* The halo, the cursor, the curtain, the preloader, the wordmark. */
+@import "./decor.css";

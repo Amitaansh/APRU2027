@@ -1,0 +1,29 @@
+[
+  { "label": "About", "route": "/about", "group": "primary" },
+  {
+    "label": "Highlight",
+    "group": "primary",
+    "children": [
+      { "label": "Keynotes", "route": "/highlights/keynotes", "group": "primary" },
+      { "label": "Working Groups", "route": "/highlights/working-groups", "group": "primary" },
+      { "label": "Field Trips", "route": "/highlights/field-trip", "group": "primary" },
+      {
+        "label": "Students Network Session",
+        "route": "/highlights/students-network-session",
+        "group": "primary"
+      }
+    ]
+  },
+  {
+    "label": "Programme",
+    "group": "primary",
+    "children": [
+      { "label": "Key Dates", "route": "/programme/key-dates", "group": "primary" },
+      { "label": "Schedule", "route": "/programme/schedule", "group": "primary" }
+    ]
+  },
+  { "label": "Call for Abstracts", "route": "/call-for-abstracts", "group": "primary" },
+  { "label": "Registration", "route": "/register", "group": "primary" },
+  { "label": "Visitors", "route": "/visitors", "group": "primary" },
+  { "label": "Contact", "route": "/contact", "group": "footer-only" }
+]

@@ -1,0 +1,114 @@
+{
+  "showEmails": false,
+  "organising": [
+    {
+      "name": "Jeff Hou",
+      "role": "Co-lead",
+      "affiliation": "Provost's Chair Professor and Head of Department, NUS DOA",
+      "photo": "jeff-hou",
+      "profileUrl": "https://cde.nus.edu.sg/arch/staffs/jeffrey-hou/"
+    },
+    {
+      "name": "Yun Hye Hwang",
+      "role": "Co-lead",
+      "affiliation": "Associate Professor, NUS DOA",
+      "photo": "yun-hye-hwang"
+    },
+    {
+      "name": "Naomi Clara Hanakata",
+      "role": "Organising Committee",
+      "affiliation": "Assistant Professor, NUS DOA",
+      "photo": "naomi-hanakata"
+    },
+    {
+      "name": "Shengxiao (Alex) Li",
+      "role": "Organising Committee",
+      "affiliation": "Assistant Professor, NUS DOA"
+    },
+    {
+      "name": "Qi Jinda",
+      "role": "Organising Committee",
+      "affiliation": "Assistant Professor, NUS DOA",
+      "photo": "qi-jinda"
+    },
+    {
+      "name": "Chaewon Ahn",
+      "role": "Organising Committee",
+      "affiliation": "Assistant Professor, NUS DOA",
+      "photo": "chaewon-ahn"
+    },
+    {
+      "name": "Rosita Samsudin",
+      "role": "Organising Committee",
+      "affiliation": "Lecturer, NUS Cities"
+    },
+    {
+      "name": "Lu Xiaoxuan",
+      "role": "Organising Committee",
+      "affiliation": "Visiting Associate Professor, NUS DOA",
+      "photo": "lu-xiaoxuan"
+    },
+    {
+      "name": "Chee Qian Ning",
+      "role": "Organising Committee",
+      "affiliation": "NUS DOA"
+    }
+  ],
+  "scientific": [
+    {
+      "name": "Yekang Ko",
+      "role": "APRU Steering Committee",
+      "affiliation": "Associate Professor, University of Michigan",
+      "profileUrl": "https://seas.umich.edu/research/faculty/yekang-ko"
+    },
+    {
+      "name": "Andreanne Doyon",
+      "role": "APRU Steering Committee",
+      "affiliation": "Associate Professor, Simon Fraser University",
+      "profileUrl": "https://www.sfu.ca/rem/about/people/doyon.html"
+    },
+    {
+      "name": "Sara Padgett Kjaersgaard",
+      "role": "APRU Steering Committee",
+      "affiliation": "Associate Professor, UNSW Sydney",
+      "profileUrl": "https://research.unsw.edu.au/people/associate-professor-sara-padgett-kjaersgaard"
+    },
+    {
+      "name": "Makena Coffman",
+      "role": "APRU Steering Committee",
+      "affiliation": "Professor, University of Hawaiʻi at Mānoa",
+      "profileUrl": "https://durp.manoa.hawaii.edu/faculty/makena-coffman/"
+    },
+    {
+      "name": "Matthew Pryor",
+      "role": "APRU Steering Committee",
+      "affiliation": "Associate Professor of Teaching, University of Hong Kong",
+      "profileUrl": "https://www.arch.hku.hk/staff/dla/pryor-matthew/"
+    },
+    {
+      "name": "Paola Boarin",
+      "role": "APRU Steering Committee",
+      "affiliation": "Associate Professor, University of Auckland",
+      "profileUrl": "https://profiles.auckland.ac.nz/p-boarin"
+    },
+    {
+      "name": "Jinhyung Chon",
+      "role": "APRU Steering Committee",
+      "affiliation": "Professor, Korea University",
+      "profileUrl": "https://eco.korea.ac.kr/professor-main-menu/professor-detail?id=29"
+    },
+    {
+      "name": "Ruishan Chen",
+      "role": "APRU Steering Committee",
+      "affiliation": "Professor, Shanghai Jiao Tong University",
+      "profileUrl": "https://designschool.sjtu.edu.cn/en-us/68db5c6ccd582ad3a20818ac4080c5a8/81ce5162915bda258c794b3a731cc5f7/detail/614d81598eb78947bd814887"
+    },
+    {
+      "name": "Shengxiao (Alex) Li",
+      "role": "Working group leader",
+      "affiliation": "Assistant Professor, NUS DOA",
+      "profileUrl": "https://scholar.google.com/citations?user=_zb8mMYAAAAJ"
+    }
+  ],
+  "scientificStatus": "published"
+}

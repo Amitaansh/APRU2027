@@ -22,3 +22,22 @@ apru-icon.jpg
 # derivatives (codebase/public/images/committee), and `npm run imagery`
 # regenerates those. See committee-source/SOURCE.md for the provenance table.
 committee-source/
+
+# Notion change-board exports — client material, not source.
+*ExportBlock*.zip
+
+# Workspace root. npm hoists dependencies here now that the repo is a monorepo,
+# and each app writes its build output inside itself.
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+.vercel
+.env*
+!.env.example
+
+# Designer drops. Source art, not deliverables, and far over GitHub 100 MB
+# limit. The repo ships the derivatives built from them; keep the originals in
+# shared storage. See apps/portfolio/scripts/build-imagery.mjs.
+wetransfer_*.zip
+*.zip

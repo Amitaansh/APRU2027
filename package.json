@@ -1,0 +1,21 @@
+{
+  "name": "apru-scl-2027",
+  "version": "0.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build:portfolio": "npm run build -w apps/portfolio",
+    "build:client": "npm run build -w apps/client",
+    "dev:portfolio": "npm run dev -w apps/portfolio",
+    "dev:client": "npm run dev -w apps/client",
+    "test": "npm run test -w packages/content -w packages/ui",
+    "lint": "npm run lint -w apps/portfolio"
+  },
+  "devDependencies": {
+    "typescript": "^5",
+    "vitest": "^4.1.11"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "name": "@apru/content",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./types": "./src/types.ts",
+    "./phase": "./src/phase.ts",
+    "./phases": "./src/phases.ts",
+    "./usePhase": "./src/usePhase.ts",
+    "./useHydrated": "./src/useHydrated.ts",
+    "./routes": "./src/routes.ts",
+    "./seo": "./src/seo.ts",
+    "./analytics": "./src/analytics.ts"
+  },
+  "scripts": {
+    "test": "vitest run"
+  },
+  "peerDependencies": {
+    "next": "*",
+    "react": "*"
+  },
+  "devDependencies": {
+    "vitest": "^4.1.11"
+  }
+}
