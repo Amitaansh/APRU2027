@@ -28,6 +28,13 @@ import { MaskLines, Reveal } from "./Reveal";
  * where the scrim is densest and where a gradient reads as a natural falloff
  * rather than as a grey box laid over a picture.
  *
+ * The stops are set against the band's height, not chosen for their own sake.
+ * The type occupies the bottom ~23% of a full-viewport frame, so the gradient
+ * clears by 52% and the artwork above it is untouched. Held at the old 72% it
+ * would read as a vignette over most of the picture rather than as a footing under
+ * the words. White over the brightest saffron at the top of the heading still
+ * measures about 5.6:1.
+ *
  * NO CLOSING RULE. PageHead draws a hairline under its title to close the
  * opening. Here the artwork's own bottom edge does that, and a black rule
  * directly beneath a photograph reads as a seam rather than as a gesture.
@@ -46,7 +53,7 @@ export function PageHeadArt({
       {/* Padded rather than offset, so the band starts where the fixed header
           ends instead of running behind it. */}
       <section className="pt-[var(--hdr)]">
-        <div className="relative flex h-[52svh] min-h-[300rem] w-full items-end overflow-hidden">
+        <div className="relative flex h-[calc(100svh-var(--hdr))] w-full items-end overflow-hidden">
           <picture>
             <source
               srcSet="/images/hero-1920.avif 1920w, /images/hero-1280.avif 1280w, /images/hero-768.avif 768w"
@@ -75,7 +82,7 @@ export function PageHeadArt({
             className="absolute inset-0"
             style={{
               backgroundImage:
-                "linear-gradient(to top, rgba(0,0,0,0.74) 0%, rgba(0,0,0,0.46) 34%, transparent 72%)",
+                "linear-gradient(to top, rgba(0,0,0,0.74) 0%, rgba(0,0,0,0.42) 22%, transparent 52%)",
             }}
           />
 
