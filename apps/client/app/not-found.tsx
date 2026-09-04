@@ -1,11 +1,11 @@
 import Link from "next/link";
-import { PageHead, Section } from "@apru/ui";
+import { PageHeadArt, Section } from "@apru/ui";
 
 /** A mistyped URL keeps the shell. Static export writes this to 404.html. */
 export default function NotFound() {
   return (
     <>
-      <PageHead label="404" title={["Page not found"]} />
+      <PageHeadArt label="404" title={["Page not found"]} />
 
       <Section>
         <p className="t-b1 max-w-[60ch]">

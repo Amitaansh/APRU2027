@@ -82,16 +82,33 @@ export function Header() {
         {/*
          * The wordmark is the way home: the client's sitemap drops the Home
          * item and asks for the logo to carry it instead.
+         *
+         * This is the designer's supplied lockup, which is the conference mark
+         * -- APRU-SCL / 2027 / SINGAPORE -- rather than the APRU institutional
+         * wordmark the two lines of type here used to set. It replaces both of
+         * them: the mark already names the thing, and setting "Sustainable
+         * Cities & Landscapes" beside a logo that says SCL is saying it twice.
+         *
+         * Sized by height so the artwork's own proportions decide the width.
+         * 44rem inside 16rem of padding keeps the bar at the 76rem that --hdr
+         * (78rem) reserves for it; go taller and the fixed header starts
+         * overlapping the content that offsets itself by that token.
+         *
+         * `alt` is empty because the Link is already labelled -- otherwise the
+         * mark is announced, then the label, for one control.
          */}
-        <Link
-          href="/"
-          aria-label="APRU Sustainable Cities and Landscapes, home"
-          className="block leading-[1.2] [font-weight:700]"
-        >
-          <span className="block text-[17rem] tracking-[-0.02em] max-md:text-[14rem]">APRU</span>
-          <span className="block text-[12rem] [font-weight:400] max-md:text-[10rem]">
-            Sustainable Cities &amp; Landscapes
-          </span>
+        <Link href="/" aria-label="APRU-SCL 2027 Singapore, home" className="block">
+          {/* eslint-disable-next-line @next/next/no-img-element --
+              next/image has nothing to do here: the export is static with the
+              optimizer off, and the file is vector, so there is no format to
+              negotiate and no width to serve. */}
+          <img
+            src="/images/apru-lockup.svg"
+            alt=""
+            width={111}
+            height={61}
+            className="block h-[44rem] w-auto max-md:h-[36rem]"
+          />
         </Link>
 
         <nav aria-label="Primary" className="max-md:hidden">

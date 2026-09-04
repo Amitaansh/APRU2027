@@ -1,4 +1,4 @@
-import { PageHead, RegisterState, Section } from "@apru/ui";
+import { PageHeadArt, RegisterState, Section } from "@apru/ui";
 import { pageMetadata } from "@apru/content/seo";
 
 export const metadata = pageMetadata({
@@ -17,7 +17,7 @@ export const metadata = pageMetadata({
 export default function RegisterPage() {
   return (
     <>
-      <PageHead label="Registration" title={["Registration"]} />
+      <PageHeadArt label="Registration" title={["Registration"]} />
 
       <Section>
         <RegisterState />

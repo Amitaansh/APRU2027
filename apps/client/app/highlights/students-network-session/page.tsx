@@ -1,4 +1,4 @@
-import { PageHead, Section, ToBeAnnounced } from "@apru/ui";
+import { PageHeadArt, Section, ToBeAnnounced } from "@apru/ui";
 import { pageMetadata } from "@apru/content/seo";
 
 export const metadata = pageMetadata({
@@ -12,7 +12,7 @@ export const metadata = pageMetadata({
 export default function StudentsNetworkSessionPage() {
   return (
     <>
-      <PageHead label="Highlight" title={["Students Network Session"]} />
+      <PageHeadArt label="Highlight" title={["Students Network Session"]} />
 
       <Section>
         <ToBeAnnounced label="Session details to be announced" />

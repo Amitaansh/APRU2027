@@ -1,4 +1,4 @@
-import { PageHead, Section, SpeakerGrid } from "@apru/ui";
+import { PageHeadArt, Section, SpeakerGrid } from "@apru/ui";
 import { pageMetadata } from "@apru/content/seo";
 
 export const metadata = pageMetadata({
@@ -12,7 +12,7 @@ export const metadata = pageMetadata({
 export default function KeynotesPage() {
   return (
     <>
-      <PageHead label="Highlight" title={["Keynotes"]} />
+      <PageHeadArt label="Highlight" title={["Keynotes"]} />
 
       <Section>
         <SpeakerGrid />

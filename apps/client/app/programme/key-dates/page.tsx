@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ImportantDates, PageHead, Section } from "@apru/ui";
+import { ImportantDates, PageHeadArt, Section } from "@apru/ui";
 import { pageMetadata } from "@apru/content/seo";
 
 export const metadata = pageMetadata({
@@ -20,7 +20,7 @@ export const metadata = pageMetadata({
 export default function KeyDatesPage() {
   return (
     <>
-      <PageHead label="Programme" title={["Key Dates"]} />
+      <PageHeadArt label="Programme" title={["Key Dates"]} />
 
       <Section>
         <ImportantDates />

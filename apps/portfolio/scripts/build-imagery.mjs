@@ -35,6 +35,36 @@ const PUB = path.join(process.cwd(), "public");
 const PORTRAIT_SOURCE = process.env.PORTRAIT_SOURCE ?? "D:/APRU/committee-source";
 
 const WIDTHS = [768, 1280, 1920];
+/*
+ * The home key art (3 Sep drop). Two forms of the same 2320x1305 frame:
+ *
+ *   HOME_SOURCE is a 231 MB SVG -- an 11811x7874 base64 PNG drawn at scale(.2)
+ *   with the type set in vector over it. It is the better master, because the
+ *   type stays resolution-independent and the raster is oversampled 5x against
+ *   the artboard, so it survives a 2560 render that the flatten cannot.
+ *
+ *   HOME_FLAT is the designer's own 2321x1305 CMYK flatten of that file. It is
+ *   the fallback if librsvg cannot hold the 372 MB decode. Measured against the
+ *   vector render it agrees to within 6/255 per channel, so nothing is lost but
+ *   the headroom above 1920.
+ *
+ * Neither is in the repo -- see .gitignore. Point HOME_SOURCE elsewhere, or let
+ * both go missing, and this step skips rather than failing the run.
+ */
+const HOME_DROP = "D:/APRU/wetransfer_doa-apru-files-3-september_2026-09-03_0357";
+const HOME_SOURCE = process.env.HOME_SOURCE ?? HOME_DROP + "/SVG/SVG/SVG/Asset 1.svg";
+const HOME_FLAT = process.env.HOME_FLAT ?? HOME_DROP + "/SVG/1x/Asset 1-100.jpg";
+/* The designer's portrait cut, for phones. Unset until it is delivered. */
+const HOME_PORTRAIT_SOURCE = process.env.HOME_PORTRAIT_SOURCE ?? "";
+/*
+ * One rung above the hero's ladder. The hero is a band; this frame is full
+ * viewport and carries type, so it is the one image on the site where a 2x
+ * laptop display can actually resolve the extra pixels.
+ */
+const HOME_WIDTHS = [768, 1280, 1920, 2560];
+const HOME_PORTRAIT_WIDTHS = [480, 768, 1080];
+/** The SVG artboard, which is what `density` is reckoned against. */
+const HOME_ARTBOARD = 2320;
 /** Committee portraits: 4:5, one size, big enough for the 110rem box at 4x. */
 const PORTRAIT = { w: 440, h: 550 };
 /**
@@ -117,6 +147,125 @@ async function buildHero() {
       .webp({ quality: 80 })
       .toFile(path.join(OUT, "hero-" + width + ".webp"));
     console.log("hero " + width + "px written");
+  }
+}
+
+/**
+ * The home key art: the designer's finished poster, full-bleed behind the home
+ * page.
+ *
+ * This is not the hero with type added on the page. The title, the subtitle,
+ * the dates and both institutional logos are drawn INSIDE the artwork, which is
+ * why app/page.tsx sets no visible heading of its own and carries a screen
+ * reader-only one instead. Nothing here can change that; it is a property of
+ * the file we were given.
+ *
+ * Encoded from one decode like the hero, for the same reason: the vector master
+ * is 231 MB and rendering it once per width would be four full decodes.
+ */
+async function buildHome() {
+  const height = (width) => Math.round(width / HERO_RATIO);
+  const max = HOME_WIDTHS[HOME_WIDTHS.length - 1];
+
+  const render = async (source, options) =>
+    sharp(source, { limitInputPixels: false, unlimited: true, ...options })
+      .resize(max, height(max), { fit: "cover" })
+      .toColourspace("srgb")
+      .removeAlpha()
+      .png({ compressionLevel: 1 })
+      .toBuffer();
+
+  let master = null;
+  let vector = false;
+
+  if (existsSync(HOME_SOURCE)) {
+    try {
+      master = await render(HOME_SOURCE, { density: (72 * max) / HOME_ARTBOARD });
+      vector = true;
+    } catch (error) {
+      console.log("home: vector render failed (" + error.message + ") — trying the flatten");
+    }
+  }
+  if (!master && existsSync(HOME_FLAT)) master = await render(HOME_FLAT);
+  if (!master) {
+    console.log("no home key art at " + HOME_SOURCE + " — skipping home");
+    return;
+  }
+
+  // The flatten is 2321px wide, so 2560 would be an upscale of a frame that has
+  // no more detail to give. Only the vector master earns that rung.
+  const widths = vector ? HOME_WIDTHS : HOME_WIDTHS.filter((w) => w <= 1920);
+
+  for (const width of widths) {
+    const { data, info } = await sharp(master)
+      .resize(width, height(width), { fit: "cover" })
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+    const raw = { raw: { width: info.width, height: info.height, channels: info.channels } };
+    /*
+     * Same speckle as the hero, so the hero's measured q55 carries -- except at
+     * 2560, which drops to q45. That rung exists for the type, not the grain:
+     * a fleck is bigger than a pixel there, so the thinning that makes q45
+     * visible at 1920 has nothing to bite on. Compared at 1:1 the two are
+     * indistinguishable on the letterforms, and q45 is 706 KB against 1095.
+     */
+    await sharp(data, raw)
+      .avif({ quality: width >= 2560 ? 45 : 55, effort: 6 })
+      .toFile(path.join(OUT, "home-" + width + ".avif"));
+    /*
+     * No WebP above 1920. WebP is the fallback for browsers that cannot decode
+     * AVIF, and page.tsx stops that ladder at 1920 deliberately: a browser old
+     * enough to need it is not the one driving a 2560 display. Writing the file
+     * anyway just ships 1.2 MB nothing ever asks for.
+     */
+    if (width <= 1920) {
+      await sharp(data, raw)
+        .webp({ quality: 80 })
+        .toFile(path.join(OUT, "home-" + width + ".webp"));
+    }
+    console.log("home " + width + "px written" + (vector ? " (vector master)" : " (flatten)"));
+  }
+
+  await buildHomePortrait();
+}
+
+/**
+ * The phone cut of the same poster.
+ *
+ * The landscape frame cannot be cropped to a portrait viewport: the title runs
+ * across the top-left and the logos across the bottom-left, so any crop narrow
+ * enough for a phone takes a slice through both. The designer is supplying a
+ * portrait composition instead. Until it arrives this writes nothing, and
+ * app/page.tsx letterboxes the landscape frame rather than slicing it.
+ *
+ * Whatever aspect the file turns out to be is kept as drawn — only the width is
+ * set here, because the point of the cut is that its proportions are the
+ * designer's decision and not ours.
+ */
+async function buildHomePortrait() {
+  if (!HOME_PORTRAIT_SOURCE || !existsSync(HOME_PORTRAIT_SOURCE)) {
+    console.log("no portrait key art (HOME_PORTRAIT_SOURCE unset) — skipping");
+    return;
+  }
+  for (const width of HOME_PORTRAIT_WIDTHS) {
+    const { data, info } = await sharp(HOME_PORTRAIT_SOURCE, {
+      limitInputPixels: false,
+      unlimited: true,
+      density: 300,
+    })
+      .resize(width)
+      .toColourspace("srgb")
+      .removeAlpha()
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+    const raw = { raw: { width: info.width, height: info.height, channels: info.channels } };
+    await sharp(data, raw)
+      .avif({ quality: 55, effort: 6 })
+      .toFile(path.join(OUT, "home-portrait-" + width + ".avif"));
+    await sharp(data, raw)
+      .webp({ quality: 80 })
+      .toFile(path.join(OUT, "home-portrait-" + width + ".webp"));
+    console.log("home portrait " + width + "px written (" + info.width + "x" + info.height + ")");
   }
 }
 
@@ -675,6 +824,7 @@ async function main() {
   await mkdir(OUT, { recursive: true });
   await mkdir(path.join(OUT, "..", "og"), { recursive: true });
   if (!process.env.SKIP_HERO) await buildHero();
+  if (!process.env.SKIP_HOME) await buildHome();
   await buildOG();
   await buildIcons();
   await buildPortraits();
@@ -689,6 +839,10 @@ async function main() {
       "",
       "- Source: " + SOURCE,
       "- Hero: the source as supplied — resized to 16:9 from the centre, CMYK transformed to sRGB, no treatment.",
+      "- Home key art: " + HOME_SOURCE,
+      "- Home: the designer's finished 16:9 poster — title, subtitle, dates and both logos are drawn into the file. Rendered from the vector master where librsvg can hold it, else from " + HOME_FLAT + ".",
+      "- Home widths: " + HOME_WIDTHS.join(", ") + " (AVIF + WebP). Portrait cut: " +
+        (HOME_PORTRAIT_SOURCE ? HOME_PORTRAIT_SOURCE : "not yet supplied — home-portrait-* is absent and the page letterboxes on phones."),
       "- OG card: greyscale, contrast lift, ordered 8x8 Bayer dither, two-colour map (#f89c2c over #143a5c) — Design Brief §05.",
       "- Widths: " + WIDTHS.join(", ") + " (AVIF + WebP), OG card 1200x630 PNG.",
       "- Committee portraits: " + PORTRAIT_SOURCE + " — 4:5 crop from the top, " +

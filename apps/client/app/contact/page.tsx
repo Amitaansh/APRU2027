@@ -1,4 +1,4 @@
-import { ContactRoute, FAQAccordion, PageHead, Section } from "@apru/ui";
+import { ContactRoute, FAQAccordion, PageHeadArt, Section } from "@apru/ui";
 import { pageMetadata } from "@apru/content/seo";
 
 export const metadata = pageMetadata({
@@ -17,7 +17,7 @@ export const metadata = pageMetadata({
 export default function ContactPage() {
   return (
     <>
-      <PageHead label="Contact" title={["Contact"]} />
+      <PageHeadArt label="Contact" title={["Contact"]} />
 
       <Section>
         <ContactRoute />

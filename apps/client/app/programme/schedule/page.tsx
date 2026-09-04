@@ -1,4 +1,4 @@
-import { PageHead, Section, ToBeAnnounced } from "@apru/ui";
+import { PageHeadArt, Section, ToBeAnnounced } from "@apru/ui";
 import { pageMetadata } from "@apru/content/seo";
 
 export const metadata = pageMetadata({
@@ -18,7 +18,7 @@ export const metadata = pageMetadata({
 export default function SchedulePage() {
   return (
     <>
-      <PageHead label="Programme" title={["Schedule"]} />
+      <PageHeadArt label="Programme" title={["Schedule"]} />
 
       <Section>
         <ToBeAnnounced label="Detailed schedule and programme to be announced soon." />

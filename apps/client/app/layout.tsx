@@ -15,14 +15,23 @@ import { DEFAULT_DESCRIPTION, NOINDEX, OG_IMAGE, SITE_URL } from "@apru/content/
  * the serif used to do. It is exposed as `--font-brand`, which globals.css
  * assigns to both the display and the text classes.
  *
- * TODO(brand): this is still Switzer, which the portfolio edition already
- * vendors. Drop the designer's .woff2 files into ./fonts and point this at
- * them; nothing else in the app refers to a family by name.
+ * The face is Atlas Grotesk, as supplied by the designer and as set in the key
+ * art itself, converted from the delivered .otf to .woff2 (903 KB down to 291
+ * KB across the five faces). Nothing else in the app names a family.
+ *
+ * Five static faces rather than one variable file, because that is what the
+ * foundry ships. Only Light, Regular and Bold exist -- there is no Bold Italic,
+ * so bold and italic together would be synthesised by the browser. Nothing
+ * currently asks for that combination; if something starts to, it needs the
+ * sixth face rather than a slanted Bold.
  */
 const brand = localFont({
   src: [
-    { path: "./fonts/Switzer-Variable.woff2", weight: "100 900", style: "normal" },
-    { path: "./fonts/Switzer-VariableItalic.woff2", weight: "100 900", style: "italic" },
+    { path: "./fonts/AtlasGrotesk-Light.woff2", weight: "300", style: "normal" },
+    { path: "./fonts/AtlasGrotesk-LightItalic.woff2", weight: "300", style: "italic" },
+    { path: "./fonts/AtlasGrotesk-Regular.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/AtlasGrotesk-RegularItalic.woff2", weight: "400", style: "italic" },
+    { path: "./fonts/AtlasGrotesk-Bold.woff2", weight: "700", style: "normal" },
   ],
   variable: "--font-brand",
   display: "swap",

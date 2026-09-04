@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Accordion, type AccordionItem, PageHead, Section } from "@apru/ui";
+import { Accordion, type AccordionItem, PageHeadArt, Section } from "@apru/ui";
 import { venue } from "@apru/content";
 import type { VenueSection } from "@apru/content/types";
 import { pageMetadata } from "@apru/content/seo";
@@ -107,7 +107,7 @@ export default function VisitorsPage() {
 
   return (
     <>
-      <PageHead label="Visitors" title={["Visitors"]} />
+      <PageHeadArt label="Visitors" title={["Visitors"]} />
 
       <Section>
         <Accordion items={items} />

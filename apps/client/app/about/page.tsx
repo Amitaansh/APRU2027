@@ -1,4 +1,4 @@
-import { Committee, PageHead, Reveal, Section, Sponsors } from "@apru/ui";
+import { Committee, PageHeadArt, Reveal, Section, Sponsors } from "@apru/ui";
 import { site } from "@apru/content";
 import { pageMetadata } from "@apru/content/seo";
 
@@ -23,13 +23,13 @@ export const metadata = pageMetadata({
  * conference and dropping them outright would leave the site with no account of
  * what it is for. They read as body copy here. Say the word if they should go.
  *
- * No lede is passed to PageHead: that prop is what sets a paragraph beside the
+ * No lede is passed to PageHeadArt: that prop is what sets a paragraph beside the
  * title, and moving it down is precisely the request.
  */
 export default function AboutPage() {
   return (
     <>
-      <PageHead label="About" title={["About"]} />
+      <PageHeadArt label="About" title={["About"]} />
 
       <Section>
         <Reveal>

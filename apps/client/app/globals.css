@@ -33,8 +33,14 @@
  * highlight — the "red highlight when highlighting words" the client asked us
  * to drop. It is the halo's deep royal blue here, which clears 8.6:1 on white.
  *
- * TODO(brand): replace with the exact blue or orange from the designer's .ai
- * file. This is the only line that needs to change.
+ * The designer's files are in, and the brand pair is #3e89c8 blue with #f99d2d
+ * orange -- the two fills in the supplied lockup. Neither one becomes --ac.
+ * That token is ink as well as ground: base.css paints a link colour from it at
+ * one end and the selection highlight at the other, and #3e89c8 measures 3.0:1
+ * on white, well under the 4.5:1 this site holds itself to. The deep royal blue
+ * below is the accessible member of the same family and stays. The brand pair
+ * is used where it is a fill rather than a letterform -- the artwork, and the
+ * lockup in the header.
  */
 :root {
   --gr3: #000000;
@@ -66,10 +72,14 @@
    * the hierarchy the serif/sans pairing used to carry. Every display role
    * becomes the brand face at bold; every text role the same face at regular.
    *
-   * TODO(brand): --font-brand is Switzer for now because it is already
-   * vendored. Point it at the designer's face in layout.tsx and re-tune the
-   * two tracking values below — a bold face is wider than Hedvig and the
-   * display tracking was measured against Hedvig's proportions.
+   * --font-brand is Atlas Grotesk, the designer's face, and the same one set
+   * in the key art -- so the title inside the poster and the headings on every
+   * page below it are now one typeface rather than two that nearly match.
+   * Weights are static here (300/400/700), not a variable axis; see layout.tsx.
+   *
+   * The tracking below was measured against Hedvig, then inherited by Switzer.
+   * Atlas Grotesk Bold is a wider, more open grotesque than either, so -0.02em
+   * is the value to re-check first if the display type ever reads tight.
    */
   .t-d1,
   .t-h1,

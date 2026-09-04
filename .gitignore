@@ -41,3 +41,19 @@ out/
 # shared storage. See apps/portfolio/scripts/build-imagery.mjs.
 wetransfer_*.zip
 *.zip
+
+# The same drops unpacked. The 3 Sep key art is a single 231 MB SVG — an
+# 11811x7874 base64 PNG with the type set in vector over it — which is over
+# GitHub's 100 MB hard limit on its own. Same rule as the art above: the
+# original stays in shared storage, the repo ships what `npm run imagery`
+# builds from it.
+wetransfer_*/
+
+# Licensed font sources. Atlas Grotesk is a commercial face and these are the
+# desktop .otf originals; the repo ships only the .woff2 the site serves.
+#
+# Anchored to the root on purpose. Unanchored, `Fonts/` matches a directory of
+# that name at any depth -- and because core.ignorecase is true on Windows that
+# includes apps/client/app/fonts, which is where the .woff2 the site actually
+# serves live. That would drop them from the commit and 404 every face.
+/Fonts/

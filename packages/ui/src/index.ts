@@ -27,6 +27,7 @@ export { ImportantDates } from "./ImportantDates";
 export { IndexRow, RuleList } from "./IndexRow";
 export { LogoAPRU, LogoNUS } from "./Logos";
 export { PageHead } from "./PageHead";
+export { PageHeadArt } from "./PageHeadArt";
 export { Portrait } from "./Portrait";
 export { RegisterState } from "./RegisterState";
 export { ENTERED, MaskLines, Reveal } from "./Reveal";

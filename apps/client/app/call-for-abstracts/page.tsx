@@ -1,4 +1,4 @@
-import { AbstractsState, ImportantDates, PageHead, Section } from "@apru/ui";
+import { AbstractsState, ImportantDates, PageHeadArt, Section } from "@apru/ui";
 import { pageMetadata } from "@apru/content/seo";
 
 export const metadata = pageMetadata({
@@ -20,7 +20,7 @@ export const metadata = pageMetadata({
 export default function CallForAbstractsPage() {
   return (
     <>
-      <PageHead label="Call for Abstracts" title={["Call for Abstracts"]} />
+      <PageHeadArt label="Call for Abstracts" title={["Call for Abstracts"]} />
 
       <Section>
         <AbstractsState />

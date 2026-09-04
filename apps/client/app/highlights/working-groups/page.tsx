@@ -1,4 +1,4 @@
-import { PageHead, Reveal, Section, WorkingGroups } from "@apru/ui";
+import { PageHeadArt, Reveal, Section, WorkingGroups } from "@apru/ui";
 import { forums } from "@apru/content";
 import { pageMetadata } from "@apru/content/seo";
 
@@ -21,7 +21,7 @@ export const metadata = pageMetadata({
 export default function WorkingGroupsPage() {
   return (
     <>
-      <PageHead label="Highlight" title={["Working Groups"]} />
+      <PageHeadArt label="Highlight" title={["Working Groups"]} />
 
       <Section>
         <Reveal>

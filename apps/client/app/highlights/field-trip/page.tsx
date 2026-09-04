@@ -1,4 +1,4 @@
-import { PageHead, Reveal, Section } from "@apru/ui";
+import { PageHeadArt, Reveal, Section } from "@apru/ui";
 import { pageMetadata } from "@apru/content/seo";
 
 export const metadata = pageMetadata({
@@ -23,7 +23,7 @@ const THEMES = [
 export default function FieldTripsPage() {
   return (
     <>
-      <PageHead label="Highlight" title={["Field Trips"]} />
+      <PageHeadArt label="Highlight" title={["Field Trips"]} />
 
       <Section>
         <Reveal>
