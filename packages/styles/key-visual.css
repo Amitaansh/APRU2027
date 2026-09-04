@@ -1,0 +1,298 @@
+/*
+ * @apru/styles/key-visual.css — the key visual, assembled rather than flattened.
+ *
+ * The designer's comp is a 2320x1305 frame with the title, the series line, the
+ * dates and both institutional lockups drawn into the pixels. This file is that
+ * frame read as a specification: the artwork stays an image, and everything in
+ * it that carries meaning is set here as live text and linked SVG over the top.
+ *
+ * WHERE THE NUMBERS COME FROM. Not from looking. The comp shipped with a vector
+ * master (a 2320x1305 SVG, the plate as an embedded raster with the type still
+ * outlined above it), so every length below was measured off that geometry and
+ * solved against the font binaries with fontTools:
+ *
+ *   size       ink heights fitted against each glyph's own bounds, so overshoot
+ *              on round letters does not read as a bigger face. Both display
+ *              lines land on 73.001px and the date line on 67.992px against a
+ *              765/1000 cap height -- 73 and 68 exactly.
+ *   weight     the same fit run against Light, Regular and Bold. Display is
+ *              Bold (rms 0.005px, against 2.9 for Regular); the date line is
+ *              Regular, confirmed on the two features that separate 300 from
+ *              400 at this size -- em-dash ink height 4.77px measured against
+ *              4.74 predicted for Regular and 3.74 for Light, and the "1" stem
+ *              at 16.38px against 15.95 and 14.75.
+ *   the dash   an EM dash, not an en. Ink width 53.03px measured; the candidates
+ *              render 52.07 (em), 28.70 (en) and 18.56 (hyphen) at this size.
+ *   tracking   solved against a real browser render, not offline -- see
+ *              --kv-track-* below.
+ *
+ * WHY IT IS ON A CAP RHYTHM. The three baselines are 91.20 and 87.07 apart,
+ * which looks like a broken rhythm until the cap lines are measured instead:
+ * 91.20 and 90.90. The block is set cap to cap, and the date line only appears
+ * to sit closer because it is the smaller face. So every line here is positioned
+ * from its cap line with `text-box`, and the leading token below is the gap
+ * between one trimmed box and the next rather than a line height.
+ *
+ * That also removes the single biggest source of drift in setting type to a
+ * comp: without trimming, where a line lands depends on which vertical metrics
+ * the browser happens to read -- usWinAscent on Chrome/Windows, hhea on macOS.
+ * Atlas Grotesk's differ by 390/1000, which is about 10px of drift at 1920.
+ */
+
+/*
+ * ---------------------------------------------------------------------------
+ * THE SCALE UNIT
+ * ---------------------------------------------------------------------------
+ * One unit is 1% of the layout container, so the composition holds its
+ * proportions at every width. cqw and not vw: vw is the viewport including the
+ * scrollbar, so a full-bleed frame measured in it overflows by however wide the
+ * scrollbar is and the page gains a horizontal scroll of its own.
+ *
+ * cqw resolves against the container's CONTENT box, which is why .kv carries no
+ * padding of its own -- the gutter is a property of what sits inside the frame,
+ * not of the frame. Padding here would shrink the unit by both gutters and the
+ * whole composition would settle a little smaller than the comp.
+ */
+.kv {
+  container-type: inline-size;
+  position: relative;
+  height: 100%;
+  isolation: isolate;
+  overflow: clip;
+  color: var(--wh);
+}
+
+/*
+ * The design basis is 2320 wide, so a length of Npx in the comp is
+ * (N / 2320 * 100)cqw here. The comments carry the source measurement.
+ */
+.kv {
+  --kv-gutter: 4.1668cqw; /* 96.669px — text origin: ink left 102.29 less B's 77/1000 sidebearing */
+  --kv-display: 3.1466cqw; /* 73.00px  — Bold, lines 1 and 2 */
+  --kv-top: 4.5420cqw; /* 105.37px — cap line of line 1, from the top */
+
+  /* The date line is a fixed ratio of the display size, measured 68/73. Held as
+   * a ratio rather than a second cqw value so both branches ramp together. */
+  --kv-meta: calc(var(--kv-display) * 0.93151);
+
+  /* Cap-to-cap is 91.05px at a 73px display size = 1.2473em. The gap between
+   * two trimmed boxes is that less the cap height itself, 0.765em.
+   *
+   * Held as a length off --kv-display rather than in em, because it is also the
+   * gap above the date line — and an em there would resolve against the date
+   * line's own smaller size and close up by 2.4px. */
+  --kv-cap-rhythm: 1.2473;
+  --kv-lead: calc(var(--kv-display) * 0.4823);
+
+  /*
+   * TRACKING. Measured on the comp at roughly +0.025em, but the value that
+   * ships is solved against a headless Chrome render rather than that figure.
+   * Offline the shaping is advance widths only, so it misses the kern table and
+   * lands short; the browser kerns, and the difference is about half a percent
+   * of the line -- 7px across line 2, which is well outside a 1px match.
+   * scripts/verify-key-visual.mjs re-solves these and prints the deltas.
+   */
+  --kv-track-display: 0.0274em;
+  --kv-track-meta: 0.0284em;
+
+  /* The ordinal in "10th": ink box 0.583 of the parent em, sitting 0.333em
+   * above the parent baseline. */
+  --kv-sup-size: 0.583em;
+  --kv-sup-rise: 0.333em;
+
+  /* Both lockups are placed at 1:1 in the comp — measured 329.740 x 101.546
+   * against Asset 2's 329.75 x 101.54 viewBox, and 689.700 against Asset 1's
+   * 689.71 — so these are the artwork's own proportions, not a re-fit. */
+  --kv-apru-left: 4.4194cqw; /* 102.53px */
+  --kv-apru-width: 14.2129cqw; /* 329.74px */
+  --kv-apru-bottom: 4.3799cqw; /* 101.61px up from the foot */
+  --kv-nus-left: 22.3069cqw; /* 517.52px */
+  --kv-nus-width: 29.7285cqw; /* 689.70px */
+  --kv-nus-bottom: 4.3185cqw; /* 100.19px */
+}
+
+/*
+ * ---------------------------------------------------------------------------
+ * THE ARTWORK
+ * ---------------------------------------------------------------------------
+ * alt="" and nothing else. Every word that used to be baked into this file is
+ * real text in the markup now, so describing the picture would say the title a
+ * second time to anyone listening rather than looking.
+ */
+.kv-art {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* The crop is already the comp's window on the plate — see build-imagery.mjs
+   * — so this only governs what a viewport that is not 16:9 gives up. */
+  object-position: center;
+}
+
+/*
+ * ---------------------------------------------------------------------------
+ * THE TYPE
+ * ---------------------------------------------------------------------------
+ */
+.kv-type {
+  position: absolute;
+  top: var(--kv-top);
+  left: var(--kv-gutter);
+  right: var(--kv-gutter);
+  margin: 0;
+}
+
+.kv-line {
+  display: block;
+  margin: 0;
+  font-family: var(--font-kv), var(--font-brand), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;
+  font-size: var(--kv-display);
+  letter-spacing: var(--kv-track-display);
+  line-height: var(--kv-cap-rhythm);
+  /*
+   * Position from the cap line, not from wherever the em box happens to sit.
+   * The first line's box top becomes its cap line, so --kv-top is exact; the
+   * last line's box bottom becomes its baseline, so --kv-lead is a real gap
+   * between letterforms rather than between two invisible slugs.
+   */
+  text-box: trim-both cap alphabetic;
+  white-space: nowrap;
+}
+
+/*
+ * The block is <h1> holding lines 1 and 2, then the date line beside it, so the
+ * rhythm has to be declared across both — once between the two spans inside the
+ * heading, once between the heading and the line after it.
+ */
+.kv-line + .kv-line,
+.kv-type > * + * {
+  margin-top: var(--kv-lead);
+}
+
+.kv-type h1 {
+  font: inherit;
+}
+
+.kv-meta {
+  font-weight: 400;
+  font-size: var(--kv-meta);
+  letter-spacing: var(--kv-track-meta);
+}
+
+/*
+ * The ordinal. Sized and raised from its own ink box rather than from `sup`'s
+ * default, which is a browser guess (usually 0.83em and a `super` shift) and
+ * misses this by about 4px in each direction at the display size.
+ */
+.kv-ord {
+  font-size: var(--kv-sup-size);
+  line-height: 0;
+  vertical-align: baseline;
+  position: relative;
+  /* The rise is quoted in the PARENT's em, but `bottom` resolves against this
+   * element's own font-size, so it is divided back out by the ordinal's scale. */
+  bottom: calc(var(--kv-sup-rise) / 0.583);
+}
+
+/*
+ * ---------------------------------------------------------------------------
+ * THE LOCKUPS
+ * ---------------------------------------------------------------------------
+ * Linked SVG rather than re-set type. The NUS mark carries its department line
+ * inside the lockup as outlines, and an institutional lockup is a fixed asset:
+ * re-typesetting it in Atlas Grotesk would be redrawing someone else's mark. It
+ * keeps its meaning through alt text instead.
+ */
+.kv-mark {
+  position: absolute;
+  display: block;
+  height: auto;
+}
+
+.kv-apru {
+  left: var(--kv-apru-left);
+  bottom: var(--kv-apru-bottom);
+  width: var(--kv-apru-width);
+}
+
+.kv-nus {
+  left: var(--kv-nus-left);
+  bottom: var(--kv-nus-bottom);
+  width: var(--kv-nus-width);
+}
+
+/*
+ * ---------------------------------------------------------------------------
+ * PORTRAIT
+ * ---------------------------------------------------------------------------
+ * The comp is one landscape frame, and a crop of it tight enough for a phone
+ * cuts through both the type and the lockups. So portrait is not a crop: it is
+ * the same composition re-set, on the same tokens, against its own ramp.
+ *
+ * THE RAMP IS SUBLINEAR. A straight cqw carried down from the desktop value
+ * gives 12px type on a 390px phone; a straight cqw tuned to read on the phone
+ * gives 59px on an 800px tablet, where the same three lines then dominate a
+ * screen that has room for the page beneath them. calc(Xcqw + Ypx) is the
+ * sublinear ramp between the two: it is fitted through 30px at 390 and 44px at
+ * 768, so type that reads well on a phone stays proportionate on a tablet.
+ *
+ * Everything else is untouched, because it is all expressed against the display
+ * size rather than in absolute lengths — the cap rhythm, the leading, the
+ * ordinal and the date line all ramp with it for free.
+ */
+@media (orientation: portrait) {
+  .kv {
+    --kv-display: calc(3.7cqw + 15.5px);
+    --kv-gutter: calc(2.116cqw + 11.75px);
+    --kv-top: calc(var(--kv-display) * 1.4435);
+  }
+
+  .kv-type {
+    /* Line 2 is 53 characters and cannot hold one line at phone widths, so the
+     * measure is allowed to do its job here. The rhythm survives the wrap
+     * because line-height is the same cap-to-cap value the block is set on. */
+    white-space: normal;
+  }
+
+  .kv-line {
+    white-space: inherit;
+  }
+
+  /*
+   * The lockups leave their measured x positions and become a row at the foot,
+   * because those positions are a fact about a 2320-wide frame. They keep their
+   * relative sizes: 329.74 to 689.70 is the proportion the designer set them in.
+   */
+  .kv-marks {
+    position: absolute;
+    left: var(--kv-gutter);
+    right: var(--kv-gutter);
+    bottom: calc(var(--kv-display) * 1.3724);
+    display: flex;
+    align-items: flex-end;
+    gap: calc(2.5cqw + 8px);
+  }
+
+  .kv-mark {
+    position: static;
+  }
+
+  .kv-apru {
+    width: 26cqw;
+  }
+
+  .kv-nus {
+    width: 54.4cqw; /* 26 x 689.70/329.74 — the comp's own ratio between them */
+  }
+}
+
+/*
+ * A viewport that is landscape but very short would otherwise run the type into
+ * the lockups. The frame stops shrinking before they touch.
+ */
+.kv {
+  min-height: 30cqw;
+}

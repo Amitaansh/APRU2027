@@ -37,6 +37,32 @@ const brand = localFont({
   display: "swap",
 });
 
+/**
+ * The same two faces again, blocking, for the key visual alone.
+ *
+ * The composition on the home page sets its second line — 53 characters — to
+ * 95.1% of the frame, and holds it on one line with `white-space: nowrap`
+ * because that is how the comp is set. `swap` paints that line in the fallback
+ * first, and the fallback is a different width: at best the line jumps when
+ * Atlas arrives, at worst it runs out of the frame and is clipped until it
+ * does. `block` keeps it invisible for the block period instead, so the line
+ * arrives once, at the width it was measured at.
+ *
+ * It is scoped to `--font-kv` rather than applied to `brand`, because blocking
+ * is the wrong trade everywhere else: body copy wraps, so a fallback there
+ * costs a reflow rather than a broken line, and `swap` gets it on screen
+ * sooner. Both declarations name the same files, and next/font hashes by
+ * content, so this is a second @font-face rule over one download, not two.
+ */
+const keyVisual = localFont({
+  src: [
+    { path: "./fonts/AtlasGrotesk-Regular.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/AtlasGrotesk-Bold.woff2", weight: "700", style: "normal" },
+  ],
+  variable: "--font-kv",
+  display: "block",
+});
+
 const plausibleDomain = process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN;
 
 export const metadata: Metadata = {
@@ -80,7 +106,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={brand.variable}>
+    <html lang="en" className={brand.variable + " " + keyVisual.variable}>
       <body>
         {plausibleDomain ? (
           <Script

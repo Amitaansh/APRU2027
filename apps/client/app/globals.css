@@ -22,6 +22,14 @@
 @import "../../../packages/styles/base.css";
 
 /*
+ * The key visual — the home frame rebuilt as live type and SVG over the
+ * artwork, on its own container-relative scale. Imported here rather than from
+ * base.css because it is one composition on one page, not part of the system
+ * every page draws from.
+ */
+@import "../../../packages/styles/key-visual.css";
+
+/*
  * ---------------------------------------------------------------------------
  * INK
  * ---------------------------------------------------------------------------

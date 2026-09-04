@@ -12,9 +12,12 @@
     "dev:portfolio": "npm run dev -w apps/portfolio",
     "dev:client": "npm run dev -w apps/client",
     "test": "npm run test -w packages/content -w packages/ui",
-    "lint": "npm run lint -w apps/portfolio"
+    "lint": "npm run lint -w apps/portfolio",
+    "verify:kv": "node scripts/verify-key-visual.mjs",
+    "imagery": "cd apps/portfolio && node --max-old-space-size=8192 scripts/build-imagery.mjs"
   },
   "devDependencies": {
+    "playwright": "^1.62.1",
     "typescript": "^5",
     "vitest": "^4.1.11"
   }

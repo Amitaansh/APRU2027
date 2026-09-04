@@ -57,3 +57,13 @@ wetransfer_*/
 # includes apps/client/app/fonts, which is where the .woff2 the site actually
 # serves live. That would drop them from the commit and 404 every face.
 /Fonts/
+
+# Derivation scratch: comp measurements, render diffs, harness experiments.
+.work/
+
+# Extracted plate cache — 174 MB, rebuilt from the master by the imagery script.
+apps/portfolio/.cache/
+
+# Designer source drop: the print plate and the lockup SVGs as delivered. The
+# lockups are committed as derivatives in packages/assets; the plate is 133 MB.
+landing-elements/

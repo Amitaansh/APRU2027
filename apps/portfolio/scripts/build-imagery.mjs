@@ -54,15 +54,13 @@ const WIDTHS = [768, 1280, 1920];
 const HOME_DROP = "D:/APRU/wetransfer_doa-apru-files-3-september_2026-09-03_0357";
 const HOME_SOURCE = process.env.HOME_SOURCE ?? HOME_DROP + "/SVG/SVG/SVG/Asset 1.svg";
 const HOME_FLAT = process.env.HOME_FLAT ?? HOME_DROP + "/SVG/1x/Asset 1-100.jpg";
-/* The designer's portrait cut, for phones. Unset until it is delivered. */
-const HOME_PORTRAIT_SOURCE = process.env.HOME_PORTRAIT_SOURCE ?? "";
 /*
  * One rung above the hero's ladder. The hero is a band; this frame is full
  * viewport and carries type, so it is the one image on the site where a 2x
  * laptop display can actually resolve the extra pixels.
  */
 const HOME_WIDTHS = [768, 1280, 1920, 2560];
-const HOME_PORTRAIT_WIDTHS = [480, 768, 1080];
+const HOME_PORTRAIT_WIDTHS = [480, 768, 1080, 1440];
 /** The SVG artboard, which is what `density` is reckoned against. */
 const HOME_ARTBOARD = 2320;
 /** Committee portraits: 4:5, one size, big enough for the 110rem box at 4x. */
@@ -151,122 +149,215 @@ async function buildHero() {
 }
 
 /**
- * The home key art: the designer's finished poster, full-bleed behind the home
- * page.
+ * The home key visual, as imagery only.
  *
- * This is not the hero with type added on the page. The title, the subtitle,
- * the dates and both institutional logos are drawn INSIDE the artwork, which is
- * why app/page.tsx sets no visible heading of its own and carries a screen
- * reader-only one instead. Nothing here can change that; it is a property of
- * the file we were given.
+ * WHAT CHANGED. This used to write the designer's finished poster: the title,
+ * the series line, the dates and both lockups flattened into the pixels. The
+ * page assembles that composition in the browser now -- live text in Atlas
+ * Grotesk over linked SVG lockups -- so what this writes is the artwork alone,
+ * carrying nothing that means anything. The type lives in
+ * packages/ui/src/KeyVisual.tsx, set to the geometry in
+ * packages/styles/key-visual.css.
  *
- * Encoded from one decode like the hero, for the same reason: the vector master
- * is 231 MB and rendering it once per width would be four full decodes.
+ * WHICH CROP -- not a guess, and not the centre. The master SVG places this
+ * raster with its own transform:
+ *
+ *   <image width="11811" height="7874" transform="translate(-15.45 -188.61) scale(.2)">
+ *
+ * inside a 2320x1305 viewBox, so the window the comp actually shows is exactly
+ * (77.25, 943.05) 11600x6525 of the plate, which is 16:9 to four decimals.
+ * Against the whole plate that reads as object-position 36.6% 69.9%. It is
+ * baked into the crop here rather than set in CSS, because shipping the window
+ * is fewer bytes than shipping the plate and then positioning it.
+ *
+ * WHICH SOURCE -- the sRGB raster embedded in the master, not the CMYK print
+ * file. They are the same artwork, but landing-elements/DOA-APRU-MainImage.jpg
+ * is FOGRA39, and even a correct transform through its embedded profile lands a
+ * mean 9.5/255 away from the designer's own blue, worst case 42. That file is
+ * the fallback, with that shift, when the master is not to hand.
  */
-async function buildHome() {
-  const height = (width) => Math.round(width / HERO_RATIO);
-  const max = HOME_WIDTHS[HOME_WIDTHS.length - 1];
 
-  const render = async (source, options) =>
-    sharp(source, { limitInputPixels: false, unlimited: true, ...options })
-      .resize(max, height(max), { fit: "cover" })
-      .toColourspace("srgb")
-      .removeAlpha()
-      .png({ compressionLevel: 1 })
-      .toBuffer();
+/** The raster's size as the master declares it, which is what the crop is in. */
+const HOME_PLATE_BOX = { w: 11811, h: 7874 };
+/** The master's own placement of it: viewBox, scale and translate. */
+const HOME_VIEW = { w: 2320, h: 1305, scale: 0.2, tx: -15.45, ty: -188.61 };
+/** Extracted once from the 231 MB master and kept, because it is a 174 MB decode. */
+const HOME_PLATE_CACHE = path.join(process.cwd(), ".cache", "home-plate.png");
+const HOME_PLATE_FALLBACK = process.env.HOME_PLATE ?? "D:/APRU/landing-elements/DOA-APRU-MainImage.jpg";
 
-  let master = null;
-  let vector = false;
-
-  if (existsSync(HOME_SOURCE)) {
-    try {
-      master = await render(HOME_SOURCE, { density: (72 * max) / HOME_ARTBOARD });
-      vector = true;
-    } catch (error) {
-      console.log("home: vector render failed (" + error.message + ") — trying the flatten");
-    }
-  }
-  if (!master && existsSync(HOME_FLAT)) master = await render(HOME_FLAT);
-  if (!master) {
-    console.log("no home key art at " + HOME_SOURCE + " — skipping home");
-    return;
-  }
-
-  // The flatten is 2321px wide, so 2560 would be an upscale of a frame that has
-  // no more detail to give. Only the vector master earns that rung.
-  const widths = vector ? HOME_WIDTHS : HOME_WIDTHS.filter((w) => w <= 1920);
-
-  for (const width of widths) {
-    const { data, info } = await sharp(master)
-      .resize(width, height(width), { fit: "cover" })
-      .raw()
-      .toBuffer({ resolveWithObject: true });
-    const raw = { raw: { width: info.width, height: info.height, channels: info.channels } };
-    /*
-     * Same speckle as the hero, so the hero's measured q55 carries -- except at
-     * 2560, which drops to q45. That rung exists for the type, not the grain:
-     * a fleck is bigger than a pixel there, so the thinning that makes q45
-     * visible at 1920 has nothing to bite on. Compared at 1:1 the two are
-     * indistinguishable on the letterforms, and q45 is 706 KB against 1095.
-     */
-    await sharp(data, raw)
-      .avif({ quality: width >= 2560 ? 45 : 55, effort: 6 })
-      .toFile(path.join(OUT, "home-" + width + ".avif"));
-    /*
-     * No WebP above 1920. WebP is the fallback for browsers that cannot decode
-     * AVIF, and page.tsx stops that ladder at 1920 deliberately: a browser old
-     * enough to need it is not the one driving a 2560 display. Writing the file
-     * anyway just ships 1.2 MB nothing ever asks for.
-     */
-    if (width <= 1920) {
-      await sharp(data, raw)
-        .webp({ quality: 80 })
-        .toFile(path.join(OUT, "home-" + width + ".webp"));
-    }
-    console.log("home " + width + "px written" + (vector ? " (vector master)" : " (flatten)"));
-  }
-
-  await buildHomePortrait();
-}
+/*
+ * QUALITY -- measured, not chosen.
+ *
+ * The artwork is a two-colour dither whose grain lives almost entirely in R and
+ * B: high-pass std-dev 30.8 and 26.7 against 9.0 for G, because orange over
+ * blue is an R-against-B swing with G nearly constant. That makes it a chroma
+ * texture, and chroma is the first thing a codec spends.
+ *
+ *   AVIF at 1920   q50  75% of the grain kept   534 KB
+ *                  q55  80%                     661 KB
+ *                  q60  88%                     872 KB   <- the knee
+ *                  q65  90%                     998 KB
+ *                  q70  94%                    1180 KB
+ *
+ * The slope below the knee is +16 points of grain per 10 quality; above it, +4.
+ * So q60. Under it this texture goes suddenly rather than gradually, which is
+ * the failure mode a dither has and a photograph does not.
+ *
+ * WebP gets a different rule because it has a different ceiling. Its lossy mode
+ * is always YUV 4:2:0, so it halves precisely the chroma this image is made of:
+ * it keeps ~40% of the R/B grain at q55 and ~41% at q93, for 498 KB against
+ * 1177 KB. Quality buys almost no fidelity here, so it is set at the cheap end
+ * of its own flat curve instead of at a number that reads as generous.
+ * (smartSubsample lifts it to 51% for 841 KB; lossless is 4.4 MB.) It is there
+ * for browsers that cannot decode AVIF, and for those the grain is gone
+ * whatever we spend on it.
+ */
+const HOME_AVIF_Q = 60;
+const HOME_WEBP_Q = 70;
+/*
+ * The 2560 rung is the exception. It is only ever fetched by a 2x display, where
+ * a device pixel is about half the size it is on the rungs below — so the grain
+ * that q60 is buying there is being drawn at a scale the eye is not resolving.
+ * Measured that way (both reference and encode reduced by two before the grain
+ * is counted, as a stand-in for the smaller pixel) the curve is flat from q50:
+ *
+ *   q40  586 KB   92.5 / 96.2 % of the grain      q55 1167 KB  97.9 / 97.4 %
+ *   q45  749 KB   95.5 / 97.9 %                   q60 1509 KB  97.4 / 97.1 %
+ *   q50  950 KB   97.3 / 99.1 %   <- flat past here
+ *
+ * So q60 at this width costs 559 KB and returns nothing. This is a perceptual
+ * argument rather than a full-resolution one — at 1:1 the extra grain is really
+ * there — but it is the scale the rung is actually looked at.
+ */
+const HOME_AVIF_Q_2X = 50;
 
 /**
- * The phone cut of the same poster.
+ * Pull the plate out of the master SVG, once.
  *
- * The landscape frame cannot be cropped to a portrait viewport: the title runs
- * across the top-left and the logos across the bottom-left, so any crop narrow
- * enough for a phone takes a slice through both. The designer is supplying a
- * portrait composition instead. Until it arrives this writes nothing, and
- * app/page.tsx letterboxes the landscape frame rather than slicing it.
- *
- * Whatever aspect the file turns out to be is kept as drawn — only the width is
- * set here, because the point of the cut is that its proportions are the
- * designer's decision and not ours.
+ * The master is a 231 MB file that is one base64 data URI and a few hundred
+ * vector paths. Reading it into a string to run a regex over would cost about
+ * half a gigabyte before decoding starts, so this streams it: skip to the
+ * payload, decode in 4-character-aligned chunks, stop at the closing quote.
  */
-async function buildHomePortrait() {
-  if (!HOME_PORTRAIT_SOURCE || !existsSync(HOME_PORTRAIT_SOURCE)) {
-    console.log("no portrait key art (HOME_PORTRAIT_SOURCE unset) — skipping");
+async function extractHomePlate() {
+  const { createWriteStream, createReadStream } = await import("node:fs");
+  const { open } = await import("node:fs/promises");
+  const marker = Buffer.from("base64,");
+  const fh = await open(HOME_SOURCE, "r");
+  try {
+    const head = Buffer.alloc(4096);
+    await fh.read(head, 0, 4096, 0);
+    const at = head.indexOf(marker);
+    if (at < 0) return null;
+    await mkdir(path.dirname(HOME_PLATE_CACHE), { recursive: true });
+    const out = createWriteStream(HOME_PLATE_CACHE);
+    const src = createReadStream(HOME_SOURCE, { start: at + marker.length });
+    let carry = "";
+    let done = false;
+    for await (const chunk of src) {
+      if (done) break;
+      let text = carry + chunk.toString("latin1");
+      const quote = text.indexOf('"');
+      if (quote >= 0) {
+        text = text.slice(0, quote);
+        done = true;
+      }
+      const usable = done ? text.length - (text.length % 4) : text.length - (text.length % 4);
+      carry = text.slice(usable);
+      out.write(Buffer.from(text.slice(0, usable), "base64"));
+    }
+    await new Promise((res, rej) => out.end((err) => (err ? rej(err) : res())));
+    return HOME_PLATE_CACHE;
+  } finally {
+    await fh.close();
+  }
+}
+
+/** The plate in the designer's own sRGB, or the print file if that is all there is. */
+async function homePlate() {
+  if (existsSync(HOME_PLATE_CACHE)) return { src: HOME_PLATE_CACHE, master: true };
+  if (existsSync(HOME_SOURCE)) {
+    try {
+      const got = await extractHomePlate();
+      if (got) return { src: got, master: true };
+    } catch (error) {
+      console.log("home: could not read the master (" + error.message + ")");
+    }
+  }
+  if (existsSync(HOME_PLATE_FALLBACK)) {
+    console.log("home: using the CMYK print plate — colours run ~9/255 warm of the master");
+    return { src: HOME_PLATE_FALLBACK, master: false };
+  }
+  return null;
+}
+
+/** The comp's window on the plate, in the plate's real pixels. */
+function homeCrops(width, height) {
+  const kx = width / HOME_PLATE_BOX.w;
+  const ky = height / HOME_PLATE_BOX.h;
+  const { scale: s, tx, ty, w: vw, h: vh } = HOME_VIEW;
+  const landscape = {
+    left: Math.round((-tx / s) * kx),
+    top: Math.round((-ty / s) * ky),
+    width: Math.round((vw / s) * kx),
+    height: Math.round((vh / s) * ky),
+  };
+  /*
+   * Portrait is its own cut of the plate, never an upscale of the landscape
+   * one: a phone asking a 16:9 source to cover a 2:3 box drives it about 3x and
+   * the grain turns to mush. 2:3, the full height of the plate, centred on the
+   * landscape window so the two read as the same piece of artwork.
+   */
+  const pw = Math.round(height * (2 / 3));
+  const portrait = {
+    left: Math.max(0, Math.min(width - pw, Math.round(landscape.left + landscape.width / 2 - pw / 2))),
+    top: 0,
+    width: pw,
+    height,
+  };
+  return { landscape, portrait };
+}
+
+async function buildHome() {
+  const plate = await homePlate();
+  if (!plate) {
+    console.log("no home plate (set HOME_SOURCE or HOME_PLATE) — skipping home");
     return;
   }
-  for (const width of HOME_PORTRAIT_WIDTHS) {
-    const { data, info } = await sharp(HOME_PORTRAIT_SOURCE, {
-      limitInputPixels: false,
-      unlimited: true,
-      density: 300,
-    })
-      .resize(width)
-      .toColourspace("srgb")
-      .removeAlpha()
-      .raw()
-      .toBuffer({ resolveWithObject: true });
-    const raw = { raw: { width: info.width, height: info.height, channels: info.channels } };
-    await sharp(data, raw)
-      .avif({ quality: 55, effort: 6 })
-      .toFile(path.join(OUT, "home-portrait-" + width + ".avif"));
-    await sharp(data, raw)
-      .webp({ quality: 80 })
-      .toFile(path.join(OUT, "home-portrait-" + width + ".webp"));
-    console.log("home portrait " + width + "px written (" + info.width + "x" + info.height + ")");
-  }
+  const meta = await sharp(plate.src, { limitInputPixels: false, unlimited: true }).metadata();
+  const { landscape, portrait } = homeCrops(meta.width, meta.height);
+  console.log("home plate " + meta.width + "x" + meta.height + (plate.master ? " (master)" : " (print file)"));
+
+  const cut = async (box, widths, ratio, stem) => {
+    for (const width of widths) {
+      const height = Math.round(width / ratio);
+      const { data, info } = await sharp(plate.src, { limitInputPixels: false, unlimited: true })
+        .extract(box)
+        .resize(width, height, { fit: "fill" })
+        .toColourspace("srgb")
+        .removeAlpha()
+        .raw()
+        .toBuffer({ resolveWithObject: true });
+      const raw = { raw: { width: info.width, height: info.height, channels: info.channels } };
+      await sharp(data, raw)
+        .avif({ quality: width >= 2560 ? HOME_AVIF_Q_2X : HOME_AVIF_Q, effort: 6 })
+        .toFile(path.join(OUT, stem + width + ".avif"));
+      /*
+       * No WebP above 1920. It is the fallback for browsers that cannot decode
+       * AVIF, and a browser that old is not driving a 2560 display; writing it
+       * anyway ships a megabyte nothing ever asks for.
+       */
+      if (width <= 1920) {
+        await sharp(data, raw)
+          .webp({ quality: HOME_WEBP_Q })
+          .toFile(path.join(OUT, stem + width + ".webp"));
+      }
+      console.log("  " + stem + width + " (" + info.width + "x" + info.height + ")");
+    }
+  };
+
+  await cut(landscape, HOME_WIDTHS, HERO_RATIO, "home-");
+  await cut(portrait, HOME_PORTRAIT_WIDTHS, 2 / 3, "home-portrait-");
 }
 
 /**
@@ -823,6 +914,8 @@ async function buildHaloTexture() {
 async function main() {
   await mkdir(OUT, { recursive: true });
   await mkdir(path.join(OUT, "..", "og"), { recursive: true });
+  /* The key visual alone, for iterating on it without re-encoding the site. */
+  if (process.env.ONLY_HOME) return void (await buildHome());
   if (!process.env.SKIP_HERO) await buildHero();
   if (!process.env.SKIP_HOME) await buildHome();
   await buildOG();
@@ -840,9 +933,9 @@ async function main() {
       "- Source: " + SOURCE,
       "- Hero: the source as supplied — resized to 16:9 from the centre, CMYK transformed to sRGB, no treatment.",
       "- Home key art: " + HOME_SOURCE,
-      "- Home: the designer's finished 16:9 poster — title, subtitle, dates and both logos are drawn into the file. Rendered from the vector master where librsvg can hold it, else from " + HOME_FLAT + ".",
-      "- Home widths: " + HOME_WIDTHS.join(", ") + " (AVIF + WebP). Portrait cut: " +
-        (HOME_PORTRAIT_SOURCE ? HOME_PORTRAIT_SOURCE : "not yet supplied — home-portrait-* is absent and the page letterboxes on phones."),
+      "- Home: the artwork alone. The title, series line, dates and both lockups are live text and SVG in the page, not pixels — see packages/ui/src/KeyVisual.tsx.",
+      "- Home crop: (77.25, 943.05) 11600x6525 of the plate, read off the master's own image transform — object-position 36.6% 69.9%, baked in.",
+      "- Home widths: " + HOME_WIDTHS.join(", ") + " landscape, " + HOME_PORTRAIT_WIDTHS.join(", ") + " portrait (2:3, its own cut of the plate). AVIF q" + HOME_AVIF_Q + " — the measured grain knee — with WebP q" + HOME_WEBP_Q + " to 1920 as the no-AVIF fallback.",
       "- OG card: greyscale, contrast lift, ordered 8x8 Bayer dither, two-colour map (#f89c2c over #143a5c) — Design Brief §05.",
       "- Widths: " + WIDTHS.join(", ") + " (AVIF + WebP), OG card 1200x630 PNG.",
       "- Committee portraits: " + PORTRAIT_SOURCE + " — 4:5 crop from the top, " +

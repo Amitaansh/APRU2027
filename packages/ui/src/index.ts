@@ -24,6 +24,7 @@ export { Container } from "./Container";
 export { CTAButton, type Surface } from "./CTAButton";
 export { FAQAccordion } from "./FAQAccordion";
 export { ImportantDates } from "./ImportantDates";
+export { KeyVisual } from "./KeyVisual";
 export { IndexRow, RuleList } from "./IndexRow";
 export { LogoAPRU, LogoNUS } from "./Logos";
 export { PageHead } from "./PageHead";
