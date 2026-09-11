@@ -8,14 +8,20 @@ import faqJson from "../data/faq.json";
 import venueJson from "../data/venue.json";
 import sponsorsJson from "../data/sponsors.json";
 import committeeJson from "../data/committee.json";
+import abstractsJson from "../data/abstracts.json";
+import fieldTripJson from "../data/field-trip.json";
+import registrationJson from "../data/registration.json";
 import { phases } from "./phases";
 import type {
+  AbstractsConfig,
   CommitteeConfig,
+  FieldTripConfig,
   FAQItem,
   ForumsConfig,
   ImportantDate,
   NavItem,
   ProgramConfig,
+  RegistrationConfig,
   SiteConfig,
   Speaker,
   Sponsor,
@@ -39,6 +45,9 @@ export const faq = faqJson as FAQItem[];
 export const venue = venueJson as VenueSection[];
 export const committee = committeeJson as CommitteeConfig;
 export const sponsors = sponsorsJson as Sponsor[];
+export const abstracts = abstractsJson as AbstractsConfig;
+export const fieldTrip = fieldTripJson as FieldTripConfig;
+export const registration = registrationJson as RegistrationConfig;
 
 /**
  * Speakers used to drive their own nav promotion, back when /speakers was a
@@ -145,8 +154,15 @@ function assertContent(): void {
     if (!block.summary) fail("program block " + block.id + " has no summary");
   }
 
+  // A confirmed section has to say something, but prose is not the only way it
+  // can: a section may be a list of conditions or a row of destinations and
+  // nothing else. What is rejected is a confirmed section that renders blank.
   for (const section of venue) {
-    if (section.status === "confirmed" && !section.body) {
+    const hasBody = Array.isArray(section.body)
+      ? section.body.some(Boolean)
+      : Boolean(section.body);
+    const hasContent = hasBody || Boolean(section.bullets?.length) || Boolean(section.links?.length);
+    if (section.status === "confirmed" && !hasContent) {
       fail("venue section " + section.id + " is confirmed but empty");
     }
   }
@@ -161,12 +177,31 @@ function assertContent(): void {
     fail("committee emails are present but consent is not granted");
   }
 
+  // The open call is live from 15 Sep 2026, so an empty track list or a missing
+  // portal URL is not a page that reads as early -- it is a page that is broken
+  // on the day it matters.
+  if (abstracts.tracks.length === 0) fail("abstracts.json lists no tracks");
+  if (abstracts.rules.length === 0) fail("abstracts.json lists no submission rules");
+  for (const [label, url] of [
+    ["abstracts.submitUrl", abstracts.submitUrl],
+    ["registration.url", registration.url],
+  ] as const) {
+    if (!/^https?:\/\//.test(url)) fail(label + " must be an absolute URL");
+  }
+  if (fieldTrip.themes.length === 0) fail("field-trip.json lists no themes");
+
   // Milestone monotonicity, where set (Backend Schema §7.4).
+  //
+  // The sequence is the conference's, not a generic one. Abstracts open in
+  // September 2026 and close in November; registration does not open until the
+  // following January, once the selection results are out. Listing registration
+  // first -- the obvious order, and what this check used to assert -- would
+  // reject the real calendar as out of order.
   const m = phases.milestones;
   const ordered = [
-    m.registrationOpens,
     m.abstractsOpen,
     m.abstractsClose,
+    m.registrationOpens,
     m.countdownFrom,
     m.eventStart,
     m.eventEnd,

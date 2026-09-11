@@ -11,18 +11,18 @@
   },
   {
     "id": "notification",
-    "label": "Notification of acceptance",
+    "label": "Acceptance notification",
     "date": "2027-01-15"
   },
   {
     "id": "registration-opens",
     "label": "Registration opens",
-    "date": "2027-02-01"
+    "date": "2027-01-15"
   },
   {
     "id": "early-bird",
     "label": "Early-bird registration closes",
-    "date": "2027-03-01"
+    "date": "2027-02-28"
   },
   {
     "id": "conference",

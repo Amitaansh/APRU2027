@@ -3,11 +3,15 @@ import { forums } from "@apru/content";
 import { workingGroupColour } from "./wg-colour";
 
 /**
- * The twelve confirmed working groups (client roster, 20 Aug 2026). Leads are
- * named with their institution and, where the proposals document gives one, an
- * address — these are the contacts a prospective member is meant to write to,
- * which is the opposite of the committee roster, where addresses are withheld
- * behind `showEmails`. A lead with no address published is simply not a link.
+ * The twelve confirmed working groups, alphabetical by title (content review,
+ * 3 Sep 2026). Leads are named with their institution and, where one is
+ * published, linked to their own faculty or CV page.
+ *
+ * NOT TO AN ADDRESS. These were `mailto:` links until the review asked for the
+ * opposite — "to protect privacy and prevent spam, please link to their
+ * university CV page instead of displaying their email address". A lead with no
+ * page published is not a link, and the institution is stated either way, which
+ * is the condition the review set for that case.
  *
  * The fold itself is Accordion, shared with the Visitors page. This file is now
  * only the mapping from working-group data onto it.
@@ -28,13 +32,25 @@ export function WorkingGroups({ swatches = true }: { swatches?: boolean } = {}) 
     swatch: swatches ? workingGroupColour(i, total) : undefined,
     children: (
       <>
-        <p className="t-b1 dim max-w-[70ch]">{group.blurb}</p>
+        {/* One paragraph or several — see WorkingGroup.blurb for why both. */}
+        <div className="flex flex-col gap-[18rem]">
+          {(Array.isArray(group.blurb) ? group.blurb : [group.blurb]).map((p, n) => (
+            <p key={n} className="t-b1 dim max-w-[70ch]">
+              {p}
+            </p>
+          ))}
+        </div>
         {group.leads?.length ? (
           <ul className="flex flex-col gap-[8rem] pt-[24rem]">
             {group.leads.map((lead) => (
               <li key={lead.name} className="t-b2">
-                {lead.email ? (
-                  <a href={"mailto:" + lead.email} className="link">
+                {lead.profileUrl ? (
+                  <a
+                    href={lead.profileUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="link"
+                  >
                     {lead.name}
                   </a>
                 ) : (

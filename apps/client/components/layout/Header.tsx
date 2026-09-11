@@ -201,7 +201,14 @@ export function Header() {
           id="mobile-menu"
           className="fixed inset-x-0 bottom-0 top-[var(--hdr)] overflow-y-auto bg-wh px-[15rem] pb-[20rem] pt-[24rem] text-bk md:hidden"
         >
-          <nav aria-label="Primary" className="flex flex-col gap-[14rem] uppercase">
+          {/*
+           * "Font size smaller - semibold." The items were set at t-h4, which is
+           * a heading size and read as a page of headings rather than as a menu.
+           * `.mnav` steps them down and is defined in globals.css beside the
+           * other type of this edition -- there is no Semibold face in the
+           * family, so 700 is the weight, which is what t-h4 already carried.
+           */}
+          <nav aria-label="Primary" className="mnav flex flex-col gap-[14rem] uppercase">
             {items.map((item) => {
               if (!item.children) {
                 return (
@@ -210,7 +217,7 @@ export function Header() {
                     href={item.route ?? "/"}
                     aria-current={isCurrent(item.route) ? "page" : undefined}
                     onClick={() => setOpenPath(null)}
-                    className="t-h4"
+                    className="t-h4 mnav-item"
                   >
                     {item.label}
                   </Link>
@@ -232,7 +239,7 @@ export function Header() {
                           : [...openLabels, item.label],
                       })
                     }
-                    className="t-h4 flex w-full items-baseline gap-[10rem] text-left uppercase"
+                    className="t-h4 mnav-item flex w-full items-baseline gap-[10rem] text-left uppercase"
                   >
                     {item.label}
                     <span aria-hidden="true" className="t-b2">

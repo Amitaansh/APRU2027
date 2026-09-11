@@ -42,7 +42,22 @@ export interface SiteConfig {
   hostShort: string;
   coBrand: string;
   tagline: string;
+  /** The host paragraph: who is running the tenth conference, and when. */
   intro: string;
+  /**
+   * The theme statement, one entry per paragraph. The content document sets
+   * these on the home page, under the key visual — not on About, which is where
+   * they were written first.
+   */
+  themeParagraphs: string[];
+  /** What the APRU-SCL programme is. The first thing About says. */
+  aboutParagraph: string;
+  /**
+   * The programme's own page. `aboutParagraph` opens on the phrase the source
+   * marks as the link, so it cannot be split into lead-and-label the way
+   * ForumsConfig.introLink is; it renders as a destination under the paragraph.
+   */
+  aboutLink?: VenueLink;
   priorEditions: PriorEdition[];
 }
 
@@ -70,8 +85,16 @@ export interface Speaker {
   name: string;
   role: string;
   institution: string;
+  /**
+   * Basename in /public/images/committee, without extension — the same folder,
+   * pipeline and monogram fallback as a committee portrait, so a keynote
+   * headshot is added by dropping a file into committee-source and re-running
+   * `npm run imagery`, with no second source folder to keep in step.
+   */
   photo?: string;
   bio?: string;
+  /** The speaker's own page. Requested alongside the bios in the content review. */
+  profileUrl?: string;
   keynote: boolean;
 }
 
@@ -93,6 +116,8 @@ export interface ProgramConfig {
   intro: string;
   blocks: ProgramBlock[];
   scheduleStatus: "tba" | "published";
+  /** What the three days hold, while the session-level timetable is outstanding. */
+  scheduleIntro: string;
   scheduleNote: string;
 }
 
@@ -100,26 +125,39 @@ export interface WorkingGroupLead {
   name: string;
   institution: string;
   /**
-   * Published, unlike the committee roster's addresses: these are the contacts
-   * a prospective member is meant to write to, and the proposals document lists
-   * them for exactly that purpose.
+   * The convenor's own faculty or CV page, NOT an address.
+   *
+   * These leads were published as `mailto:` links until the content review asked
+   * for the opposite: "to protect privacy and prevent spam, please link to their
+   * university CV page instead of displaying their email address". A lead with no
+   * published page is simply not a link, and the review's condition for that case
+   * is that the affiliation then has to be stated in full -- which `institution`
+   * always is.
    */
-  email?: string;
+  profileUrl?: string;
 }
 
 export interface WorkingGroup {
   id: string;
   title: string;
   leads: WorkingGroupLead[];
-  blurb: string;
+  /**
+   * One paragraph, or several. Most proposals are a single block; the array form
+   * exists because Landscape and Human Health is written as two, and joining
+   * them into one string to fit a narrower type would be an editing decision
+   * made by the schema rather than by the author.
+   */
+  blurb: string | string[];
 }
 
 export interface ForumsConfig {
-  intro: string;
+  /** The introduction, one entry per paragraph. */
+  intro: string[];
   /**
-   * Trailing sentence of the introduction that carries a link. `intro` is a
-   * plain string rendered into a single <p>, so a link inside it would have to
-   * be markup in content; this keeps the JSON free of HTML.
+   * The sentence of the introduction that carries a link. The paragraphs are
+   * plain strings, so a link inside one would have to be markup in content;
+   * this keeps the JSON free of HTML. It belongs to the first paragraph and is
+   * set immediately after it -- see WorkingGroupsIntro.
    */
   introLink?: {
     /** Sentence before the link, e.g. "Selected publications … can be found". */
@@ -163,7 +201,19 @@ export interface VenueLink {
 export interface VenueSection {
   id: string;
   heading: string;
-  body: string;
+  /**
+   * The prose, one entry per paragraph. Optional: a section can be nothing but
+   * a list of destinations — "Useful links for visitors" is exactly that in the
+   * content document — and writing a sentence to introduce them would be copy
+   * invented here rather than supplied.
+   */
+  body?: string | string[];
+  /**
+   * Where the source sets the section as a list rather than as prose. The visa
+   * requirements are five separate conditions and reading them as one paragraph
+   * loses the fact that they are a checklist.
+   */
+  bullets?: string[];
   status: TbaStatus;
   /**
    * Resources the prose refers to. Kept out of the body so the copy stays a
@@ -200,4 +250,50 @@ export interface CommitteeConfig {
   organising: CommitteeMember[];
   scientific: CommitteeMember[];
   scientificStatus: "tba" | "published";
+}
+
+/**
+ * The call for abstracts (Master_Web Content, "Call for Abstracts").
+ *
+ * The page used to be a status block and a date table, because there was nothing
+ * else to say yet. All of this is the approved copy for the open call.
+ */
+export interface AbstractsConfig {
+  intro: string;
+  /** The sentence that introduces the track list. */
+  tracksLead: string;
+  /**
+   * Track titles without their "Track 1:" prefix — the list numbers itself, and
+   * carrying the number in the string means it is wrong the moment one is added
+   * or reordered.
+   */
+  tracks: string[];
+  /** How the open call and the working groups relate, one entry per paragraph. */
+  coordination: string[];
+  /**
+   * The source marks the phrase "Working Groups" in that copy as a link to the
+   * working groups page. It is lifted out to a row of its own, like every other
+   * link in the content layer, so the paragraphs stay plain text.
+   */
+  workingGroupsLink?: VenueLink;
+  rulesHeading: string;
+  rules: string[];
+  submitLabel: string;
+  /** The NUS UVENTs submission portal. */
+  submitUrl: string;
+}
+
+/** The half-day field trips (Master_Web Content, "Field Trip"). */
+export interface FieldTripConfig {
+  intro: string;
+  /** The five curated themes. */
+  themes: string[];
+  /** What a participant can expect, and when itineraries land. */
+  note: string;
+}
+
+/** The registration page, which is a single stated fact until the portal opens. */
+export interface RegistrationConfig {
+  body: string;
+  url: string;
 }

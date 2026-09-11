@@ -15,6 +15,7 @@ export function StatusBlock({
   title,
   note,
   live = false,
+  rules = true,
   children,
 }: {
   status: string;
@@ -22,11 +23,22 @@ export function StatusBlock({
   note?: string;
   /** Marks a state that is actually open. The accent's only job. */
   live?: boolean;
+  /**
+   * The hairlines above and below. On for every caller but one: the client
+   * struck them off the schedule page, where the block is the only thing on an
+   * otherwise empty page and the two rules read as a box drawn round a sentence
+   * rather than as the list boundary they are everywhere else.
+   *
+   * A prop rather than a fork, and rather than a stylesheet override in the
+   * client app -- this is one caller asking for one thing, not a difference
+   * between the two editions.
+   */
+  rules?: boolean;
   children?: ReactNode;
 }) {
   return (
     <Reveal>
-      <div className="rule-solid rule-draw" />
+      {rules && <div className="rule-solid rule-draw" />}
       <div className="rise flex gap-[20rem] py-[50rem] max-md:flex-col max-md:gap-[16rem] max-md:py-[34rem]">
         <p className={"t-lbl w-[180rem] flex-none max-md:w-auto " + (live ? "live" : "dim")}>
           {status}
@@ -39,7 +51,7 @@ export function StatusBlock({
           {children && <div className="pt-[36rem]">{children}</div>}
         </div>
       </div>
-      <div className="rule-solid rule-draw" />
+      {rules && <div className="rule-solid rule-draw" />}
     </Reveal>
   );
 }
@@ -47,12 +59,14 @@ export function StatusBlock({
 export function ToBeAnnounced({
   label = "To be announced",
   note,
+  rules = true,
 }: {
   label?: string;
   note?: string;
+  rules?: boolean;
   className?: string;
 }) {
-  return <StatusBlock status="To be announced" title={label} note={note} />;
+  return <StatusBlock status="To be announced" title={label} note={note} rules={rules} />;
 }
 
 /**

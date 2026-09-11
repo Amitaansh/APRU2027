@@ -1,44 +1,79 @@
 [
   {
-    "id": "location",
-    "heading": "Singapore",
-    "body": "Singapore, with its unique institutional structure along with the challenges of density and land scarcity, provides a setting for this discussion. A city-state of roughly six million people on 730 square kilometres, it has pursued water self-sufficiency, high-density housing, and an explicit greening agenda under conditions that make trade-offs unusually visible — which is what makes it a useful place to examine bridging as a practice rather than an aspiration.",
-    "status": "confirmed"
-  },
-  {
-    "id": "host",
-    "heading": "National University of Singapore",
-    "body": "The conference is hosted by the Department of Architecture in the College of Design and Engineering at NUS. The department sits on the Kent Ridge campus in the south-west of the island, connected to the city centre by the MRT rail network and by the campus bus service.",
-    "status": "confirmed"
-  },
-  {
-    "id": "exact-venue",
-    "heading": "Conference venue",
-    "body": "Sessions are held at SDE3, 4 Architecture Drive, Singapore 117566, on the NUS Kent Ridge campus. SDE3 sits in the School of Design and Environment cluster alongside SDE1 and SDE4, a short walk uphill from the Kent Ridge MRT station and the campus bus stops that serve it. Room-level detail for each session will be published with the full programme.",
+    "id": "visa",
+    "heading": "Visa and Entry Requirements",
     "status": "confirmed",
+    "bullets": [
+      "Visit the Singapore Immigration and Checkpoint Authority website for all matters related to entry into Singapore.",
+      "Please ensure your passport has a minimum validity of six months at the time of departure. Visitors whose passport has less than six months' validity are reminded to apply for renewal of their passports early to avoid inconvenience from delays in processing visa applications.",
+      "Invitation letters for visa application purposes will only be provided once payment for registration fees has been made or a waiver granted. Should a visa not be granted a refund can be given in line with our refund policy.",
+      "NUS Department of Architecture will not submit a visa application for you via Submission of Application for Visa Electronically (SAVE). Please submit your visa application at the nearest Singapore Overseas Mission or through the authorized visa agents of the Overseas Missions. The full list of Overseas Missions can be found here.",
+      "All travellers are required to submit the SG Arrival Card within three (3) days (including the day of arrival) before arriving in Singapore, except those transiting/transferring through Singapore without seeking immigration clearance; and Singapore citizens, Permanent Residents and Long-Term Pass Holders entering via land checkpoints. Submission of SGAC is Free and can be done via the SGAC e-Service or MyICA Mobile app."
+    ],
     "links": [
       {
-        "label": "NUS Kent Ridge campus map",
-        "url": "https://map.nus.edu.sg/index.php#kent_ridge"
+        "label": "Singapore Immigration & Checkpoints Authority",
+        "url": "https://www.ica.gov.sg/"
       },
       {
-        "label": "SDE3 on Google Maps",
-        "url": "https://maps.app.goo.gl/XuaHRq4bbzz2U1HJ6"
+        "label": "Singapore Overseas Missions",
+        "url": "https://www.mfa.gov.sg/Overseas-Missions"
+      },
+      {
+        "label": "SG Arrival Card e-Service",
+        "url": "https://eservices.ica.gov.sg/sgarrivalcard/"
       }
     ]
   },
   {
-    "id": "getting-here",
-    "heading": "Getting here",
-    "body": "Singapore Changi Airport is served by direct flights from most major Pacific Rim cities. From Changi, the Kent Ridge campus is roughly 45 minutes by taxi or ride-hail, or about an hour by rail: take the East West Line towards Tuas Link, change at Outram Park for the Circle Line towards HarbourFront, and alight at Kent Ridge. Taxi ranks and ride-hail pick-up points are signposted at every terminal, and both are metered or quoted up front.",
-    "status": "confirmed"
+    "id": "tourist-links",
+    "heading": "Useful Links for Visitors",
+    "status": "confirmed",
+    "links": [
+      {
+        "label": "Singapore Tourism Board",
+        "url": "https://www.stb.gov.sg/"
+      },
+      {
+        "label": "Singapore Changi Airport",
+        "url": "https://www.changiairport.com/"
+      },
+      {
+        "label": "Singapore Travel Guide & Tips | Travel Essentials",
+        "url": "https://www.visitsingapore.com/travel-tips/essential-travel-information/"
+      }
+    ]
+  },
+  {
+    "id": "campus-amenities",
+    "heading": "Amenities within NUS Kent Ridge Campus",
+    "status": "confirmed",
+    "body": "Visit Campus Services — NUS UCI for details of the amenities on NUS campuses.",
+    "links": [
+      {
+        "label": "Campus Services — NUS UCI",
+        "url": "https://uci.nus.edu.sg/campus-life/campus-services/"
+      }
+    ]
   },
   {
     "id": "getting-around",
-    "heading": "Getting around",
-    "body": "The MRT is the fastest way across the island and runs roughly 5.30am to midnight. You do not need a separate transit card: contactless bank cards and phone wallets are accepted at every gate and on every public bus, charged per journey. Buses cover the gaps the rail network does not, and taxis and ride-hail apps are inexpensive by regional standards. On campus, the free NUS internal shuttle connects Kent Ridge MRT to the SDE cluster and runs frequently on weekdays; walking from the station takes about fifteen minutes, uphill and mostly sheltered. Taxis and private-hire cars set down directly at the venue: SDE3, 4 Architecture Drive, Singapore 117566. Each car takes up to four passengers unless a larger vehicle is booked.",
+    "heading": "Getting Around",
     "status": "confirmed",
+    "body": [
+      "The main conference venue is SDE3, 4 Architecture Drive, Singapore 117566, on the NUS Kent Ridge campus.",
+      "The most direct mode of transport to NUS is by taxi or private hire car companies like Grab. Each taxi/car can accommodate up to 4 passengers unless you opt to take a bigger cab.",
+      "Taxis and private hire cars set down directly at the venue: SDE3, 4 Architecture Drive, Singapore 117566."
+    ],
     "links": [
+      {
+        "label": "NUS Kent Ridge campus map",
+        "url": "https://map.nus.edu.sg/index.php"
+      },
+      {
+        "label": "SDE3 on Google Maps",
+        "url": "https://maps.app.goo.gl/XuaHRq4bbzz2U1HJ6"
+      },
       {
         "label": "Grab",
         "url": "https://www.grab.com/sg/download/"
@@ -46,21 +81,9 @@
     ]
   },
   {
-    "id": "practicalities",
-    "heading": "Practicalities",
-    "body": "The currency is the Singapore dollar. Singapore is UTC+8 year round, tropical and humid, with temperatures typically 25–32°C and short heavy showers possible in May — indoor venues are strongly air-conditioned, so bring a layer. Power is 230V at 50Hz on the British three-pin Type G plug. English is an official language and is the language of the conference. Tap water is safe to drink, tipping is not expected, and the emergency numbers are 999 for police and 995 for ambulance and fire.",
-    "status": "confirmed"
-  },
-  {
     "id": "accommodation",
     "heading": "Accommodation",
     "body": "",
     "status": "tba"
-  },
-  {
-    "id": "visa",
-    "heading": "Visas and entry",
-    "body": "Entry requirements for Singapore depend on your nationality; many passport holders may enter visa-free for short stays. Check the Immigration & Checkpoints Authority of Singapore for current requirements well before you travel. All arrivals must submit an SG Arrival Card online in the three days before entry. Where a visa is required, the organising committee can provide a letter of invitation to registered participants — details will follow when registration opens.",
-    "status": "confirmed"
   }
 ]

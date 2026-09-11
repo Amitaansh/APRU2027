@@ -21,19 +21,21 @@ import { MaskLines, Reveal } from "./Reveal";
  * ground: it is an image this component puts there itself. Nothing outside can
  * know what that ground is, so nothing outside can choose the ink for it.
  *
- * THE SCRIM IS NOT DECORATION. The artwork is saffron and cerulean at roughly
- * equal luminance — white on the saffron measures about 2:1, which is nowhere
- * near the 4.5:1 the site holds itself to. The gradient underneath the type is
- * what buys the contrast, and it is why the type sits at the bottom: that is
- * where the scrim is densest and where a gradient reads as a natural falloff
- * rather than as a grey box laid over a picture.
+ * THE SCRIM IS GONE, AND THAT COSTS SOMETHING. It was a gradient under the type:
+ * "remove the 'dark' effect at the bottom of the main image and adjust the
+ * spacing", and this is that removal, made as asked.
  *
- * The stops are set against the band's height, not chosen for their own sake.
- * The type occupies the bottom ~23% of a full-viewport frame, so the gradient
- * clears by 52% and the artwork above it is untouched. Held at the old 72% it
- * would read as a vignette over most of the picture rather than as a footing under
- * the words. White over the brightest saffron at the top of the heading still
- * measures about 5.6:1.
+ * What it was doing is worth writing down, because nothing else is doing it now.
+ * The artwork is saffron and cerulean at roughly equal luminance, and white on
+ * the saffron measures about 2:1 — nowhere near the 4.5:1 the rest of the site
+ * holds itself to. The gradient was what bought that contrast, which is also why
+ * the type sits at the bottom, where it was densest. With it out, the title's
+ * legibility is whatever the artwork happens to be behind it at that width, and
+ * on a saffron passage it fails WCAG AA.
+ *
+ * Nothing in the test suite catches this: contrast.test.ts guards the token
+ * palette, and type over a photograph has no token. Raised with the client in
+ * writing rather than quietly absorbed here.
  *
  * NO CLOSING RULE. PageHead draws a hairline under its title to close the
  * opening. Here the artwork's own bottom edge does that, and a black rule
@@ -51,8 +53,12 @@ export function PageHeadArt({
   return (
     <>
       {/* Padded rather than offset, so the band starts where the fixed header
-          ends instead of running behind it. */}
-      <section className="pt-[var(--hdr)]">
+          ends instead of running behind it.
+
+          `.pg-art` is a hook, not a style: the client's stylesheet uses it to
+          close the gap between this band and the first paragraph under it. See
+          the rule beside it in apps/client/app/globals.css. */}
+      <section className="pg-art pt-[var(--hdr)]">
         <div className="relative flex h-[calc(100svh-var(--hdr))] w-full items-end overflow-hidden">
           <picture>
             <source
@@ -70,21 +76,6 @@ export function PageHeadArt({
               className="absolute inset-0 h-full w-full object-cover"
             />
           </picture>
-
-          {/*
-           * Inline rather than an arbitrary `bg-[...]`: Tailwind reads a bare
-           * linear-gradient there as a colour, finds it is not one, and emits
-           * no rule at all -- the class lands in the HTML and nothing happens.
-           * A gradient this long is also easier to read unescaped.
-           */}
-          <div
-            aria-hidden="true"
-            className="absolute inset-0"
-            style={{
-              backgroundImage:
-                "linear-gradient(to top, rgba(0,0,0,0.74) 0%, rgba(0,0,0,0.42) 22%, transparent 52%)",
-            }}
-          />
 
           <div className="ctr relative w-full pb-[44rem] text-wh max-md:pb-[28rem]">
             <Reveal className="rise pb-[18rem] max-md:pb-[12rem]">

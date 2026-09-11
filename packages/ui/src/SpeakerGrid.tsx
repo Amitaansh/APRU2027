@@ -1,4 +1,5 @@
 import { IndexRow, RuleList } from "./IndexRow";
+import { Portrait } from "./Portrait";
 import { ToBeAnnounced } from "./ToBeAnnounced";
 import { speakers } from "@apru/content";
 
@@ -26,14 +27,35 @@ export function SpeakerGrid() {
       {speakers.map((speaker) => (
         <IndexRow
           key={speaker.id}
-          title={speaker.name}
-          body={
-            <>
-              {speaker.role}
-              {speaker.bio ? " — " + speaker.bio : ""}
-            </>
+          media={<Portrait name={speaker.name} photo={speaker.photo} />}
+          /*
+           * The name links out where the speaker has a page of their own, the
+           * same way the two committee rosters do. Not `href` on the row: that
+           * would make the whole row the link, and the row is mostly a hundred
+           * words of biography that nobody is trying to click.
+           */
+          title={
+            speaker.profileUrl ? (
+              <a
+                href={speaker.profileUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="link"
+              >
+                {speaker.name}
+              </a>
+            ) : (
+              speaker.name
+            )
           }
-          meta={speaker.institution}
+          body={speaker.bio}
+          /*
+           * Role and institution together. They were the row's title line and
+           * its meta column respectively while the roster was a list of names;
+           * with the biographies in, the body is the long cell and these two
+           * belong to each other rather than at opposite ends of the row.
+           */
+          meta={speaker.role + ", " + speaker.institution}
           number={speaker.keynote ? "Keynote" : undefined}
         />
       ))}

@@ -1,4 +1,3 @@
-import type { ReactNode } from "react";
 import { Accordion, type AccordionItem, PageHeadArt, Section } from "@apru/ui";
 import { venue } from "@apru/content";
 import type { VenueSection } from "@apru/content/types";
@@ -7,7 +6,7 @@ import { pageMetadata } from "@apru/content/seo";
 export const metadata = pageMetadata({
   title: "Visitors",
   description:
-    "Attendee information for the 10th APRU-SCL conference: visas and entry, getting around Singapore, the SDE3 venue on the NUS Kent Ridge campus, and what to expect on arrival.",
+    "Attendee information for the 10th APRU-SCL conference: visas and entry, getting around Singapore, the SDE3 venue on the NUS Kent Ridge campus, and useful links for visitors.",
   path: "/visitors",
 });
 
@@ -15,36 +14,50 @@ export const metadata = pageMetadata({
  * "Copy the same structure - literally - and can use the same style as working
  * group drop down format."
  *
- * So this is four numbered folds in the client's own order, running the same
- * Accordion the working-group roster runs. The prose underneath is still
- * venue.json: the eight sections there are the material, and this page decides
- * which of them belongs in which of the four folds rather than restating any of
- * it.
+ * So this is the content document's own sections as folds, running the same
+ * Accordion the working-group roster runs, in the order the document sets them.
  *
- * TWO FOLDS ARE STILL EMPTY. The board supplies copy for Getting Around only;
- * the tourist links and the campus amenities were pointed at another NUS
- * conference site to copy from, which is not something to do without being
- * asked directly. They render the designed pending state rather than being
- * dropped, so the structure the client asked for is reviewable now and the
- * copy drops into `content/venue.json` when it arrives.
+ * THE FOLDS ARE THE DATA NOW. This page used to name its four folds here and map
+ * each one onto whichever venue.json sections belonged inside it, because the
+ * board's structure and the drafted content were not the same shape. They are
+ * now: venue.json carries the document's five headings, so the page walks it
+ * rather than restating it, and a section added or renamed there needs no edit
+ * here.
  */
 
-const by = Object.fromEntries(venue.map((section) => [section.id, section])) as Record<
-  string,
-  VenueSection | undefined
->;
-
-/** One section of venue.json: its prose, and any resources it points at. */
-function VenueBody({ id }: { id: string }) {
-  const section = by[id];
-  if (!section || section.status !== "confirmed" || !section.body) return null;
+/** The prose, the list, and the destinations of one section — in that order. */
+function VenueBody({ section }: { section: VenueSection }) {
+  const paragraphs = Array.isArray(section.body)
+    ? section.body
+    : section.body
+      ? [section.body]
+      : [];
 
   return (
-    <div className="pb-[24rem] last:pb-0">
-      <h4 className="t-b2 pb-[10rem]">{section.heading}</h4>
-      <p className="t-b1 max-w-[70ch]">{section.body}</p>
+    <div className="flex flex-col gap-[18rem]">
+      {paragraphs.map((paragraph, i) => (
+        <p key={i} className="t-b1 max-w-[70ch]">
+          {paragraph}
+        </p>
+      ))}
+
+      {section.bullets?.length ? (
+        <ul className="flex flex-col gap-[14rem]">
+          {section.bullets.map((bullet, i) => (
+            <li key={i} className="t-b1 max-w-[70ch] flex gap-[14rem]">
+              {/* A drawn marker rather than a list-style bullet: the type scale
+                  sets its own leading and a browser marker sits off it. */}
+              <span aria-hidden="true" className="dim flex-none">
+                &#8212;
+              </span>
+              <span>{bullet}</span>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+
       {section.links?.length ? (
-        <ul className="flex flex-wrap gap-x-[24rem] gap-y-[8rem] pt-[16rem]">
+        <ul className="flex flex-wrap gap-x-[24rem] gap-y-[8rem]">
           {section.links.map((link) => (
             <li key={link.url}>
               <a href={link.url} target="_blank" rel="noreferrer" className="t-b2 link">
@@ -60,49 +73,23 @@ function VenueBody({ id }: { id: string }) {
   );
 }
 
-function Awaiting({ what }: { what: string }) {
-  return (
-    <p className="t-b1 max-w-[70ch]">
-      {what} will be published here shortly, ahead of registration opening.
-    </p>
-  );
-}
-
-const SECTIONS: { id: string; title: string; children: ReactNode }[] = [
-  {
-    id: "visa",
-    title: "Visa and Entry Requirements",
-    children: <VenueBody id="visa" />,
-  },
-  {
-    id: "tourist",
-    title: "Useful Links for Visitors",
-    children: <Awaiting what="Guidance on what to see and do around Singapore" />,
-  },
-  {
-    id: "amenities",
-    title: "Amenities within NUS Kent Ridge Campus",
-    children: <Awaiting what="Food, banking, and other amenities on the Kent Ridge campus" />,
-  },
-  {
-    id: "getting-around",
-    title: "Getting Around",
-    children: (
-      <>
-        <VenueBody id="exact-venue" />
-        <VenueBody id="getting-here" />
-        <VenueBody id="getting-around" />
-        <VenueBody id="practicalities" />
-      </>
-    ),
-  },
-];
-
 export default function VisitorsPage() {
-  const items: AccordionItem[] = SECTIONS.map((section) => ({
+  const items: AccordionItem[] = venue.map((section) => ({
     id: section.id,
-    title: section.title,
-    children: section.children,
+    title: section.heading,
+    children:
+      section.status === "confirmed" ? (
+        <VenueBody section={section} />
+      ) : (
+        /*
+         * Accommodation is "to be updated" in the content document. The fold
+         * stays, because the structure is what the client is reviewing and a
+         * heading that vanishes is harder to notice than one that says so.
+         */
+        <p className="t-b1 dim max-w-[70ch]">
+          To be announced. Details will be published here ahead of registration opening.
+        </p>
+      ),
   }));
 
   return (

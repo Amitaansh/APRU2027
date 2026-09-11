@@ -44,12 +44,28 @@ export interface PhaseConfig {
   overlapPriority: Exclude<CTAKey, "proceedings">[];
 }
 
+/**
+ * The NUS UVENTs event page, which is both the abstract-submission portal and
+ * the registration destination. It is a default rather than a hardcoding: the
+ * env vars still win where a deployment needs to point somewhere else, but an
+ * unset variable now lands on the real page instead of degrading to a "link
+ * coming soon" affordance on a site whose call for abstracts is open.
+ */
+const UVENTS = "https://uvents.nus.edu.sg/event/apruscl";
+
 export const phases: PhaseConfig = {
   milestones: {
-    registrationOpens: null, // [OPEN] fill to activate P1
-    abstractsOpen: null, // [OPEN] fill to activate P2
-    abstractsClose: null, // [OPEN]
-    countdownFrom: null, // [OPEN] fill to activate P3
+    // Approved key dates (Master_Web Content, 7 Sep 2026). These are armed: the
+    // engine resolves against the visitor's own clock, so each one flips the
+    // site on the day without a redeploy.
+    //
+    // Note the order. Abstracts open four months before registration does, which
+    // is why the ordering check in index.ts reads abstracts first -- the naive
+    // "registration comes first" sequence does not hold for this conference.
+    abstractsOpen: "2026-09-15",
+    abstractsClose: "2026-11-15", // 23:59 UTC+8; the engine compares dates only
+    registrationOpens: "2027-01-15",
+    countdownFrom: null, // [OPEN] the client has not asked for a countdown
     eventStart: "2027-05-21",
     eventEnd: "2027-05-23",
   },
@@ -65,12 +81,12 @@ export const phases: PhaseConfig = {
     },
     register: {
       label: "Register now",
-      url: process.env.NEXT_PUBLIC_REGISTRATION_URL ?? "",
+      url: process.env.NEXT_PUBLIC_REGISTRATION_URL || UVENTS,
       event: "RegisterClick",
     },
     abstracts: {
       label: "Submit an abstract",
-      url: process.env.NEXT_PUBLIC_UVENTS_URL ?? "",
+      url: process.env.NEXT_PUBLIC_UVENTS_URL || UVENTS,
       event: "AbstractClick",
     },
   },

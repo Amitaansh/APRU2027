@@ -55,11 +55,33 @@
   --ac: #1d35cc;
 
   /*
-   * The header is a two-line lockup on a solid bar here, not the portfolio's
-   * three-line wordmark floating over the artwork. `.sec-spine` sticks against
-   * this, so it has to say so.
+   * The header is the designer's lockup on a solid bar here, not the portfolio's
+   * three-line wordmark floating over the artwork. Everything that has to start
+   * where the header ends measures itself against this token: the page-head
+   * artwork pads by it, the home frame subtracts it from 100svh, the mobile menu
+   * pins its top to it, and `.sec-spine` sticks against it.
+   *
+   * SO IT HAS TO BE THE BAR'S REAL HEIGHT, and it was not. The bar is the lockup
+   * plus its padding plus the hairline:
+   *
+   *     desktop   44rem lockup + 2 x 16rem padding + 1px rule
+   *     mobile    36rem lockup + 2 x 12rem padding + 1px rule
+   *
+   * One value of 78rem covered the desktop case to within a pixel and was 18px
+   * too tall on a phone, because the mobile bar steps down twice and the token
+   * did not step with it. That surplus is the "weird space over the top" in the
+   * review: a band of page ground between the header rule and the artwork on
+   * every interior page, and the same band above the open menu panel.
+   *
+   * The rule is a real pixel rather than a rem, so it is added as one.
    */
-  --hdr: 78rem;
+  --hdr: calc(76rem + 1px);
+}
+
+@media (max-width: 767.98px) {
+  :root {
+    --hdr: calc(60rem + 1px);
+  }
 }
 
 @layer components {
@@ -178,6 +200,157 @@
 
   /*
    * ---------------------------------------------------------------------------
+   * PAGE TITLES: CAPITALISED, LIKE THE NAVIGATION
+   * ---------------------------------------------------------------------------
+   * "All Page title font - semi bold, capitalised, same as the navigation menu."
+   *
+   * .t-h1 is only ever a page title: PageHeadArt sets it here, PageHead sets it
+   * in the portfolio, and this file reaches neither of the portfolio's
+   * stylesheets. So the rule needs no guard to stay on this edition.
+   *
+   * SEMI BOLD IS NOT AVAILABLE. app/fonts carries five faces of Atlas Grotesk --
+   * Bold, Light, Light Italic, Regular, Regular Italic. There is no Semibold
+   * binary, and synthesising one from Regular is a browser-drawn approximation
+   * that looks wrong beside the real Bold in the key art. 700 is what the
+   * navigation menu is set in, so 700 is what this matches; a Semibold woff2
+   * would change one number here.
+   *
+   * TRACKING IS NOT LITERALLY THE NAV'S. The menu is 0.04em, but that is a value
+   * for uppercase at 13-28px, where letterforms need pulling apart to stay
+   * legible. Copied onto an 88rem title it reads as a gap between every pair of
+   * letters. 0.02em is the same gesture at display size. The -0.02em the title
+   * had is a lowercase value and is wrong for capitals either way.
+   */
+  .t-h1 {
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  /*
+   * ---------------------------------------------------------------------------
+   * LINKS ARE UNDERLINED AT REST
+   * ---------------------------------------------------------------------------
+   * "If there are any clickable texts, it would be good to be outlined so that
+   * readers can immediately recognize that those outlined texts include
+   * additional information. Underline the words, and keep the animation when
+   * hover over."
+   *
+   * base.css draws `.link` with nothing at rest: the rule is a ::before at
+   * scaleX(0) that wipes in from the left on hover. That is the animation the
+   * client wants kept, so it stays exactly as it is, and the resting underline
+   * is a second rule underneath it rather than a change to the first.
+   *
+   * ::after, at the same offset and weight as the ::before that covers it. It is
+   * dimmed so the hover still reads as an arrival rather than as a line
+   * replacing an identical line, and it hides on hover so the two never sit on
+   * top of each other at slightly different alphas.
+   *
+   * Here rather than in base.css: the portfolio's links were signed off as they
+   * are, and this file is the seam between the two editions.
+   */
+  .link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -0.08em;
+    width: 100%;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.4;
+    pointer-events: none;
+    transition: opacity 0.2s var(--ease-ref);
+  }
+
+  .link:hover::after,
+  .link:focus-visible::after {
+    opacity: 0;
+  }
+
+  /*
+   * NOT IN THE HEADER. The navigation bar already draws a resting rule under one
+   * item and one only -- the page you are on -- from the same `.link` class
+   * (`[aria-current="page"]::before` in base.css). Underlining all seven removes
+   * the only thing that marks where you are, and a navigation bar is not the
+   * "clickable text" the request is about: it is asking for links inside
+   * paragraphs to be recognisable as links. The hover wipe still runs here.
+   */
+  header .link::after {
+    content: none;
+  }
+
+  /*
+   * ---------------------------------------------------------------------------
+   * THE GAP UNDER THE PAGE-HEAD ARTWORK
+   * ---------------------------------------------------------------------------
+   * "Move paragraph up and same spacing across all pages."
+   *
+   * The band now runs to the foot of the viewport, and the section under it
+   * opens with `.pad`'s 180rem -- a rhythm measured for two blocks of type
+   * meeting each other, not for a paragraph following a full screen of artwork.
+   * The reviewer's arrow is pointing at that 180.
+   *
+   * Halved, and set here rather than at each call site so every interior page
+   * gets the same figure -- which is the second half of the request. It applies
+   * on its own to any page that opens on PageHeadArt, so a new page needs no
+   * edit to match.
+   */
+  .pg-art + .pad {
+    padding-top: 90rem;
+  }
+
+  @media (max-width: 767.98px) {
+    .pg-art + .pad {
+      padding-top: 50rem;
+    }
+  }
+
+  /*
+   * ---------------------------------------------------------------------------
+   * THE SEAM BETWEEN CONTINUING SECTIONS
+   * ---------------------------------------------------------------------------
+   * `.pad-flow` already drops the TOP pad of a section that continues the one
+   * above it, so the seam is the previous section's bottom pad alone -- but that
+   * is still the full 180rem, measured for two sections that are separate
+   * things. On About, where the roster and the marks are both continuations, it
+   * is the gap the review arrowed above "Supported by".
+   *
+   * Halved at exactly those seams, using the next section to identify them, so
+   * the space between genuinely separate blocks is untouched.
+   */
+  .pad:has(+ .pad-flow) {
+    padding-bottom: 90rem;
+  }
+
+  @media (max-width: 767.98px) {
+    .pad:has(+ .pad-flow) {
+      padding-bottom: 50rem;
+    }
+  }
+
+  /*
+   * ---------------------------------------------------------------------------
+   * THE MOBILE MENU
+   * ---------------------------------------------------------------------------
+   * "Font size smaller - semibold." The panel set its items at t-h4, which on a
+   * phone is a heading size: six of them filled the screen and the menu read as
+   * a page rather than as a list of places to go.
+   *
+   * 22rem holds the longest label -- CALL FOR ABSTRACTS -- on one line at 390px
+   * with the gutters this panel has, which is the size the step down is really
+   * asking for. The tracking is the desktop bar's, so the two navigations are
+   * set the same way at their own sizes.
+   *
+   * Semibold is not in the family (see .t-h1 above); 700 is what t-h4 already
+   * carries and what the bar is set in.
+   */
+  .mnav-item {
+    font-size: 22rem;
+    line-height: 1.25;
+    letter-spacing: 0.04em;
+  }
+
+  /*
+   * ---------------------------------------------------------------------------
    * NO HOVER FILL
    * ---------------------------------------------------------------------------
    * "Remove the black highlight when hover over." The fill is `.idx-veil`, an
@@ -187,5 +360,39 @@
    */
   .idx-veil {
     display: none;
+  }
+}
+
+/*
+ * ---------------------------------------------------------------------------
+ * THE SPONSOR MARKS ON ABOUT
+ * ---------------------------------------------------------------------------
+ * "Adjust spacing, 4 logos in a row." Filed against About on mobile, which is
+ * where the problem is: `.spon-row` is a wrapping flex of fixed 220rem cells,
+ * right for the portfolio's belt -- a strip has no measure to divide -- and
+ * wrong here. At 390px two cells fit, the rest wrap, and the marks land on the
+ * ragged edge with the gaps the review circled. Desktop already flows the five
+ * across one line and was not raised, so it is left alone.
+ *
+ * A grid, so the cells are equal by construction and the row count is stated
+ * rather than emergent.
+ *
+ * OUTSIDE @layer components, deliberately. base.css declares `.spon-row`
+ * unlayered, and an unlayered rule beats every layered one however specific --
+ * the first version of this sat in the components layer and did nothing at all.
+ *
+ * NOTE FOR REVIEW: there are five marks, so a four-column row puts the fifth on
+ * a line of its own. That is what "4 in a row" gives with this roster.
+ */
+@media (max-width: 767.98px) {
+  .spon-row {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 22rem 14rem;
+    align-items: center;
+  }
+
+  .spon-row .spon-cell {
+    width: 100%;
   }
 }

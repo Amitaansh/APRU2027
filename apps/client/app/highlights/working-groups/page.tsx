@@ -24,8 +24,33 @@ export default function WorkingGroupsPage() {
       <PageHeadArt label="Highlight" title={["Working Groups"]} />
 
       <Section>
+        {/*
+         * The introduction runs to three paragraphs now, and the publications
+         * link belongs to the end of the first one — which is where the content
+         * document puts it, and why it is set here rather than after the lot.
+         */}
         <Reveal>
-          <p className="t-b1 max-w-[74ch] pb-[54rem] max-md:pb-[34rem]">{forums.intro}</p>
+          <div className="flex max-w-[74ch] flex-col gap-[20rem] pb-[54rem] max-md:pb-[34rem]">
+            {forums.intro.map((paragraph, i) => (
+              <div key={i} className="contents">
+                <p className="t-b1">{paragraph}</p>
+                {i === 0 && forums.introLink && (
+                  <p className="t-b1">
+                    {forums.introLink.lead}{" "}
+                    <a
+                      href={forums.introLink.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="link"
+                    >
+                      {forums.introLink.label}
+                    </a>
+                    .
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
         </Reveal>
         <WorkingGroups swatches={false} />
       </Section>

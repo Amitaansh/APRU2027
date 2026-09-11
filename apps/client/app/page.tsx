@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { KeyVisual } from "@apru/ui";
+import { KeyVisual, Reveal } from "@apru/ui";
 import { site } from "@apru/content";
 
 /**
@@ -33,10 +33,22 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/*
+       * The theme statement. It was written onto About, which the note there
+       * called a judgement call; the approved content document settles it by
+       * setting these three paragraphs on the home page, under the key visual.
+       */}
       <section className="pad-b pt-[70rem] max-md:pt-[40rem]">
         <div className="ctr">
           <div className="grd">
             <div style={{ gridColumn: "1 / span 9" }}>
+              <Reveal>
+                <div className="t-b1 flex max-w-[74ch] flex-col gap-[24rem] pb-[54rem] max-md:pb-[34rem]">
+                  {site.themeParagraphs.map((paragraph, i) => (
+                    <p key={i}>{paragraph}</p>
+                  ))}
+                </div>
+              </Reveal>
               <p className="t-b1">
                 {site.dates}
                 <br />

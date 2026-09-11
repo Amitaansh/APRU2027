@@ -27,5 +27,15 @@
       "host": "Simon Fraser University, Vancouver",
       "theme": "Living with Water"
     }
-  ]
+  ],
+  "themeParagraphs": [
+    "Amid climate change, economic and technological uncertainties, and social and environmental disruptions, cities and communities across the Pacific Rim are facing profound and unprecedented challenges. In addressing these challenges, however, the knowledge and practices of sustainable planning, governance, and design often remain siloed and fragmented.",
+    "With the theme of Bridging Resilience(s), the 2027 APRU-SCL conference will explore how different knowledge and practices can connect and coalesce in advancing social, cultural, and environmental resilience in cities and communities. It will further examine how bridging itself- the ability to network, organize, co-create, and forge connections- can represent a form of resilience in the face of crisis and disruption.",
+    "Singapore, with its unique institutional structure along with the challenges of density and land scarcity, provides a setting for this discussion. For the 2027 conference, we welcome submissions of papers, posters, and panels that examine solutions and challenges facing urban and environmental sustainability in the Pacific Rim through transdisciplinary collaboration, comparative studies, and cross-cultural investigation."
+  ],
+  "aboutParagraph": "APRU’s Sustainable Cities and Landscapes (SCL) programme unites researchers and policymakers across 22 member universities to tackle critical urban challenges, climate change, and landscape sustainability in the Pacific Rim.",
+  "aboutLink": {
+    "label": "APRU Sustainable Cities and Landscapes programme",
+    "url": "https://gsi.uoregon.edu/apru-scl"
+  }
 }

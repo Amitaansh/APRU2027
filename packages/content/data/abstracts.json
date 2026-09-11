@@ -1,0 +1,32 @@
+{
+  "intro": "We welcome abstract submissions for oral and poster presentations that engage with the conference theme and address emerging challenges, innovative practices, research findings, or critical perspectives in sustainable cities and landscapes.",
+  "tracksLead": "Please submit your abstract for an oral/poster presentation in tracks including, but not limited to:",
+  "tracks": [
+    "AI for resilience",
+    "Human–nature interactions and health implications",
+    "Environmental, economic, and social infrastructure for resilience",
+    "Climate justice",
+    "Botanic and agricultural urbanism",
+    "Urban landscape biodiversity",
+    "Water, seascapes, and infrastructure",
+    "Energy landscapes and systems",
+    "Community and civic resilience"
+  ],
+  "coordination": [
+    "Selected abstracts from the open call will be assigned to either a parallel session for oral presentation or a poster session. Please note that, unlike traditional academic conferences, APRU-SCL also operates through thematic Working Groups that bring together scholars and practitioners around shared areas of research and practice. During the conference, parallel sessions will run alongside Working Group meetings and activities. If you are presenting and also wish to attend a WG session, we will coordinate your schedule to ensure you can participate in both.",
+    "If your research aligns with the focus of one or more Working Groups, you are welcome to contact the Working Group leaders to explore opportunities for engagement. Please note that acceptance of an abstract for an oral or poster presentation does not automatically constitute access to Working Group meetings. Participation in Working Group activities is coordinated separately with the respective Working Group leaders."
+  ],
+  "workingGroupsLink": {
+    "label": "See the working groups",
+    "url": "/highlights/working-groups"
+  },
+  "rulesHeading": "Submission rules",
+  "rules": [
+    "Abstract Title: Maximum of 20 words.",
+    "Abstract Body: Maximum of 300 words to outline the research aim, question, methods, preliminary/expected results, and practical implications",
+    "Keywords: Up to 5 keywords may be included.",
+    "Language: Abstracts must be submitted in English."
+  ],
+  "submitLabel": "Submit now",
+  "submitUrl": "https://uvents.nus.edu.sg/event/apruscl"
+}

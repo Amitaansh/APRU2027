@@ -48,6 +48,15 @@ function MemberName({ member }: { member: CommitteeMember }) {
  *                Jeff and Yun Hye to come down and join the others, which is
  *                this: no special case, one list of nine.
  */
+/**
+ * The two roles that set a member apart in the featured layout. Read as a set
+ * rather than as one string because the roster now carries the committee's own
+ * role names -- "Lead" and "Co-Lead" -- rather than the single "Co-lead" it
+ * started with. A plain equality test against the old value would quietly empty
+ * the featured row and drop both leads into the grid with everyone else.
+ */
+const LEAD_ROLES = new Set(["Lead", "Co-Lead"]);
+
 export function Committee({
   leads: leadStyle = "featured",
 }: {
@@ -55,10 +64,10 @@ export function Committee({
 } = {}) {
   const featureLeads = leadStyle === "featured";
   const leads = featureLeads
-    ? committee.organising.filter((m) => m.role === "Co-lead")
+    ? committee.organising.filter((m) => LEAD_ROLES.has(m.role))
     : [];
   const members = featureLeads
-    ? committee.organising.filter((m) => m.role !== "Co-lead")
+    ? committee.organising.filter((m) => !LEAD_ROLES.has(m.role))
     : committee.organising;
 
   return (
@@ -78,7 +87,7 @@ export function Committee({
                     {member.email}
                   </a>
                 ) : (
-                  <span className="dim">Co-lead</span>
+                  <span className="dim">{member.role}</span>
                 )
               }
             />
@@ -106,6 +115,20 @@ export function Committee({
                   </span>
                   <br />
                   <span className="dim">{member.affiliation}</span>
+                  {/*
+                   * The third line the content document gives each member --
+                   * what they are doing for this conference, as distinct from
+                   * what they are at their university. Inline only: the
+                   * portfolio's featured layout already carries the role in its
+                   * own meta column, and adding it here as well would print it
+                   * twice for the leads and change a layout that was signed off.
+                   */}
+                  {!featureLeads && (
+                    <>
+                      <br />
+                      <span className="dim">{member.role}</span>
+                    </>
+                  )}
                 </span>
               </li>
             ))}

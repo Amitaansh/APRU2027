@@ -1,1 +1,38 @@
-[]
+[
+  {
+    "id": "cecil-konijnendijk",
+    "name": "Cecil KONIJNENDIJK",
+    "role": "Director",
+    "institution": "Nature Based Solutions Institute",
+    "bio": "Cecil is widely considered a world-leading expert in urban forestry and urban greening. His research and advisory work has taken him to cities and communities in over 35 countries. He has published several seminal textbooks and co-founded the leading academic journal Urban Forestry & Urban Greening. From Utrecht, the Netherlands, Cecil co-leads the Nature Based Solutions Institute, an international think tank for the evidence based greening of cities and communities. He is also an adjunct professor of urban forestry at the University of British Columbia in Vancouver, Canada. In the past, he held (visiting) professorships in Belgium, Canada, China, Denmark, Hong Kong, and Sweden.",
+    "profileUrl": "https://nbsi.eu/coworker/cecil-konijnendijk/",
+    "keynote": true
+  },
+  {
+    "id": "kelly-shannon",
+    "name": "Kelly SHANNON",
+    "role": "Professor",
+    "institution": "University of Economics HCMC",
+    "bio": "Kelly Shannon is a professor of architecture and core member of the International Center of Urbanism (University of Economics HCMC). Before relocating to Vietnam, she had a long career at KU Leuven (Belgium), and also has taught in the US, China, Norway and Spain. Before entering academia she worked as an architect (in the US and Europe). She focuses landscape urbanism in times of global warming and strategies that work with water, vegetation and topography. Her design research is grounded in fieldwork and design proposals co-developed with local experts. For nearly three decades she has worked extensively in the Vietnamese context, developing various masterplans for cities and regions, all which accentuate locational assets and landscapes to frame urbanization.",
+    "profileUrl": "https://independent.academia.edu/KellyShannon1",
+    "keynote": true
+  },
+  {
+    "id": "puay-yok-tan",
+    "name": "Puay Yok TAN",
+    "role": "Chief Executive Officer",
+    "institution": "National Parks Board (NParks)",
+    "bio": "Professor Tan Puay Yok is the Chief Executive Officer of the National Parks Board, the national agency responsible for greenery, conservation, and wildlife management and veterinary care in Singapore. Prior to this appointment, he was also the Chief Science and Technology Officer of the National Parks Board and Director of the Singapore Botanic Gardens. He is currently on secondment from the National University of Singapore, where he previously served as the cluster leader of the Landscape Studies cluster at the Department of Architecture. His academic studies focus on urban greening and ecology of cities along a spectrum of socio-ecological dimensions of urban nature. He previously served as the Co-Editor-in-Chief of Landscape and Urban Planning.",
+    "profileUrl": "https://cde.nus.edu.sg/arch/staffs/tan-puay-yok-dr/",
+    "keynote": true
+  },
+  {
+    "id": "winnie-law",
+    "name": "Winnie LAW",
+    "role": "Executive Director and Principal Lecturer",
+    "institution": "The University of Hong Kong",
+    "bio": "Dr Winnie Law is the Executive Director and Principal Lecturer at the Centre for Civil Society and Governance, The University of Hong Kong. Dr Law specialises in rural revitalisation, social innovation, community planning, and corporate sustainability. Her research integrates sustainability theories into practice through blended value co-creation, civic engagement and participatory impact assessment. Alongside advising key statutory bodies in Hong Kong, such as the Advisory Council for the Environment, Dr Law has contributed her expertise internationally as a planning and social monitoring expert for the European Union and the United Nations Development Programme (UNDP). She also serves as an official representative at the UNESCO Asia-Pacific Higher Education Network for Safeguarding Intangible Cultural Heritage.",
+    "profileUrl": "https://ccsg.hku.hk/en/people/dr-law-winnie/",
+    "keynote": true
+  }
+]

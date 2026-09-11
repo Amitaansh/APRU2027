@@ -1,4 +1,5 @@
 import { PageHeadArt, Reveal, Section } from "@apru/ui";
+import { fieldTrip } from "@apru/content";
 import { pageMetadata } from "@apru/content/seo";
 
 export const metadata = pageMetadata({
@@ -11,14 +12,12 @@ export const metadata = pageMetadata({
 /**
  * One continuous block, at the client instruction - the five themes are a list
  * inside the description rather than five sections with headings of their own.
+ *
+ * The copy moved into @apru/content when the approved content document landed.
+ * It was written out here first and matched the document word for word, but the
+ * portfolio edition had its own copy of it, and two copies of the same approved
+ * paragraph is exactly how the two editions come to disagree.
  */
-const THEMES = [
-  "Climate Resilience and Nature Preservation",
-  "Urban Health and Community Design",
-  "Digital Urbanism and AI",
-  "Coastal Resilience and Adaptation",
-  "Urban Ecology and Green Infrastructure",
-];
 
 export default function FieldTripsPage() {
   return (
@@ -28,14 +27,10 @@ export default function FieldTripsPage() {
       <Section>
         <Reveal>
           <div className="t-b1 flex max-w-[74ch] flex-col gap-[24rem]">
-            <p>
-              We offer half-day field trips exploring Singapore&rsquo;s innovative approaches to
-              sustainable urbanism. Supported by government agencies and local partners, our
-              curated excursions cover the following five themes:
-            </p>
+            <p>{fieldTrip.intro}</p>
 
             <ul className="flex flex-col gap-[10rem]">
-              {THEMES.map((theme) => (
+              {fieldTrip.themes.map((theme) => (
                 <li key={theme} className="flex gap-[16rem]">
                   <span aria-hidden="true">&mdash;</span>
                   <span>{theme}</span>
@@ -43,12 +38,7 @@ export default function FieldTripsPage() {
               ))}
             </ul>
 
-            <p>
-              Participants will experience firsthand how high-density development integrates with
-              biodiversity, smart technologies, and community well-being through guided walks,
-              cycling tours, and site visits to pioneering districts. Detailed itineraries and full
-              descriptions for each trip will be available by December 2026 for registration.
-            </p>
+            <p>{fieldTrip.note}</p>
           </div>
         </Reveal>
       </Section>

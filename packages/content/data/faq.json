@@ -2,7 +2,7 @@
   {
     "id": "when-where",
     "question": "When and where is the conference?",
-    "answer": "The 10th APRU Sustainable Cities and Landscapes Conference takes place 21—23 May 2027 in Singapore, hosted by the Department of Architecture at the National University of Singapore. The exact venue within NUS will be announced closer to the event."
+    "answer": "The 10th APRU Sustainable Cities and Landscapes Conference takes place 21—23 May 2027 in Singapore, hosted by the Department of Architecture at the National University of Singapore. Sessions are held at SDE3, 4 Architecture Drive, Singapore 117566, on the NUS Kent Ridge campus."
   },
   {
     "id": "who-for",
@@ -12,31 +12,36 @@
   {
     "id": "what-is-apru-scl",
     "question": "What is APRU-SCL?",
-    "answer": "The Sustainable Cities and Landscapes (SCL) program of the Association of Pacific Rim Universities convenes an annual conference and a set of ongoing thematic working groups. The 2027 edition in Singapore marks the network's 10th anniversary."
+    "answer": "The Sustainable Cities and Landscapes (SCL) programme of the Association of Pacific Rim Universities unites researchers and policymakers across 22 member universities, convening an annual conference and a set of ongoing thematic working groups. The 2027 edition in Singapore marks the network's 10th anniversary."
   },
   {
     "id": "abstracts",
     "question": "How do I submit an abstract?",
-    "answer": "The call for abstracts has not opened yet. When it does, submissions of papers, posters, and panels will be handled through the conference submission platform, with a 200-word abstract. Register your interest to be notified the day the call opens."
+    "answer": "The call for abstracts opens on 15 September 2026 and closes on 15 November 2026 (UTC+8). Submissions are made through the NUS UVENTs event page, linked from the call for abstracts. Abstract titles run to a maximum of 20 words and the body to a maximum of 300 words, with up to five keywords, in English. Authors are notified on 15 January 2027."
   },
   {
     "id": "students",
     "question": "Is there anything for students?",
-    "answer": "Yes. A pre-conference student symposium is planned for graduate and doctoral students, and student registration rates will be published alongside general rates when registration opens."
+    "answer": "Yes. A student network session runs alongside the conference; details will be published here once they are confirmed. Student registration rates will be published alongside general rates when registration opens."
   },
   {
     "id": "working-groups",
     "question": "How do the working groups work?",
-    "answer": "Working groups are ongoing thematic groups that meet at each annual conference to build joint agendas and shared outputs — publications, case studies, white papers, and webinars — rather than deliver static paper presentations. Twelve groups are confirmed for 2027; details on joining will follow with the programme."
+    "answer": "Working groups are ongoing thematic groups that meet at each annual conference to build joint agendas and shared outputs rather than deliver static paper presentations, with each group typically leaving the conference with a planned output. Twelve groups are confirmed for 2027. If your research aligns with one of them you are welcome to contact its leaders directly — an accepted abstract does not by itself give access to working group meetings, which are coordinated separately."
   },
   {
     "id": "registration",
     "question": "When does registration open, and what will it cost?",
-    "answer": "Registration is not yet open and fees have not been set. General and student rates will both be published here when they are confirmed."
+    "answer": "Registration opens on 15 January 2027, and early-bird registration closes on 28 February 2027. Fees have not been set; general and student rates will both be published here once they are confirmed."
+  },
+  {
+    "id": "visas",
+    "question": "Can you provide a letter of invitation for my visa?",
+    "answer": "Invitation letters for visa applications are provided once registration fees have been paid or a waiver granted. NUS Department of Architecture does not submit visa applications on your behalf — applications go to your nearest Singapore Overseas Mission or an authorised visa agent. See the Visitors page for the full entry requirements."
   },
   {
     "id": "stay-informed",
     "question": "How do I stay informed?",
-    "answer": "Register your interest using the link on any page of this site. It is a single form, and it is the channel we will use to announce the call for abstracts, the program, speakers, and registration."
+    "answer": "Key dates for the call for abstracts, registration, and the conference itself are published on this site and updated as each is confirmed. The detailed programme is announced in March 2027. For anything not answered here, write to the committee inbox."
   }
 ]
