@@ -14,7 +14,7 @@ export const OG_IMAGE = {
 };
 
 export const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://apruscl2027.com";
+  process.env.NEXT_PUBLIC_SITE_URL || "https://apruscl2027.com";
 
 /**
  * Keeps an edition out of the index entirely.
