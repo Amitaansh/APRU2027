@@ -1,11 +1,13 @@
 /**
- * A committee portrait, or a monogram where there is no photo.
+ * A portrait — committee member or keynote speaker — or a monogram where there
+ * is no photo.
  *
- * The nine organising committee members do not all have a published staff
- * photo: six are on the DOA staff directory and three are not. The two cases
- * have to occupy the same box at the same size, or the roster comes out ragged
- * and the members without a photograph read as an error rather than as a fact
- * about the directory.
+ * Every current member and speaker has one now: six from the DOA staff
+ * directory, seven supplied by the committee in September. The fallback stays,
+ * because the next name added to either roster will arrive before its photo
+ * does, and the two cases have to occupy the same box at the same size or the
+ * roster comes out ragged and the one without a photograph reads as an error
+ * rather than as a fact about the calendar.
  *
  * So the fallback is not a grey rectangle or a generic silhouette — a silhouette
  * is a picture of a person who is not this person. It is the member's initials

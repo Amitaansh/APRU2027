@@ -70,6 +70,25 @@ const PORTRAIT = { w: 440, h: 550 };
  * re-run to publish them in colour.
  */
 const PORTRAIT_MONO = true;
+/*
+ * Explicit 4:5 windows, in source pixels, for the sources where the
+ * top-anchored cover crop below lands wrong. Two so far, both from the
+ * committee's own headshot drop rather than the studio set:
+ *
+ *   cecil-konijnendijk  a 3:2 landscape frame with the sitter left of centre
+ *                       and a tree trunk on the right. A centred cut keeps the
+ *                       trunk and pushes the face to the edge.
+ *   winnie-law          a full-length seated portrait. "The top" of a 2:3
+ *                       frame is the head and half the body, and at 110rem the
+ *                       face would be a thumbnail.
+ *
+ * Measured off the files, not derived. Anything not listed here takes the
+ * default crop, which is right for a head-and-shoulders source.
+ */
+const PORTRAIT_CROPS = {
+  "cecil-konijnendijk": { left: 1440, top: 500, width: 2720, height: 3400 },
+  "winnie-law": { left: 200, top: 20, width: 960, height: 1200 },
+};
 const HERO_RATIO = 16 / 9;
 
 // Duotone pair — orange ink over a deep brand blue.
@@ -409,27 +428,37 @@ async function buildOG() {
 }
 
 /**
- * Committee portraits.
+ * Portraits — the organising committee and the keynote speakers, one folder.
  *
- * The nine sources are the DOA staff studio set: vertical, dark-ground, shot at
- * wildly different sizes (207px wide to 1772px). Three things follow from that.
+ * Thirteen sources from two places. Six are the DOA staff studio set: vertical,
+ * dark-ground, seated or standing three-quarter, shot at wildly different sizes
+ * (207px wide to 1772px). Seven are the sitters' own headshots, supplied by the
+ * committee in September, at every framing from a passport crop to a 6720px
+ * landscape frame. See committee-source/SOURCE.md for which is which.
  *
- * TOP-ANCHORED. Every source is a seated or standing three-quarter portrait with
- * the head in the upper third, so a square-ish crop taken from the top lands the
- * face between a quarter and a third of the way down in all nine — measured, not
- * assumed. `position: "attention"` was the alternative and is rejected for the
- * same reason it is on the hero: it re-picks a different crop per image, and here
- * that means nine faces sitting at nine different heights.
+ * TOP-ANCHORED BY DEFAULT. The studio set and most of the supplied headshots
+ * have the head in the upper third, so a 4:5 cut from the top lands the face
+ * between a quarter and a third of the way down — measured, not assumed.
+ * `position: "attention"` was the alternative and is rejected for the same
+ * reason it is on the hero: it re-picks a different crop per image, and here
+ * that means thirteen faces sitting at thirteen different heights.
+ *
+ * EXPLICIT WHERE THAT FAILS. Two of the supplied files are not head-and-
+ * shoulders at all, and for those PORTRAIT_CROPS names the window outright.
+ * A per-file rectangle rather than a smarter heuristic: there are two, they are
+ * known, and a rule clever enough to get both right would be guessing on the
+ * next file to arrive.
  *
  * ONE OUTPUT SIZE. The box is 110rem wide, so 440px covers it to 4x and there is
  * no srcset to carry. The narrowest source enlarges about 2x to reach it, which
  * is why the resize is followed by a light sharpen — at this display size that
  * reads as crisp rather than as upscaled.
  *
- * DESATURATED. Six studio setups, six colour temperatures; the page below the
- * hero is monochrome anyway (see components/home/Hero.tsx). Greyscale makes the
- * set look like one commission and lets the monogram tiles that stand in for the
- * three members with no staff photo sit beside them without clashing.
+ * DESATURATED. Six studio setups and seven phone-to-DSLR outdoor shots is
+ * thirteen colour temperatures; the page below the hero is monochrome anyway
+ * (see components/home/Hero.tsx). Greyscale makes the set look like one
+ * commission, and keeps the monogram tile that stands in for anyone added
+ * without a photo from clashing with it.
  */
 async function buildPortraits() {
   if (!existsSync(PORTRAIT_SOURCE)) {
@@ -441,7 +470,13 @@ async function buildPortraits() {
   const sources = (await readdir(PORTRAIT_SOURCE)).filter((f) => /\.(jpe?g|png|webp|avif)$/i.test(f));
   for (const file of sources) {
     const slug = file.replace(/\.[^.]+$/, "");
-    let pipe = sharp(path.join(PORTRAIT_SOURCE, file))
+    // rotate() with no angle applies the EXIF orientation, so a phone photo
+    // that is stored sideways and flagged upright is read upright — and the
+    // crop window, which is measured on the picture as seen, lands where it
+    // was measured. It has to come before extract() for that to hold.
+    let pipe = sharp(path.join(PORTRAIT_SOURCE, file)).rotate();
+    if (PORTRAIT_CROPS[slug]) pipe = pipe.extract(PORTRAIT_CROPS[slug]);
+    pipe = pipe
       .resize(PORTRAIT.w, PORTRAIT.h, { fit: "cover", position: "top" })
       .sharpen({ sigma: 0.6 });
     if (PORTRAIT_MONO) pipe = pipe.greyscale();
@@ -916,6 +951,12 @@ async function main() {
   await mkdir(path.join(OUT, "..", "og"), { recursive: true });
   /* The key visual alone, for iterating on it without re-encoding the site. */
   if (process.env.ONLY_HOME) return void (await buildHome());
+  /*
+   * The portraits alone. A new headshot should not cost a re-encode of the
+   * hero and the key art -- and on a machine without the 134 MB hero source
+   * to hand, a full run cannot get as far as the portraits at all.
+   */
+  if (process.env.ONLY_PORTRAITS) return void (await buildPortraits());
   if (!process.env.SKIP_HERO) await buildHero();
   if (!process.env.SKIP_HOME) await buildHome();
   await buildOG();
@@ -938,7 +979,7 @@ async function main() {
       "- Home widths: " + HOME_WIDTHS.join(", ") + " landscape, " + HOME_PORTRAIT_WIDTHS.join(", ") + " portrait (2:3, its own cut of the plate). AVIF q" + HOME_AVIF_Q + " — the measured grain knee — with WebP q" + HOME_WEBP_Q + " to 1920 as the no-AVIF fallback.",
       "- OG card: greyscale, contrast lift, ordered 8x8 Bayer dither, two-colour map (#f89c2c over #143a5c) — Design Brief §05.",
       "- Widths: " + WIDTHS.join(", ") + " (AVIF + WebP), OG card 1200x630 PNG.",
-      "- Committee portraits: " + PORTRAIT_SOURCE + " — 4:5 crop from the top, " +
+      "- Portraits (committee and keynotes): " + PORTRAIT_SOURCE + " — 4:5 crop from the top, or the window in PORTRAIT_CROPS, " +
         (PORTRAIT_MONO ? "greyscale, " : "") +
         PORTRAIT.w + "x" + PORTRAIT.h + " (AVIF + WebP) in ./committee.",
       "",

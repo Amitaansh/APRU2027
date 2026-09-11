@@ -23,6 +23,11 @@ apru-icon.jpg
 # regenerates those. See committee-source/SOURCE.md for the provenance table.
 committee-source/
 
+# The committee's own headshot drop (Google Drive, 11 Sep 2026). Same rule:
+# the originals stay local, the slugged copies in committee-source/ feed the
+# pipeline, and the repo ships only the derivatives.
+APRU materials*/
+
 # Notion change-board exports — client material, not source.
 *ExportBlock*.zip
 

@@ -1,6 +1,7 @@
 [
   {
     "id": "cecil-konijnendijk",
+    "photo": "cecil-konijnendijk",
     "name": "Cecil KONIJNENDIJK",
     "role": "Director",
     "institution": "Nature Based Solutions Institute",
@@ -10,6 +11,7 @@
   },
   {
     "id": "kelly-shannon",
+    "photo": "kelly-shannon",
     "name": "Kelly SHANNON",
     "role": "Professor",
     "institution": "University of Economics HCMC",
@@ -19,6 +21,7 @@
   },
   {
     "id": "puay-yok-tan",
+    "photo": "puay-yok-tan",
     "name": "Puay Yok TAN",
     "role": "Chief Executive Officer",
     "institution": "National Parks Board (NParks)",
@@ -28,6 +31,7 @@
   },
   {
     "id": "winnie-law",
+    "photo": "winnie-law",
     "name": "Winnie LAW",
     "role": "Executive Director and Principal Lecturer",
     "institution": "The University of Hong Kong",

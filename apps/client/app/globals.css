@@ -361,6 +361,43 @@
   .idx-veil {
     display: none;
   }
+
+  /*
+   * ---------------------------------------------------------------------------
+   * NO RULES ON THE LISTS
+   * ---------------------------------------------------------------------------
+   * "Remove the line divisions." Filed against the keynotes roster and taken
+   * across the edition: the hairlines are the boundary of every list on the
+   * site -- the ruled rows, the two accordions, the FAQ, the committee grids,
+   * the status blocks -- and one page without them beside six with them would
+   * read as an oversight rather than a decision.
+   *
+   * base.css draws them three ways. On .rulelist and .idx-row they are borders
+   * (see IndexRow.tsx for why borders rather than elements); where a rule heads
+   * a grid or bounds a status block it is a .rule-solid element of its own. All
+   * three go. The rows keep their padding, so the rhythm on the page does not
+   * move; only the lines do. `--row-pad` on .idx-row is the knob if the rows
+   * read loose without them.
+   *
+   * What stays: the hairline under the header and the one over the footer.
+   * Those are page chrome, drawn with Tailwind utilities on the layout, and are
+   * not what the request is pointing at.
+   *
+   * The schedule page already had its two rules struck by the client through
+   * StatusBlock's `rules` prop. That was one caller asking for one thing; this
+   * is the edition asking, which is what this file is for.
+   */
+  .rulelist {
+    border-bottom: 0;
+  }
+
+  .idx-row {
+    border-top: 0;
+  }
+
+  .rule-solid {
+    display: none;
+  }
 }
 
 /*

@@ -13,10 +13,10 @@ import type { CommitteeMember } from "@apru/content/types";
  * Co-leads get their own ruled rows at display size; the rest of the committee
  * is a column list, which is the right density for a roster of names.
  *
- * Both carry a portrait. Six of the nine are on the DOA staff directory and are
- * graded to match the page by `npm run imagery`; the three who are not get a
- * monogram in the same box, so the grid stays regular either way — see
- * components/ui/Portrait.tsx.
+ * Both carry a portrait, graded to match the page by `npm run imagery`: six
+ * from the DOA staff directory, three supplied by the committee. A member added
+ * without one gets a monogram in the same box, so the grid stays regular either
+ * way — see Portrait.tsx.
  *
  * The scientific committee is set differently, as a linked text roster. See the
  * note at that block for why.

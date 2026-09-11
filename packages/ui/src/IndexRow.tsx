@@ -118,9 +118,17 @@ export function IndexRow({
       {number && <span className="t-b2 dim tnum w-[70rem] flex-none max-md:w-auto">{number}</span>}
       <span className={titleClass}>{title}</span>
       {body && (
+        /*
+         * `basis-full` at phone width, not just `w-full`: `flex-1` sets the
+         * basis to 0%, and a basis beats a width when the line is being laid
+         * out. With basis 0 the cell's hypothetical size is its longest word,
+         * so whether the meta cell dropped below the body or squeezed in beside
+         * it depended on the vocabulary of the biography -- one row wrapped,
+         * the next ran a 300-word bio down a 100px column.
+         */
         <span
           className={
-            "t-b2 dim max-w-[60ch] flex-1 max-md:w-full" + (centreBody ? " self-center" : "")
+            "t-b2 dim max-w-[60ch] flex-1 max-md:basis-full" + (centreBody ? " self-center" : "")
           }
         >
           {body}
