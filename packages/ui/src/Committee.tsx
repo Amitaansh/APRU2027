@@ -45,17 +45,25 @@ function MemberName({ member }: { member: CommitteeMember }) {
  *   "featured" — their own ruled rows at display size, with portraits. The
  *                portfolio, and how the roster was first designed.
  *   "inline"   — everyone in the one grid, three to a row. The client asked for
- *                Jeff and Yun Hye to come down and join the others, which is
- *                this: no special case, one list of nine.
+ *                Jeff and Yun Hye to come down and join the others, and then
+ *                for the two of them to head that list: Lead, Co-Lead, and
+ *                the other seven after them in the order the content document
+ *                gives, which is alphabetical by first name.
+ *
+ * Either way the ORDER IS DECIDED HERE, not in committee.json. The data stays
+ * in the content document's alphabetical order so it can be checked against
+ * the source line by line, and the leads are lifted out of it at render time
+ * -- into their own rows, or to the head of the grid.
  */
 /**
- * The two roles that set a member apart in the featured layout. Read as a set
- * rather than as one string because the roster now carries the committee's own
- * role names -- "Lead" and "Co-Lead" -- rather than the single "Co-lead" it
- * started with. A plain equality test against the old value would quietly empty
- * the featured row and drop both leads into the grid with everyone else.
+ * The two roles that set a member apart, in the order they are shown. Read as
+ * a list rather than as one string because the roster now carries the
+ * committee's own role names -- "Lead" and "Co-Lead" -- rather than the single
+ * "Co-lead" it started with. A plain equality test against the old value would
+ * quietly drop both leads into the grid with everyone else, in alphabetical
+ * position.
  */
-const LEAD_ROLES = new Set(["Lead", "Co-Lead"]);
+const LEAD_ROLES = ["Lead", "Co-Lead"];
 
 export function Committee({
   leads: leadStyle = "featured",
@@ -63,12 +71,12 @@ export function Committee({
   leads?: "featured" | "inline";
 } = {}) {
   const featureLeads = leadStyle === "featured";
-  const leads = featureLeads
-    ? committee.organising.filter((m) => LEAD_ROLES.has(m.role))
-    : [];
-  const members = featureLeads
-    ? committee.organising.filter((m) => !LEAD_ROLES.has(m.role))
-    : committee.organising;
+  const leadMembers = committee.organising
+    .filter((m) => LEAD_ROLES.includes(m.role))
+    .sort((a, b) => LEAD_ROLES.indexOf(a.role) - LEAD_ROLES.indexOf(b.role));
+  const otherMembers = committee.organising.filter((m) => !LEAD_ROLES.includes(m.role));
+  const leads = featureLeads ? leadMembers : [];
+  const members = featureLeads ? otherMembers : [...leadMembers, ...otherMembers];
 
   return (
     <div className="flex flex-col gap-[90rem] max-md:gap-[50rem]">
