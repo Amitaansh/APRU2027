@@ -47,7 +47,37 @@ export default function VisitorsPage() {
                 <div className="flex-1">
                   {section.status === "confirmed" ? (
                     <>
-                      <p className="t-b1 dim max-w-[64ch]">{section.body}</p>
+                      {/*
+                       * One paragraph or several, and a section may be a list
+                       * instead of prose — the visa requirements are five
+                       * separate conditions. Rendering `body` straight into one
+                       * <p> ran them together into a single block.
+                       */}
+                      {(Array.isArray(section.body)
+                        ? section.body
+                        : section.body
+                          ? [section.body]
+                          : []
+                      ).map((paragraph, n) => (
+                        <p
+                          key={n}
+                          className={"t-b1 dim max-w-[64ch]" + (n > 0 ? " pt-[18rem]" : "")}
+                        >
+                          {paragraph}
+                        </p>
+                      ))}
+                      {section.bullets?.length ? (
+                        <ul className="flex flex-col gap-[14rem]">
+                          {section.bullets.map((bullet, n) => (
+                            <li key={n} className="t-b1 dim flex max-w-[64ch] gap-[14rem]">
+                              <span aria-hidden="true" className="flex-none">
+                                &#8212;
+                              </span>
+                              <span>{bullet}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : null}
                       {/*
                        * Resources the prose points at — the campus map, the
                        * ride-hail app. They sit under the paragraph as a row of

@@ -53,7 +53,7 @@ export default function WorkingGroupsPage() {
          */}
         <Reveal className="rise">
           <p className="f-serif dim max-w-[56ch] text-[32rem] leading-[1.2] tracking-[-0.02em]">
-            {forums.intro}
+            {forums.intro[0]}
           </p>
           {forums.introLink && (
             <p className="t-b1 dim max-w-[70ch] pt-[28rem]">
@@ -79,6 +79,22 @@ export default function WorkingGroupsPage() {
        * channel rather than the only one.
        */}
       <Section ground="dark">
+        {/*
+         * Paragraphs two and three of the introduction. They are here rather than
+         * in the curtain for the reason the note above gives: that face is a
+         * pinned 100vh box with `overflow: hidden`, and the paragraph already in
+         * it was measured to sit just inside a 700px viewport. Two more would be
+         * cut off at both ends on any laptop.
+         */}
+        {forums.intro.length > 1 && (
+          <div className="flex max-w-[70ch] flex-col gap-[20rem] pb-[54rem]">
+            {forums.intro.slice(1).map((paragraph, i) => (
+              <p key={i} className="t-b1 dim">
+                {paragraph}
+              </p>
+            ))}
+          </div>
+        )}
         <WorkingGroups />
         <p className="t-b2 dim pt-[40rem]">
           Details on joining a working group will be published with the full programme.{" "}

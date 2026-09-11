@@ -1,4 +1,4 @@
-import { PageHead, Section, ToBeAnnounced } from "@apru/ui";
+import { PageHead, Reveal, Section, ToBeAnnounced } from "@apru/ui";
 import { program } from "@apru/content";
 import { pageMetadata } from "@apru/content/seo";
 
@@ -27,6 +27,12 @@ export default function SchedulePage() {
       />
 
       <Section halo="right">
+        {/* What the three days hold, from the approved content document. The
+            block below still carries the fact that the timetable itself is
+            outstanding. */}
+        <Reveal>
+          <p className="t-b1 dim rise max-w-[70ch] pb-[54rem]">{program.scheduleIntro}</p>
+        </Reveal>
         <ToBeAnnounced
           label="Detailed schedule and programme to be announced"
           note={program.scheduleNote}

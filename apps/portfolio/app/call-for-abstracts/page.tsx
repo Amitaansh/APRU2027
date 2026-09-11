@@ -5,39 +5,26 @@ import { IndexRow, RuleList } from "@apru/ui";
 import { ImportantDates } from "@apru/ui";
 import { PageHead } from "@apru/ui";
 import { Section } from "@apru/ui";
+import { abstracts } from "@apru/content";
 import { pageMetadata } from "@apru/content/seo";
 
 export const metadata = pageMetadata({
   title: "Call for abstracts",
   description:
-    "Papers, posters, and panels for the 10th APRU-SCL conference, Singapore 2027. Abstracts are 200 words. The call opens soon.",
+    "Submit an abstract for an oral or poster presentation at the 10th APRU-SCL conference, Singapore 2027. Nine tracks; abstracts are 300 words; submissions close 15 November 2026.",
   path: "/call-for-abstracts",
 });
 
-const FORMATS = [
-  {
-    title: "Papers",
-    body: "Individual research contributions examining solutions and challenges in urban and environmental sustainability across the Pacific Rim.",
-  },
-  {
-    title: "Posters",
-    body: "Visual presentations of work in progress, well suited to comparative and field-based studies.",
-  },
-  {
-    title: "Panels",
-    body: "Proposed sessions bringing several contributors together around a shared question, in the spirit of the working group framework.",
-  },
-];
-
 /**
- * GROUND. Light until the formats, where the curtain wipes it black, and dark
- * from there into the footer — so the three things that can be submitted are the
- * last thing read. The curtain is a one-way door; that is why the formats moved
- * below the key dates rather than sitting above them.
+ * GROUND. Light until the tracks, where the curtain wipes it black, and dark
+ * from there into the footer — so what can be submitted is the last thing read.
+ * The curtain is a one-way door; that is why this sits below the key dates
+ * rather than above them.
  *
- * The word count sits BELOW the curtain rather than in it. A curtain face is a
- * pinned 100vh with `overflow: hidden`, and three rows plus a display-size
- * spread would not clear it on a short window.
+ * THE TRACKS SIT BELOW THE CURTAIN, NOT IN IT, and so do the rules. A curtain
+ * face is a pinned 100vh with `overflow: hidden`. Three format rows cleared it;
+ * nine tracks and a four-line rule set would be cut off at both ends on any
+ * short window. The curtain carries the one sentence that introduces them.
  *
  * HALO. Right, left, right — two half turns, leaving at the curtain.
  */
@@ -47,7 +34,7 @@ export default function CallForAbstractsPage() {
       <PageHead
         label="Abstracts"
         title={["Call for", "abstracts"]}
-        lede="The 2027 conference welcomes submissions of papers, posters, and panels that examine solutions and challenges facing urban and environmental sustainability in the Pacific Rim through transdisciplinary collaboration, comparative studies, and cross-cultural investigation."
+        lede={abstracts.intro}
       />
 
       <Section halo="right">
@@ -69,30 +56,46 @@ export default function CallForAbstractsPage() {
         </p>
       </Section>
 
-      {/* The darkening. 200vh, pinned, black rising from the bottom edge. */}
-      <Curtain label="Formats" halo="right">
-        <RuleList>
-          {FORMATS.map((item, i) => (
-            <IndexRow
-              key={item.title}
-              number={String(i + 1).padStart(2, "0")}
-              title={item.title}
-              body={item.body}
-            />
+      <Section label="Working groups" halo="right">
+        <div className="flex max-w-[70ch] flex-col gap-[24rem]">
+          {abstracts.coordination.map((paragraph, i) => (
+            <p key={i} className="t-b1 dim">
+              {paragraph}
+            </p>
           ))}
-        </RuleList>
+        </div>
+      </Section>
+
+      {/* The darkening. 200vh, pinned, black rising from the bottom edge. */}
+      <Curtain label="Tracks" halo="right">
+        <p className="f-serif dim max-w-[56ch] text-[32rem] leading-[1.2] tracking-[-0.02em]">
+          {abstracts.tracksLead}
+        </p>
       </Curtain>
 
       <Section ground="dark">
-        <div className="grd">
+        <RuleList>
+          {abstracts.tracks.map((track, i) => (
+            <IndexRow
+              key={track}
+              number={String(i + 1).padStart(2, "0")}
+              title={track}
+            />
+          ))}
+        </RuleList>
+
+        <div className="grd pt-[70rem]">
           <div style={{ gridColumn: "1 / span 6" }}>
-            <p className="t-h3">Abstracts are 200 words</p>
+            <p className="t-h3">{abstracts.rulesHeading}</p>
           </div>
           <div style={{ gridColumn: "8 / span 6" }} className="max-md:mt-[24rem]">
-            <p className="t-b2 dim max-w-[56ch]">
-              Full submission guidelines, including formatting and review criteria, will be
-              published when the call opens.
-            </p>
+            <ul className="flex flex-col gap-[14rem]">
+              {abstracts.rules.map((rule) => (
+                <li key={rule} className="t-b2 dim max-w-[56ch]">
+                  {rule}
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </Section>
