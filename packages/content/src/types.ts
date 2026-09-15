@@ -273,9 +273,20 @@ export interface AbstractsConfig {
   /**
    * The source marks the phrase "Working Groups" in that copy as a link to the
    * working groups page. It is lifted out to a row of its own, like every other
-   * link in the content layer, so the paragraphs stay plain text.
+   * link in the content layer, so the paragraphs stay plain text. A page that
+   * wants the link inline, as the source has it, finds the label's first
+   * occurrence in the paragraph and wraps that.
    */
   workingGroupsLink?: VenueLink;
+  /**
+   * One sentence of `coordination` that the source sets in bold -- the caveat
+   * that an accepted abstract is not a seat at a working group. Held as the
+   * sentence rather than as markup in the paragraph, for the same reason as the
+   * link above; a page that wants the emphasis splits on it.
+   */
+  emphasis?: string;
+  /** The in-flow label over the dates on the call itself. */
+  datesHeading?: string;
   rulesHeading: string;
   rules: string[];
   submitLabel: string;

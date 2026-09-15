@@ -17,10 +17,12 @@
     "If your research aligns with the focus of one or more Working Groups, you are welcome to contact the Working Group leaders to explore opportunities for engagement. Please note that acceptance of an abstract for an oral or poster presentation does not automatically constitute access to Working Group meetings. Participation in Working Group activities is coordinated separately with the respective Working Group leaders."
   ],
   "workingGroupsLink": {
-    "label": "See the working groups",
+    "label": "Working Groups",
     "url": "/highlights/working-groups"
   },
-  "rulesHeading": "Submission rules",
+  "emphasis": "Please note that acceptance of an abstract for an oral or poster presentation does not automatically constitute access to Working Group meetings.",
+  "datesHeading": "Key Dates",
+  "rulesHeading": "Submission Rules",
   "rules": [
     "Abstract Title: Maximum of 20 words.",
     "Abstract Body: Maximum of 300 words to outline the research aim, question, methods, preliminary/expected results, and practical implications",
