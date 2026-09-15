@@ -8,14 +8,20 @@ export const metadata = pageMetadata({
   path: "/highlights/keynotes",
 });
 
-/** No lede: the client asked for the subtext to come off every page. */
+/**
+ * No lede: the client asked for the subtext to come off every page.
+ *
+ * `profile` is the row shape the client asked for -- name at text weight, the
+ * position and institution on a line under it, no "Keynote" tag beside the
+ * headshot. See SpeakerGrid for the two shapes.
+ */
 export default function KeynotesPage() {
   return (
     <>
       <PageHeadArt label="Highlight" title={["Keynotes"]} />
 
       <Section>
-        <SpeakerGrid />
+        <SpeakerGrid variant="profile" />
       </Section>
     </>
   );
