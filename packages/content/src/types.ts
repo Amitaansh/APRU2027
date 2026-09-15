@@ -53,9 +53,13 @@ export interface SiteConfig {
   /** What the APRU-SCL programme is. The first thing About says. */
   aboutParagraph: string;
   /**
-   * The programme's own page. `aboutParagraph` opens on the phrase the source
-   * marks as the link, so it cannot be split into lead-and-label the way
-   * ForumsConfig.introLink is; it renders as a destination under the paragraph.
+   * The programme's own page. `label` is the opening phrase of
+   * `aboutParagraph`, verbatim: the source marks that phrase as the link, and
+   * the page sets the link on it inside the paragraph by matching the two --
+   * the same reason ForumsConfig.introLink is split rather than marked up, so
+   * the JSON stays free of HTML. If the label stops matching the paragraph's
+   * opening, the paragraph renders plain and the link is silently lost, so
+   * edit them together.
    */
   aboutLink?: VenueLink;
   priorEditions: PriorEdition[];

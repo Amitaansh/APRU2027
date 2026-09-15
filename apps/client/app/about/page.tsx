@@ -25,11 +25,20 @@ export const metadata = pageMetadata({
  * No lede is passed to PageHeadArt: that prop is what sets a paragraph beside the
  * title, and moving it down is precisely the request.
  *
+ * The programme link sits on the paragraph's opening phrase, inside the
+ * sentence, which is where the content document puts it. It was set as a line
+ * of its own under the paragraph, and the client asked for it back in. The
+ * phrase is found by matching `aboutLink.label` against the start of the
+ * paragraph -- see SiteConfig.aboutLink for why the JSON is not marked up.
+ *
  * `band="third"` is the client's sample: one page opening on a third-height
  * band for them to compare against the full-height band everywhere else. It
  * is here and nowhere else until they choose -- see PageHeadArt.
  */
 export default function AboutPage() {
+  const link = site.aboutLink;
+  const linked = link && site.aboutParagraph.startsWith(link.label);
+
   return (
     <>
       <PageHeadArt label="About" title={["About"]} band="third" />
@@ -37,21 +46,20 @@ export default function AboutPage() {
       <Section>
         <Reveal>
           <div className="t-b1 flex max-w-[74ch] flex-col gap-[24rem]">
-            <p>{site.aboutParagraph}</p>
-            {site.aboutLink && (
-              <p>
-                <a
-                  href={site.aboutLink.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="t-b2 link"
-                >
-                  {site.aboutLink.label}
-                  <span aria-hidden="true">&#8202;&#8599;</span>
-                  <span className="sr-only">(opens in a new tab)</span>
-                </a>
-              </p>
-            )}
+            <p>
+              {linked ? (
+                <>
+                  <a href={link.url} target="_blank" rel="noreferrer" className="link">
+                    {link.label}
+                    <span aria-hidden="true">&#8202;&#8599;</span>
+                    <span className="sr-only">(opens in a new tab)</span>
+                  </a>
+                  {site.aboutParagraph.slice(link.label.length)}
+                </>
+              ) : (
+                site.aboutParagraph
+              )}
+            </p>
             <p>{site.intro}</p>
           </div>
         </Reveal>
