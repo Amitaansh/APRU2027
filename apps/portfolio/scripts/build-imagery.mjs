@@ -20,7 +20,7 @@ import path from "node:path";
 
 sharp.cache(false);
 
-const SOURCE = process.env.HERO_SOURCE ?? "D:/APRU/DOA-APRU-MainImage.jpg";
+const SOURCE = process.env.HERO_SOURCE ?? "D:/APRU/landing-elements/DOA-APRU-MainImage.jpg";
 const ICON_SOURCE = process.env.ICON_SOURCE ?? "D:/APRU/apru-icon.jpg";
 /*
  * Derivatives are written to the shared asset package, not into this app: both
@@ -90,6 +90,31 @@ const PORTRAIT_CROPS = {
   "winnie-law": { left: 200, top: 20, width: 960, height: 1200 },
 };
 const HERO_RATIO = 16 / 9;
+/*
+ * Overprint patches in the supplied art, to be healed on the way through.
+ *
+ * "I see some black dots on the image." They are in the designer's JPEG, not
+ * in anything this script does: where the orange and the blue overlap the two
+ * inks mix to a muddy olive-grey, and in four places that mix has pooled into
+ * a patch a few dozen pixels across instead of dissolving into the grain. The
+ * two the client circled sit in the top edge of the frame, which is what the
+ * short band on About showed; the full band shows all of them.
+ *
+ * Each entry is the patch's centre and radius in hero-1920 pixels, plus the
+ * offset to a donor patch of the same field a little to one side, which is
+ * stamped over it through a soft round mask. Cloned rather than filled, so the
+ * grain is the art's own and not a flat disc of blue. Scaled per rung below.
+ *
+ * Measured off hero-1920.webp with a low-chroma map. Marks under ~6px are
+ * left alone: at that size they are the grain, and healing them would be
+ * retouching the designer's texture rather than a flaw in it.
+ */
+const HERO_HEAL = [
+  { x: 1484, y: 38, r: 22, dx: 0, dy: 50 }, // circled: olive blob in the clean blue, top right
+  { x: 114, y: 136, r: 14, dx: 32, dy: 22 }, // circled: grey streak beside the About label
+  { x: 1094, y: 427, r: 10, dx: -30, dy: 0 }, // ringed dot in the blue field, mid frame
+  { x: 1118, y: 214, r: 8, dx: 30, dy: 0 }, // grey blob in the speckle above the orange streak
+];
 
 // Duotone pair — orange ink over a deep brand blue.
 const INK = [0xf8, 0x9c, 0x2c];
@@ -126,7 +151,46 @@ function dither(grey, width, height) {
 }
 
 /**
- * The hero: the supplied art, resized and encoded, and nothing else.
+ * Clone-stamp the HERO_HEAL patches on one rung of the hero.
+ *
+ * For each patch: cut the donor square out of the same buffer, give it a soft
+ * round alpha (opaque to 70% of the radius, clear at the edge, so the seam
+ * dissolves into the grain), and lay it over the patch. The donor offsets are
+ * at least two radii, so no donor overlaps the patch it is covering.
+ */
+async function healHero(data, raw, scale) {
+  const patches = [];
+  for (const spot of HERO_HEAL) {
+    const r = Math.max(3, Math.round(spot.r * scale));
+    const x = Math.round(spot.x * scale);
+    const y = Math.round(spot.y * scale);
+    const size = 2 * r;
+    const mask = Buffer.from(
+      '<svg xmlns="http://www.w3.org/2000/svg" width="' + size + '" height="' + size + '">' +
+        '<radialGradient id="g"><stop offset="70%" stop-color="#fff"/>' +
+        '<stop offset="100%" stop-color="#fff" stop-opacity="0"/></radialGradient>' +
+        '<rect width="' + size + '" height="' + size + '" fill="url(#g)"/></svg>',
+    );
+    const donor = await sharp(data, raw)
+      .extract({
+        left: x + Math.round(spot.dx * scale) - r,
+        top: y + Math.round(spot.dy * scale) - r,
+        width: size,
+        height: size,
+      })
+      .ensureAlpha()
+      .composite([{ input: mask, blend: "dest-in" }])
+      .png()
+      .toBuffer();
+    patches.push({ input: donor, left: x - r, top: y - r });
+  }
+  return sharp(data, raw).composite(patches).removeAlpha().raw().toBuffer();
+}
+
+/**
+ * The hero: the supplied art, resized and encoded, and nothing else -- bar
+ * the four overprint patches in HERO_HEAL, which are the art's own flaw rather
+ * than a treatment of it.
  *
  * It used to run through the dither, which cost it its colour. The key art is
  * already a two-colour piece; greyscaling it threw that away and the Bayer map
@@ -145,13 +209,14 @@ function dither(grey, width, height) {
 async function buildHero() {
   for (const width of WIDTHS) {
     const height = Math.round(width / HERO_RATIO);
-    const { data, info } = await sharp(SOURCE, { limitInputPixels: false })
+    const { data: decoded, info } = await sharp(SOURCE, { limitInputPixels: false })
       .resize(width, height, { fit: "cover", position: "centre" })
       .toColourspace("srgb")
       .removeAlpha()
       .raw()
       .toBuffer({ resolveWithObject: true });
     const raw = { raw: { width: info.width, height: info.height, channels: info.channels } };
+    const data = await healHero(decoded, raw, width / 1920);
 
     // Quality measured rather than guessed. The art is dense speckle, which is
     // the worst case for a transform codec: at 1920 the AVIF runs 433 KB at q45,
@@ -957,6 +1022,14 @@ async function main() {
    * to hand, a full run cannot get as far as the portraits at all.
    */
   if (process.env.ONLY_PORTRAITS) return void (await buildPortraits());
+  /*
+   * The hero alone -- for the heal table, without re-encoding the key art.
+   * The provenance note is rewritten with it: its Hero line names the table.
+   */
+  if (process.env.ONLY_HERO) {
+    await buildHero();
+    return void (await writeSourceNote());
+  }
   if (!process.env.SKIP_HERO) await buildHero();
   if (!process.env.SKIP_HOME) await buildHome();
   await buildOG();
@@ -964,6 +1037,11 @@ async function main() {
   await buildPortraits();
   await buildSponsors();
   await buildHaloTexture();
+  await writeSourceNote();
+}
+
+/** The provenance note beside the derivatives. Built from the constants, not the run. */
+async function writeSourceNote() {
   await writeFile(
     path.join(OUT, "SOURCE.md"),
     [
@@ -972,7 +1050,7 @@ async function main() {
       "Everything in this folder is produced by `npm run imagery`. Do not hand-edit.",
       "",
       "- Source: " + SOURCE,
-      "- Hero: the source as supplied — resized to 16:9 from the centre, CMYK transformed to sRGB, no treatment.",
+      "- Hero: the source as supplied — resized to 16:9 from the centre, CMYK transformed to sRGB, no treatment beyond the " + HERO_HEAL.length + " overprint patches clone-stamped out (HERO_HEAL in the script).",
       "- Home key art: " + HOME_SOURCE,
       "- Home: the artwork alone. The title, series line, dates and both lockups are live text and SVG in the page, not pixels — see packages/ui/src/KeyVisual.tsx.",
       "- Home crop: (77.25, 943.05) 11600x6525 of the plate, read off the master's own image transform — object-position 36.6% 69.9%, baked in.",
