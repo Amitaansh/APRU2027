@@ -33,9 +33,10 @@ export const metadata = pageMetadata({
  * is a `.link-run`, not a `.link`: seven words that wrap on a phone need a rule
  * under each line, not a block that takes the whole one.
  *
- * `band="third"` is the client's sample: one page opening on a third-height
- * band for them to compare against the full-height band everywhere else. It
- * is here and nowhere else until they choose -- see PageHeadArt.
+ * `band="short"` is the client's sample: one page opening on a short band, sized
+ * and cropped to the Keynotes band they pointed at, for them to compare against
+ * the full-height band everywhere else. It is here and nowhere else until they
+ * choose -- see PageHeadArt.
  */
 export default function AboutPage() {
   const link = site.aboutLink;
@@ -43,7 +44,7 @@ export default function AboutPage() {
 
   return (
     <>
-      <PageHeadArt label="About" title={["About"]} band="third" />
+      <PageHeadArt label="About" title={["About"]} band="short" />
 
       <Section>
         <Reveal>

@@ -42,13 +42,22 @@ import { MaskLines, Reveal } from "./Reveal";
  * directly beneath a photograph reads as a seam rather than as a gesture.
  *
  * TWO HEIGHTS. "full" runs the band to the foot of the viewport, which is how
- * every interior page has opened since the poster went in. "third" is a sample
- * the client asked to see -- "try using 1/3 of the main image for page title
- * background, apply to 1 page and share with us for review" -- so it is a prop
- * one page can pass, not a change to the default. The band is a third of the
- * same viewport-less-header height, with a floor so the label and a one-line
- * title never run out of it on a short window, and the artwork is anchored to
- * its top edge so the slice on show is the calm blue the title reads best on.
+ * every interior page has opened since the poster went in. "short" is a sample
+ * the client asked to see on one page -- "try using 1/3 of the main image for
+ * page title background, apply to 1 page and share with us for review" -- so it
+ * is a prop that page passes, not a change to the default.
+ *
+ * It began as a literal third of the viewport-less-header height, anchored to
+ * the artwork's top edge. On review the client pointed at the Keynotes band on
+ * their own screen as the size and crop they wanted, and what they were looking
+ * at was a strip about a fifth as tall as it is wide showing the middle of the
+ * artwork. So that is what this is: 400rem, which is 21% of the width at the
+ * design basis and scales with everything else on the site, rather than a
+ * fraction of the window height that changed the crop with every resize. The
+ * artwork sits at its centre, as it does in the full band, so About and
+ * Keynotes show the same slice at different heights. 240rem on phones, where
+ * the label and a one-line title need about 130 of it.
+ *
  * If the client picks it, the default flips here and the prop comes off About.
  */
 export function PageHeadArt({
@@ -60,12 +69,10 @@ export function PageHeadArt({
   label: string;
   title: string[];
   lede?: ReactNode;
-  band?: "full" | "third";
+  band?: "full" | "short";
 }) {
   const height =
-    band === "third"
-      ? "h-[calc((100svh-var(--hdr))/3)] min-h-[260rem] max-md:min-h-[200rem]"
-      : "h-[calc(100svh-var(--hdr))]";
+    band === "short" ? "h-[400rem] max-md:h-[240rem]" : "h-[calc(100svh-var(--hdr))]";
 
   return (
     <>
@@ -90,10 +97,7 @@ export function PageHeadArt({
               alt=""
               width={1920}
               height={1080}
-              className={
-                "absolute inset-0 h-full w-full object-cover" +
-                (band === "third" ? " object-top" : "")
-              }
+              className="absolute inset-0 h-full w-full object-cover"
             />
           </picture>
 
