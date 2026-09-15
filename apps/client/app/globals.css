@@ -267,6 +267,44 @@
   }
 
   /*
+   * ...AND THEY SIT UNDER THE BASELINE. "Make the underline closer, like an
+   * actual underline if possible."
+   *
+   * Both rules were drawn at `bottom: -0.08em`, measured from the bottom of the
+   * element -- and `.link` is an inline-block, so that is the bottom of the
+   * line box, which is nowhere in particular relative to the letters. Where
+   * the baseline sits inside that box depends on the font's vertical metrics,
+   * and Atlas Grotesk ships two sets: Chrome on Windows reads the `win` pair
+   * (ascent 1.186, descent 0.212), macOS reads `hhea` (0.812 / 0.188). At a
+   * 1.35 line-height that puts the same -0.08em rule 0.27em under the
+   * baseline on the machine this was built on and 0.44em under it on the
+   * client's -- the "not an actual underline" in the review, invisible here.
+   *
+   * So the box is anchored to the baseline instead. `text-box: trim-both cap
+   * alphabetic` cuts the inline-block to its cap line and its alphabetic
+   * baseline -- the same trim the key visual sets its lines on -- after which
+   * `bottom: -0.1em` is 0.1em below the baseline on every platform, which is
+   * about where a browser draws text-decoration. The strut of the surrounding
+   * line keeps the line box where it was, so nothing around the link moves.
+   *
+   * Where text-box is not supported (Firefox, at the time of writing) the box
+   * is untrimmed and the rule lands where it did before, which is the state
+   * being replaced rather than a new failure.
+   *
+   * Both pseudo-elements, so the resting rule and the hover wipe are the same
+   * line. The nav's current-page rule moves with them, which is right: it was
+   * drawn at the same wrong offset.
+   */
+  .link {
+    text-box: trim-both cap alphabetic;
+  }
+
+  .link::before,
+  .link::after {
+    bottom: -0.1em;
+  }
+
+  /*
    * NOT IN THE HEADER. The navigation bar already draws a resting rule under one
    * item and one only -- the page you are on -- from the same `.link` class
    * (`[aria-current="page"]::before` in base.css). Underlining all seven removes
