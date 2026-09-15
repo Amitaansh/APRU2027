@@ -13,6 +13,11 @@
     { "source": "/venue", "destination": "/visitors", "permanent": true },
     { "source": "/visitor-resources", "destination": "/visitors", "permanent": true },
     { "source": "/highlights", "destination": "/highlights/working-groups", "permanent": true },
-    { "source": "/highlights/key-dates", "destination": "/programme/key-dates", "permanent": true }
+    { "source": "/highlights/key-dates", "destination": "/programme/key-dates", "permanent": true },
+    {
+      "source": "/highlights/students-network-session",
+      "destination": "/highlights/student-network-session",
+      "permanent": true
+    }
   ]
 }

@@ -2,10 +2,10 @@ import { PageHead, Section, ToBeAnnounced } from "@apru/ui";
 import { pageMetadata } from "@apru/content/seo";
 
 export const metadata = pageMetadata({
-  title: "Students Network Session",
+  title: "Student Network Session",
   description:
-    "The students network session at the 10th APRU Sustainable Cities and Landscapes conference, Singapore, 21-23 May 2027.",
-  path: "/highlights/students-network-session",
+    "The student network session at the 10th APRU Sustainable Cities and Landscapes conference, Singapore, 21-23 May 2027.",
+  path: "/highlights/student-network-session",
 });
 
 /**
@@ -16,12 +16,12 @@ export const metadata = pageMetadata({
  * team can see the page exists and review the structure around it, which is the
  * same reason the roster pages shipped before their rosters landed.
  */
-export default function StudentsNetworkSessionPage() {
+export default function StudentNetworkSessionPage() {
   return (
     <>
       <PageHead
         label="Highlight"
-        title={["Students", "network", "session"]}
+        title={["Student", "network", "session"]}
         lede="A dedicated session connecting graduate and doctoral students from across the Pacific Rim network."
       />
 

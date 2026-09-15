@@ -5,7 +5,7 @@ const PAGE_KEYS: Record<string, string> = {
   "/highlights/keynotes": "keynotes",
   "/highlights/working-groups": "working-groups",
   "/highlights/field-trip": "field-trip",
-  "/highlights/students-network-session": "students-network",
+  "/highlights/student-network-session": "student-network",
   "/programme/key-dates": "key-dates",
   "/programme/schedule": "schedule",
   "/register": "register",

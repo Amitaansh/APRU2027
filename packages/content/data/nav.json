@@ -8,8 +8,8 @@
       { "label": "Working Groups", "route": "/highlights/working-groups", "group": "primary" },
       { "label": "Field Trips", "route": "/highlights/field-trip", "group": "primary" },
       {
-        "label": "Students Network Session",
-        "route": "/highlights/students-network-session",
+        "label": "Student Network Session",
+        "route": "/highlights/student-network-session",
         "group": "primary"
       }
     ]
