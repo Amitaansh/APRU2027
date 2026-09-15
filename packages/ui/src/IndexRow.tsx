@@ -70,6 +70,7 @@ export function IndexRow({
   action,
   swatch,
   variant = "display",
+  align = "baseline",
   centreBody = false,
   index = 0,
 }: {
@@ -89,6 +90,15 @@ export function IndexRow({
   swatch?: string;
   /** "display" sets the title in the serif; "data" keeps it at text size. */
   variant?: "display" | "data";
+  /**
+   * How the cells meet. The list's rule is first baselines: a row is a line of
+   * type with a few cells on it, and the number, the title and the meta cell
+   * share that line whatever their sizes. "start" lines up their top edges
+   * instead -- for a row whose cells are blocks rather than lines (a portrait,
+   * a name over an affiliation, a paragraph), where each one's "first baseline"
+   * is a different thing and the client wants the three to start together.
+   */
+  align?: "baseline" | "start";
   /**
    * Centres the body cell against the title instead of sitting it on the title's
    * first baseline. For lists whose titles run to two or three lines, where the
@@ -143,13 +153,20 @@ export function IndexRow({
     </>
   );
 
+  /*
+   * A utility on the same element, so it outranks `.idx-in`'s baseline rule in
+   * the components layer. On both copies: the veil's duplicate has to land on
+   * the live row to the pixel.
+   */
+  const row = "idx-in" + (align === "start" ? " items-start" : "");
+
   const inner = (
     <>
-      <div className="idx-in rise" style={{ transitionDelay: Math.min(index * 0.06, 0.36) + "s" }}>
+      <div className={row + " rise"} style={{ transitionDelay: Math.min(index * 0.06, 0.36) + "s" }}>
         {cells}
       </div>
       <div aria-hidden="true" className="idx-veil">
-        <div className="idx-in">{cells}</div>
+        <div className={row}>{cells}</div>
       </div>
     </>
   );

@@ -21,6 +21,12 @@ import { speakers } from "@apru/content";
  * them in: headshot, name, one line of affiliation, biography. A prop rather
  * than a fork, like `swatches` on WorkingGroups: the two editions read the same
  * data through the same row, and disagree only about where two cells go.
+ *
+ * The profile row is also top-aligned. The list's baseline rule put the name
+ * at the foot of the portrait and the biography's first line level with the
+ * name; the client's requirement is that the portrait, the name block and the
+ * biography start on one edge, with the affiliation under the name. That is
+ * `align="start"` on the row -- see IndexRow.
  */
 export function SpeakerGrid({ variant = "roster" }: { variant?: "roster" | "profile" } = {}) {
   if (speakers.length === 0) {
@@ -83,6 +89,7 @@ export function SpeakerGrid({ variant = "roster" }: { variant?: "roster" | "prof
             body={speaker.bio}
             meta={profile ? undefined : affiliation}
             number={!profile && speaker.keynote ? "Keynote" : undefined}
+            align={profile ? "start" : "baseline"}
           />
         );
       })}
