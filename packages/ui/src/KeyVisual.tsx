@@ -99,9 +99,13 @@ export function KeyVisual() {
          * measured ink is 53.03px against 52.07 predicted for an em at this
          * size and 28.70 for an en. It comes from the content layer so the rest
          * of the site says it the same way.
+         *
+         * Two spans, not one string: the client's mobile layout sets the place
+         * on a line of its own under the dates, and the comma stays with the
+         * dates on both. Landscape renders them inline and nothing moves there.
          */}
         <p className="kv-line kv-meta">
-          {site.dates}, {site.location}
+          <span className="kv-date">{site.dates},</span> <span className="kv-place">{site.location}</span>
         </p>
       </hgroup>
 

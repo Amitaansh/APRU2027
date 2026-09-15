@@ -42,20 +42,19 @@ export default function HomePage() {
         <div className="ctr">
           <div className="grd">
             <div style={{ gridColumn: "1 / span 9" }}>
+              {/*
+               * Only the three paragraphs. The dates, the venue address and
+               * the host used to follow them as a fourth block; the client had
+               * it removed -- the key visual above already says when and where,
+               * and the footer says who.
+               */}
               <Reveal>
-                <div className="t-b1 flex max-w-[74ch] flex-col gap-[24rem] pb-[54rem] max-md:pb-[34rem]">
+                <div className="t-b1 flex max-w-[74ch] flex-col gap-[24rem]">
                   {site.themeParagraphs.map((paragraph, i) => (
                     <p key={i}>{paragraph}</p>
                   ))}
                 </div>
               </Reveal>
-              <p className="t-b1">
-                {site.dates}
-                <br />
-                {site.venueAddress}
-                <br />
-                {site.hostShort}
-              </p>
             </div>
           </div>
 

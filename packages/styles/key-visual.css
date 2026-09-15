@@ -255,10 +255,47 @@
      * measure is allowed to do its job here. The rhythm survives the wrap
      * because line-height is the same cap-to-cap value the block is set on. */
     white-space: normal;
+    /*
+     * Stretched to the frame, with the title's offset moved from `top` into
+     * padding so the first cap line lands where it did. This is only so the
+     * date block below can be pinned to the middle of the FRAME: it is a child
+     * of this box, and a percentage offset resolves against the nearest
+     * positioned ancestor, which is this hgroup and not .kv.
+     */
+    top: 0;
+    bottom: 0;
+    padding-top: var(--kv-top);
   }
 
   .kv-line {
     white-space: inherit;
+  }
+
+  /*
+   * THE DATE BLOCK LEAVES THE TITLE. The client's mobile layout is three
+   * things at three heights: the title across the top, the dates on their own
+   * about halfway down, the lockups across the foot. So in portrait the date
+   * line comes out of the cap rhythm under the title and is pinned at the
+   * frame's vertical middle, and the place drops to a second line under the
+   * dates -- "21—23 May 2027," over "Singapore", as the layout has it.
+   *
+   * 50% of .kv-type, which the rule above has just made the height of the
+   * frame. The hgroup already carries the gutters, so the block inherits its
+   * left edge by sitting at 0 rather than by naming the gutter again. The
+   * margin-top from the `+ *` rule is zeroed because an absolutely positioned
+   * box keeps its margins and would otherwise sit low by one lead.
+   */
+  .kv-meta {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    margin-top: 0;
+    transform: translateY(-50%);
+  }
+
+  .kv-place {
+    display: block;
   }
 
   /*
