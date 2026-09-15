@@ -16,7 +16,9 @@ export const metadata = pageMetadata({
  *
  * The first four are all absences, so they are simply not written here. The dots
  * are `swatches={false}` - see WorkingGroups for why dropping them costs no
- * information.
+ * information. `leadsFirst` is the second round: the leaders' names above each
+ * description rather than under it, which is the order the approved content
+ * document sets them in.
  */
 export default function WorkingGroupsPage() {
   return (
@@ -25,17 +27,19 @@ export default function WorkingGroupsPage() {
 
       <Section>
         {/*
-         * The introduction runs to three paragraphs now, and the publications
-         * link belongs to the end of the first one — which is where the content
-         * document puts it, and why it is set here rather than after the lot.
+         * The introduction runs to three paragraphs, and the publications link
+         * is the last sentence OF the first one — inside the same <p>, not a
+         * paragraph of its own. It was set as its own paragraph, and the client
+         * asked for it back where the content document has it.
          */}
         <Reveal>
           <div className="flex max-w-[74ch] flex-col gap-[20rem] pb-[54rem] max-md:pb-[34rem]">
             {forums.intro.map((paragraph, i) => (
-              <div key={i} className="contents">
-                <p className="t-b1">{paragraph}</p>
+              <p key={i} className="t-b1">
+                {paragraph}
                 {i === 0 && forums.introLink && (
-                  <p className="t-b1">
+                  <>
+                    {" "}
                     {forums.introLink.lead}{" "}
                     <a
                       href={forums.introLink.url}
@@ -46,13 +50,13 @@ export default function WorkingGroupsPage() {
                       {forums.introLink.label}
                     </a>
                     .
-                  </p>
+                  </>
                 )}
-              </div>
+              </p>
             ))}
           </div>
         </Reveal>
-        <WorkingGroups swatches={false} />
+        <WorkingGroups swatches={false} leadsFirst />
       </Section>
     </>
   );

@@ -16,54 +16,71 @@ import { workingGroupColour } from "./wg-colour";
  * The fold itself is Accordion, shared with the Visitors page. This file is now
  * only the mapping from working-group data onto it.
  *
- * `swatches` is the one thing the two editions disagree about. The portfolio
- * runs the cyan-to-orange ramp from wg-colour.ts, a second channel alongside
- * the number and the title. The client asked for the coloured dots to go, so
- * that edition passes `swatches={false}` and no dot is drawn — the colour was
- * never the only carrier of meaning, which is exactly why it can be dropped
- * without taking any information with it (WCAG 1.4.1).
+ * `swatches` and `leadsFirst` are the two things the editions disagree about.
+ * The portfolio runs the cyan-to-orange ramp from wg-colour.ts, a second
+ * channel alongside the number and the title. The client asked for the
+ * coloured dots to go, so that edition passes `swatches={false}` and no dot is
+ * drawn — the colour was never the only carrier of meaning, which is exactly
+ * why it can be dropped without taking any information with it (WCAG 1.4.1).
+ *
+ * `leadsFirst` puts the leaders above the description instead of under it.
+ * That is the order of the approved content document -- title, leaders,
+ * paragraph -- and what the client circled on their review; the portfolio
+ * keeps the names as a sign-off under the text.
  */
-export function WorkingGroups({ swatches = true }: { swatches?: boolean } = {}) {
+export function WorkingGroups({
+  swatches = true,
+  leadsFirst = false,
+}: { swatches?: boolean; leadsFirst?: boolean } = {}) {
   const total = forums.workingGroups.length;
 
-  const items: AccordionItem[] = forums.workingGroups.map((group, i) => ({
-    id: group.id,
-    title: group.title,
-    swatch: swatches ? workingGroupColour(i, total) : undefined,
-    children: (
-      <>
-        {/* One paragraph or several — see WorkingGroup.blurb for why both. */}
-        <div className="flex flex-col gap-[18rem]">
-          {(Array.isArray(group.blurb) ? group.blurb : [group.blurb]).map((p, n) => (
-            <p key={n} className="t-b1 dim max-w-[70ch]">
-              {p}
-            </p>
-          ))}
-        </div>
-        {group.leads?.length ? (
-          <ul className="flex flex-col gap-[8rem] pt-[24rem]">
-            {group.leads.map((lead) => (
-              <li key={lead.name} className="t-b2">
-                {lead.profileUrl ? (
-                  <a
-                    href={lead.profileUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="link"
-                  >
-                    {lead.name}
-                  </a>
-                ) : (
-                  lead.name
-                )}
-                <span className="dim"> — {lead.institution}</span>
-              </li>
-            ))}
-          </ul>
-        ) : null}
-      </>
-    ),
-  }));
+  const items: AccordionItem[] = forums.workingGroups.map((group, i) => {
+    /* One paragraph or several — see WorkingGroup.blurb for why both. */
+    const blurb = (
+      <div className="flex flex-col gap-[18rem]">
+        {(Array.isArray(group.blurb) ? group.blurb : [group.blurb]).map((p, n) => (
+          <p key={n} className="t-b1 dim max-w-[70ch]">
+            {p}
+          </p>
+        ))}
+      </div>
+    );
+
+    /* The gap between the two blocks belongs to whichever comes second. */
+    const leads = group.leads?.length ? (
+      <ul className={"flex flex-col gap-[8rem] " + (leadsFirst ? "pb-[24rem]" : "pt-[24rem]")}>
+        {group.leads.map((lead) => (
+          <li key={lead.name} className="t-b2">
+            {lead.profileUrl ? (
+              <a href={lead.profileUrl} target="_blank" rel="noreferrer" className="link">
+                {lead.name}
+              </a>
+            ) : (
+              lead.name
+            )}
+            <span className="dim"> — {lead.institution}</span>
+          </li>
+        ))}
+      </ul>
+    ) : null;
+
+    return {
+      id: group.id,
+      title: group.title,
+      swatch: swatches ? workingGroupColour(i, total) : undefined,
+      children: leadsFirst ? (
+        <>
+          {leads}
+          {blurb}
+        </>
+      ) : (
+        <>
+          {blurb}
+          {leads}
+        </>
+      ),
+    };
+  });
 
   return <Accordion items={items} />;
 }
