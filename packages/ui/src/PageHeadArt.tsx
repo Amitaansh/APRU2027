@@ -40,16 +40,33 @@ import { MaskLines, Reveal } from "./Reveal";
  * NO CLOSING RULE. PageHead draws a hairline under its title to close the
  * opening. Here the artwork's own bottom edge does that, and a black rule
  * directly beneath a photograph reads as a seam rather than as a gesture.
+ *
+ * TWO HEIGHTS. "full" runs the band to the foot of the viewport, which is how
+ * every interior page has opened since the poster went in. "third" is a sample
+ * the client asked to see -- "try using 1/3 of the main image for page title
+ * background, apply to 1 page and share with us for review" -- so it is a prop
+ * one page can pass, not a change to the default. The band is a third of the
+ * same viewport-less-header height, with a floor so the label and a one-line
+ * title never run out of it on a short window, and the artwork is anchored to
+ * its top edge so the slice on show is the calm blue the title reads best on.
+ * If the client picks it, the default flips here and the prop comes off About.
  */
 export function PageHeadArt({
   label,
   title,
   lede,
+  band = "full",
 }: {
   label: string;
   title: string[];
   lede?: ReactNode;
+  band?: "full" | "third";
 }) {
+  const height =
+    band === "third"
+      ? "h-[calc((100svh-var(--hdr))/3)] min-h-[260rem] max-md:min-h-[200rem]"
+      : "h-[calc(100svh-var(--hdr))]";
+
   return (
     <>
       {/* Padded rather than offset, so the band starts where the fixed header
@@ -59,7 +76,7 @@ export function PageHeadArt({
           close the gap between this band and the first paragraph under it. See
           the rule beside it in apps/client/app/globals.css. */}
       <section className="pg-art pt-[var(--hdr)]">
-        <div className="relative flex h-[calc(100svh-var(--hdr))] w-full items-end overflow-hidden">
+        <div className={"relative flex w-full items-end overflow-hidden " + height}>
           <picture>
             <source
               srcSet="/images/hero-1920.avif 1920w, /images/hero-1280.avif 1280w, /images/hero-768.avif 768w"
@@ -73,7 +90,10 @@ export function PageHeadArt({
               alt=""
               width={1920}
               height={1080}
-              className="absolute inset-0 h-full w-full object-cover"
+              className={
+                "absolute inset-0 h-full w-full object-cover" +
+                (band === "third" ? " object-top" : "")
+              }
             />
           </picture>
 

@@ -24,11 +24,15 @@ export const metadata = pageMetadata({
  *
  * No lede is passed to PageHeadArt: that prop is what sets a paragraph beside the
  * title, and moving it down is precisely the request.
+ *
+ * `band="third"` is the client's sample: one page opening on a third-height
+ * band for them to compare against the full-height band everywhere else. It
+ * is here and nowhere else until they choose -- see PageHeadArt.
  */
 export default function AboutPage() {
   return (
     <>
-      <PageHeadArt label="About" title={["About"]} />
+      <PageHeadArt label="About" title={["About"]} band="third" />
 
       <Section>
         <Reveal>
