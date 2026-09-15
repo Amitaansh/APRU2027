@@ -29,7 +29,9 @@ export const metadata = pageMetadata({
  * sentence, which is where the content document puts it. It was set as a line
  * of its own under the paragraph, and the client asked for it back in. The
  * phrase is found by matching `aboutLink.label` against the start of the
- * paragraph -- see SiteConfig.aboutLink for why the JSON is not marked up.
+ * paragraph -- see SiteConfig.aboutLink for why the JSON is not marked up. It
+ * is a `.link-run`, not a `.link`: seven words that wrap on a phone need a rule
+ * under each line, not a block that takes the whole one.
  *
  * `band="third"` is the client's sample: one page opening on a third-height
  * band for them to compare against the full-height band everywhere else. It
@@ -49,7 +51,7 @@ export default function AboutPage() {
             <p>
               {linked ? (
                 <>
-                  <a href={link.url} target="_blank" rel="noreferrer" className="link">
+                  <a href={link.url} target="_blank" rel="noreferrer" className="link-run">
                     {link.label}
                     <span aria-hidden="true">&#8202;&#8599;</span>
                     <span className="sr-only">(opens in a new tab)</span>

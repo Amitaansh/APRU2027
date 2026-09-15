@@ -305,6 +305,28 @@
   }
 
   /*
+   * The same resting rule for a link that runs through a sentence. `.link-run`
+   * is inline and may wrap (see base.css), so its rule is the browser's own
+   * underline, which follows the text onto every line, at the offset the
+   * ::after above was measured to. It fades as the wipe arrives, as ::after
+   * does.
+   */
+  .link-run {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.1em;
+    text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
+    transition:
+      background-size 1.109s var(--ease-ref),
+      text-decoration-color 0.2s var(--ease-ref);
+  }
+
+  .link-run:hover,
+  .link-run:focus-visible {
+    text-decoration-color: transparent;
+  }
+
+  /*
    * NOT IN THE HEADER. The navigation bar already draws a resting rule under one
    * item and one only -- the page you are on -- from the same `.link` class
    * (`[aria-current="page"]::before` in base.css). Underlining all seven removes

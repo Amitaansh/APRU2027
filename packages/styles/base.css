@@ -426,6 +426,35 @@
   }
 
   /*
+   * A link that runs through a sentence. `.link` is an inline-block -- one
+   * line, one rule -- which is right for a name or a menu item and wrong for a
+   * phrase inside a paragraph: on a narrow screen the phrase wraps, the block
+   * takes the whole line, its rule runs the width of the column, and the rest
+   * of the sentence is pushed onto the next line. This stays inline and draws
+   * the same wipe as a background clipped to each line fragment, so a wrapped
+   * phrase gets a rule under each of its lines. In from the left and out to
+   * the right, like .link: the size grows anchored at the left edge and
+   * shrinks anchored at the right. 0.1em under the content box's foot is a
+   * hair under the baseline on either set of Atlas Grotesk metrics.
+   */
+  .link-run {
+    cursor: pointer;
+    background-image: linear-gradient(currentColor, currentColor);
+    background-repeat: no-repeat;
+    background-size: 0% 1px;
+    background-position: right 0 bottom 0.1em;
+    transition: background-size 1.109s var(--ease-ref);
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+
+  .link-run:hover,
+  .link-run:focus-visible {
+    background-size: 100% 1px;
+    background-position: left 0 bottom 0.1em;
+  }
+
+  /*
    * -------------------------------------------------------------------------
    * BUTTON
    * -------------------------------------------------------------------------
