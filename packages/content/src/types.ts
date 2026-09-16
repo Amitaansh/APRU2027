@@ -177,6 +177,14 @@ export interface ImportantDate {
   label: string;
   /** ISO date, or null → renders "TBA". */
   date: string | null;
+  /** ISO date. Set on a row that runs over several days — the conference itself. */
+  dateEnd?: string;
+  /**
+   * Set after the date in parentheses. The abstract deadline is kept in Singapore
+   * time, and the client wants that stated against the date rather than in the
+   * label, which is how the content document writes it.
+   */
+  note?: string;
 }
 
 export interface Sponsor {

@@ -71,20 +71,22 @@ export const registration = registrationJson as RegistrationConfig;
  * the table can state 15 Sep 2026 while `abstractsOpen` stays null and the site
  * holds at P0. Filling the milestone still overrides the authored value, which
  * is what keeps the engine authoritative once it is switched on.
+ *
+ * The conference row is a span, not a day: the client wants the table to read
+ * "21—23 May 2027" like the hero does. Its end comes from the engine too, so
+ * the last day the site counts as "during the event" is the last day it says.
  */
-const DERIVED_FROM_MILESTONES: Record<string, string | null> = {
-  "abstracts-open": phases.milestones.abstractsOpen,
-  "abstracts-close": phases.milestones.abstractsClose,
-  "registration-opens": phases.milestones.registrationOpens,
-  conference: phases.milestones.eventStart,
+const DERIVED_FROM_MILESTONES: Record<string, Pick<ImportantDate, "date" | "dateEnd">> = {
+  "abstracts-open": { date: phases.milestones.abstractsOpen },
+  "abstracts-close": { date: phases.milestones.abstractsClose },
+  "registration-opens": { date: phases.milestones.registrationOpens },
+  conference: { date: phases.milestones.eventStart, dateEnd: phases.milestones.eventEnd },
 };
 
-export const dates: ImportantDate[] = (datesJson as ImportantDate[]).map(
-  (row) =>
-    row.id in DERIVED_FROM_MILESTONES
-      ? { ...row, date: DERIVED_FROM_MILESTONES[row.id] ?? row.date }
-      : row,
-);
+export const dates: ImportantDate[] = (datesJson as ImportantDate[]).map((row) => {
+  const milestone = DERIVED_FROM_MILESTONES[row.id];
+  return milestone ? { ...row, ...milestone, date: milestone.date ?? row.date } : row;
+});
 
 /**
  * The nav is a tree now — one level of submenus under Highlight and Participate.
@@ -144,6 +146,13 @@ function assertContent(): void {
   for (const row of dates) {
     if (row.date !== null && !ISO_DATE.test(row.date)) {
       fail("dates." + row.id + " must be ISO YYYY-MM-DD or null");
+    }
+    // A span needs both ends, in order; an open row cannot also be a range.
+    if (row.dateEnd !== undefined) {
+      if (!ISO_DATE.test(row.dateEnd)) fail("dates." + row.id + ".dateEnd must be ISO YYYY-MM-DD");
+      if (row.date === null || row.dateEnd < row.date) {
+        fail("dates." + row.id + ".dateEnd must follow its date");
+      }
     }
   }
 

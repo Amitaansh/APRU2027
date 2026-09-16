@@ -6,8 +6,9 @@
   },
   {
     "id": "abstracts-close",
-    "label": "Abstract submission deadline (UTC+8)",
-    "date": "2026-11-15"
+    "label": "Abstract submission deadline",
+    "date": "2026-11-15",
+    "note": "UTC+8"
   },
   {
     "id": "notification",
@@ -27,6 +28,7 @@
   {
     "id": "conference",
     "label": "Conference",
-    "date": "2027-05-21"
+    "date": "2027-05-21",
+    "dateEnd": "2027-05-23"
   }
 ]
