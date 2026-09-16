@@ -47,7 +47,13 @@ const SPEC = {
    * and B carries a 77/1000 left sidebearing, so the pen starts at 96.669. */
   'text origin': [96.669 / D, g => g.l1.left],
   'line 2 cap-line': [196.574 / D, g => g.l2.top],
-  'line 3 cap-line': [287.476 / D, g => g.l3.top],
+  /*
+   * No line 3 cap-line. The comp sets the date line in the cap rhythm under the
+   * title, at 287.476; the client's layout does not, and the page follows the
+   * client: the date is a block of its own, halfway between the title's last
+   * baseline and the top of the lockups. That is checked below as a symmetry
+   * rather than here as a position, because it is one.
+   */
   /*
    * Line 2's advance width is the tracking guard. It is the width the verified
    * build lands on rather than a figure derived offline, because the browser
@@ -82,7 +88,7 @@ async function measure(W, H) {
       const r = el.getBoundingClientRect();
       return {
         left: r.left - kv.left, right: r.right - kv.left, top: r.top - kv.top,
-        w: r.width, h: r.height, fromFoot: kv.bottom - r.bottom,
+        bottom: r.bottom - kv.top, w: r.width, h: r.height, fromFoot: kv.bottom - r.bottom,
       };
     };
     const lines = [...document.querySelectorAll('.kv-line')];
@@ -121,6 +127,11 @@ for (const [W, H] of [[2320, 1305], [1920, 1080], [1280, 720], [768, 432]]) {
     const d = g[k] - frac * W;
     if (Math.abs(d) > TOL) bad.push(`${k} size ${d >= 0 ? '+' : ''}${d.toFixed(2)}px`);
   }
+  /* The date block: as much open ground above it, to the title, as below it,
+   * to the lockups. The APRU mark is the taller of the two, so its top is the
+   * top of the row. */
+  const above = g.l3.top - g.l2.bottom, below = g.apru.top - g.l3.bottom;
+  if (Math.abs(above - below) > TOL) bad.push(`date block off-centre: ${above.toFixed(2)}px above, ${below.toFixed(2)}px below`);
   if (!g.trimmed || g.trimmed === 'none') bad.push('text-box-trim is not applying');
   if (/Fallback/.test(g.family.split(',')[0])) bad.push('rendered in the fallback face');
   const ok = bad.length === 0;

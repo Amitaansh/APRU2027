@@ -19,6 +19,11 @@ import { site } from "@apru/content";
  * master rather than judged by eye, and verified by rendering this component
  * headless and diffing the type against the comp — `npm run verify:kv`.
  *
+ * THREE BLOCKS. The markup is the three things the client's layout puts at
+ * three heights: the title, the date line, the lockups. They are siblings so
+ * the stylesheet can space them as blocks — the date line in the middle of the
+ * room between the other two — rather than as lines of one paragraph.
+ *
  * THE LOCKUPS STAY VECTOR. The NUS mark carries "Department of Architecture /
  * College of Design and Engineering" inside the lockup as outlines. That line is
  * type carrying meaning, so by the same rule it ought to be re-set here — but an
@@ -46,6 +51,26 @@ function withOrdinal(text: string) {
       {digits}
       <span className="kv-ord">{suffix}</span>
       {after}
+    </>
+  );
+}
+
+/**
+ * The series line, with the break the client's mobile layout puts in it.
+ *
+ * The 4:5 reference sets "The 10th Sustainable Cities" over "and Landscapes
+ * Conference": the line splits before its "and". That is a <br> the stylesheet
+ * hides in landscape, where the line is the comp's one measured line, and shows
+ * in portrait. A break rather than a second span so that landscape still
+ * renders one run of text and the geometry check can measure it as one.
+ */
+function seriesLine(text: string) {
+  const i = text.indexOf(" and ");
+  if (i < 0) return withOrdinal(text);
+  return (
+    <>
+      {withOrdinal(text.slice(0, i))} <br className="kv-br" />
+      {text.slice(i + 1)}
     </>
   );
 }
@@ -100,9 +125,14 @@ export function KeyVisual() {
          * size and 28.70 for an en. It comes from the content layer so the rest
          * of the site says it the same way.
          *
+         * This is the second of the frame's three blocks, not the title's third
+         * line: the stylesheet sets it in the middle of the room between the
+         * title and the lockups, in both orientations, as the client's layout
+         * has it.
+         *
          * Two spans, not one string: the client's mobile layout sets the place
          * on a line of its own under the dates, and the comma stays with the
-         * dates on both. Landscape renders them inline and nothing moves there.
+         * dates on both. Landscape renders them inline.
          */}
         <p className="kv-line kv-meta">
           <span className="kv-date">{site.dates},</span> <span className="kv-place">{site.location}</span>

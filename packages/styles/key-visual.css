@@ -26,17 +26,28 @@
  *   tracking   solved against a real browser render, not offline -- see
  *              --kv-track-* below.
  *
- * WHY IT IS ON A CAP RHYTHM. The three baselines are 91.20 and 87.07 apart,
- * which looks like a broken rhythm until the cap lines are measured instead:
- * 91.20 and 90.90. The block is set cap to cap, and the date line only appears
- * to sit closer because it is the smaller face. So every line here is positioned
- * from its cap line with `text-box`, and the leading token below is the gap
- * between one trimmed box and the next rather than a line height.
+ * WHY IT IS ON A CAP RHYTHM. The two title baselines are 91.20 apart, which
+ * looks like a broken rhythm against the 87.07 to the date line until the cap
+ * lines are measured instead: 91.20 and 90.90. The block is set cap to cap, and
+ * the date line only appears to sit closer because it is the smaller face. So
+ * every line here is positioned from its cap line with `text-box`, and the
+ * leading token below is the gap between one trimmed box and the next rather
+ * than a line height.
  *
  * That also removes the single biggest source of drift in setting type to a
  * comp: without trimming, where a line lands depends on which vertical metrics
  * the browser happens to read -- usWinAscent on Chrome/Windows, hhea on macOS.
  * Atlas Grotesk's differ by 390/1000, which is about 10px of drift at 1920.
+ *
+ * THREE THINGS AT THREE HEIGHTS. The comp has the date line in the cap rhythm
+ * directly under the title, and the page used to set it there. The client's
+ * layout for the landing page -- the 4:5 reference on the change board, which
+ * this file is now also read against -- does not: it is the title across the
+ * top, the dates on their own in the middle, the lockups across the foot, with
+ * open ground between each. So the date line is no longer the third line of the
+ * title block. It is a block of its own, and it takes the room between the
+ * title and the lockups equally above and below, in both orientations. The
+ * title and the lockups keep their measured places; only the date moved.
  */
 
 /*
@@ -79,8 +90,8 @@
    * two trimmed boxes is that less the cap height itself, 0.765em.
    *
    * Held as a length off --kv-display rather than in em, because it is also the
-   * gap above the date line — and an em there would resolve against the date
-   * line's own smaller size and close up by 2.4px. */
+   * least the date line may close up to on either side — and an em there would
+   * resolve against the date line's own smaller size and close up by 2.4px. */
   --kv-cap-rhythm: 1.2473;
   --kv-lead: calc(var(--kv-display) * 0.4823);
 
@@ -109,6 +120,12 @@
   --kv-nus-left: 22.3069cqw; /* 517.52px */
   --kv-nus-width: 29.7285cqw; /* 689.70px */
   --kv-nus-bottom: 4.3185cqw; /* 100.19px */
+
+  /* The APRU lockup's own aspect, 101.54 / 329.75, so its height can be had
+   * from its width. It is the taller of the two marks, so its top is the top of
+   * the row: the ground the type block has to stop above. */
+  --kv-apru-ratio: 0.30793;
+  --kv-marks-top: calc(var(--kv-apru-bottom) + var(--kv-apru-width) * var(--kv-apru-ratio));
 }
 
 /*
@@ -135,17 +152,28 @@
  * ---------------------------------------------------------------------------
  * THE TYPE
  * ---------------------------------------------------------------------------
+ * The block spans the frame from top to foot, inset by the gutters, with the
+ * title's offset carried as padding so its first cap line lands where the comp
+ * puts it, and the lockups' height carried as padding at the foot so the block
+ * ends where they begin. It is a column: the title at its head, the date line
+ * after it, and whatever room is left is the date line's to sit in the middle
+ * of -- see .kv-meta.
  */
 .kv-type {
   position: absolute;
-  top: var(--kv-top);
-  left: var(--kv-gutter);
-  right: var(--kv-gutter);
+  inset: 0 var(--kv-gutter);
+  display: flex;
+  flex-direction: column;
   margin: 0;
+  padding-top: var(--kv-top);
+  /* One lead over the lockups as well, so the date line keeps a gap even when
+   * a short frame leaves it no free room to centre in. */
+  padding-bottom: calc(var(--kv-marks-top) + var(--kv-lead));
 }
 
 .kv-line {
   display: block;
+  flex: none;
   margin: 0;
   font-family: var(--font-kv), var(--font-brand), ui-sans-serif, system-ui, sans-serif;
   font-weight: 700;
@@ -162,24 +190,42 @@
   white-space: nowrap;
 }
 
-/*
- * The block is <h1> holding lines 1 and 2, then the date line beside it, so the
- * rhythm has to be declared across both — once between the two spans inside the
- * heading, once between the heading and the line after it.
- */
-.kv-line + .kv-line,
-.kv-type > * + * {
+/* The cap rhythm between the two title lines. */
+.kv-line + .kv-line {
   margin-top: var(--kv-lead);
 }
 
 .kv-type h1 {
+  flex: none;
   font: inherit;
+  /* The title's own lead under it, matching the one at the foot: the least the
+   * date line closes up to on either side before the frame is too short. */
+  margin-bottom: var(--kv-lead);
 }
 
+/*
+ * THE DATE LINE SITS IN THE MIDDLE OF THE ROOM. Auto margins in a flex column
+ * split the free space equally, so the block lands halfway between the title's
+ * last baseline and the top of the lockups -- which is where the client's
+ * reference has it, and where it stays whether the title takes two lines on a
+ * wide frame or three on a phone. A fixed 50% of the frame would not: on a
+ * phone the taller title pulls the middle of the frame up against itself, and
+ * the date reads as part of the title again.
+ */
 .kv-meta {
+  margin-block: auto;
   font-weight: 400;
   font-size: var(--kv-meta);
   letter-spacing: var(--kv-track-meta);
+}
+
+/*
+ * The series line breaks in two on the client's mobile layout, "The 10th
+ * Sustainable Cities" over "and Landscapes Conference". The break is in the
+ * markup and hidden here, where the line is the one measured line of the comp.
+ */
+.kv-br {
+  display: none;
 }
 
 /*
@@ -230,24 +276,39 @@
  * ---------------------------------------------------------------------------
  * The comp is one landscape frame, and a crop of it tight enough for a phone
  * cuts through both the type and the lockups. So portrait is not a crop: it is
- * the same composition re-set, on the same tokens, against its own ramp.
+ * the client's own layout for it, the 4:5 reference attached to the "Landing
+ * Page" row of the change board, read the same way the comp was.
  *
- * THE RAMP IS SUBLINEAR. A straight cqw carried down from the desktop value
- * gives 12px type on a 390px phone; a straight cqw tuned to read on the phone
- * gives 59px on an 800px tablet, where the same three lines then dominate a
- * screen that has room for the page beneath them. calc(Xcqw + Ypx) is the
- * sublinear ramp between the two: it is fitted through 30px at 390 and 44px at
- * 768, so type that reads well on a phone stays proportionate on a tablet.
+ * WHAT THE REFERENCE MEASURES. 1081 x 1350. The title is three lines of Bold at
+ * a 47px cap height -- 61.4px, 5.68% of the width -- with its cap line 86px from
+ * the top and its origin 87px in from the left; the lockups end 87px up from
+ * the foot. So the frame is inset by one length on three sides, and that length
+ * is 1.42 of the display size. The date block is Regular at the same pitch,
+ * split "21—23 May 2027," over "Singapore", and sits in the room between the
+ * title and the lockups. The lockups run the full measure, APRU at 25.2% of the
+ * width and NUS at the comp's ratio to it, bottoms level.
  *
- * Everything else is untouched, because it is all expressed against the display
- * size rather than in absolute lengths — the cap rhythm, the leading, the
- * ordinal and the date line all ramp with it for free.
+ * WHY THE DISPLAY SIZE IS HELD A LITTLE UNDER 5.68. The reference is set so
+ * that its widest line, "and Landscapes Conference" at 14.67em, fills its
+ * measure to within a fifth of a percent. A browser render lands within about
+ * half a percent of that on kerning alone, and a line that comes up short
+ * wraps "Conference" onto a fourth line of its own. 5.6cqw against a 7.5cqw
+ * gutter leaves 2.8cqw of slack -- 11px on a 390px phone.
+ *
+ * Everything else ramps with the display size for free -- the cap rhythm, the
+ * leading, the ordinal and the date line are all expressed against it.
  */
 @media (orientation: portrait) {
   .kv {
-    --kv-display: calc(3.7cqw + 15.5px);
-    --kv-gutter: calc(2.116cqw + 11.75px);
-    --kv-top: calc(var(--kv-display) * 1.4435);
+    --kv-display: 5.6cqw;
+    --kv-gutter: 7.5cqw;
+    --kv-top: calc(var(--kv-display) * 1.4);
+
+    /* The lockups: APRU at the reference's width, NUS at the comp's ratio to
+     * it (689.70 / 329.74), the row's foot on the same inset as the gutter. */
+    --kv-apru-width: 26cqw;
+    --kv-nus-width: 54.4cqw;
+    --kv-apru-bottom: var(--kv-gutter);
   }
 
   .kv-type {
@@ -255,43 +316,16 @@
      * measure is allowed to do its job here. The rhythm survives the wrap
      * because line-height is the same cap-to-cap value the block is set on. */
     white-space: normal;
-    /*
-     * Stretched to the frame, with the title's offset moved from `top` into
-     * padding so the first cap line lands where it did. This is only so the
-     * date block below can be pinned to the middle of the FRAME: it is a child
-     * of this box, and a percentage offset resolves against the nearest
-     * positioned ancestor, which is this hgroup and not .kv.
-     */
-    top: 0;
-    bottom: 0;
-    padding-top: var(--kv-top);
   }
 
   .kv-line {
     white-space: inherit;
   }
 
-  /*
-   * THE DATE BLOCK LEAVES THE TITLE. The client's mobile layout is three
-   * things at three heights: the title across the top, the dates on their own
-   * about halfway down, the lockups across the foot. So in portrait the date
-   * line comes out of the cap rhythm under the title and is pinned at the
-   * frame's vertical middle, and the place drops to a second line under the
-   * dates -- "21—23 May 2027," over "Singapore", as the layout has it.
-   *
-   * 50% of .kv-type, which the rule above has just made the height of the
-   * frame. The hgroup already carries the gutters, so the block inherits its
-   * left edge by sitting at 0 rather than by naming the gutter again. The
-   * margin-top from the `+ *` rule is zeroed because an absolutely positioned
-   * box keeps its margins and would otherwise sit low by one lead.
-   */
-  .kv-meta {
-    position: absolute;
-    top: 50%;
-    left: 0;
-    right: 0;
-    margin-top: 0;
-    transform: translateY(-50%);
+  /* The series line's break, and the place on a line of its own under the
+   * dates -- the two splits the reference makes. */
+  .kv-br {
+    display: initial;
   }
 
   .kv-place {
@@ -300,29 +334,22 @@
 
   /*
    * The lockups leave their measured x positions and become a row at the foot,
-   * because those positions are a fact about a 2320-wide frame. They keep their
-   * relative sizes: 329.74 to 689.70 is the proportion the designer set them in.
+   * because those positions are a fact about a 2320-wide frame. They run the
+   * full measure as the reference has them: APRU on the left gutter, NUS on
+   * the right, at their relative sizes.
    */
   .kv-marks {
     position: absolute;
     left: var(--kv-gutter);
     right: var(--kv-gutter);
-    bottom: calc(var(--kv-display) * 1.3724);
+    bottom: var(--kv-apru-bottom);
     display: flex;
     align-items: flex-end;
-    gap: calc(2.5cqw + 8px);
+    justify-content: space-between;
   }
 
   .kv-mark {
     position: static;
-  }
-
-  .kv-apru {
-    width: 26cqw;
-  }
-
-  .kv-nus {
-    width: 54.4cqw; /* 26 x 689.70/329.74 — the comp's own ratio between them */
   }
 }
 
