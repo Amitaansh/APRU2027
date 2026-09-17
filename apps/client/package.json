@@ -8,7 +8,8 @@
     "prebuild": "node ../../packages/assets/sync.mjs public",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "icon": "node scripts/build-icon.mjs"
   },
   "dependencies": {
     "@apru/assets": "*",
