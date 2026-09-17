@@ -18,7 +18,9 @@ export const metadata = pageMetadata({
  * are `swatches={false}` - see WorkingGroups for why dropping them costs no
  * information. `leadsFirst` is the second round: the leaders' names above each
  * description rather than under it, which is the order the approved content
- * document sets them in.
+ * document sets them in. `leadsOneLine` is the third: the names on one line,
+ * `Name, Institution; Name, Institution`, exactly as that document writes
+ * them, rather than a row for each leader.
  */
 export default function WorkingGroupsPage() {
   return (
@@ -56,7 +58,7 @@ export default function WorkingGroupsPage() {
             ))}
           </div>
         </Reveal>
-        <WorkingGroups swatches={false} leadsFirst />
+        <WorkingGroups swatches={false} leadsFirst leadsOneLine />
       </Section>
     </>
   );
