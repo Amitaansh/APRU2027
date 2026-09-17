@@ -19,15 +19,10 @@ import { site } from "@apru/content";
  * ORIENTATION, NOT BREAKPOINT, still. The frame is 16:9 with the type across its
  * top left and the lockups across its bottom left, so a portrait crop tight
  * enough for a phone cuts through both. It is no longer cropped at all: portrait
- * re-sets the same composition on the same tokens to the client's 4:5 reference,
- * over a portrait cut of the plate. Nothing is ever shown half-cropped, and the
+ * re-sets the same composition on the same tokens against a sublinear ramp, over
+ * a portrait cut of the plate. Nothing is ever shown half-cropped, and the
  * interim "artwork above, live type below" arrangement this page used to fall
  * back to on phones is no longer needed.
- *
- * THREE BLOCKS, BOTH WAYS. The client's layout is the title across the top, the
- * dates on their own in the middle and the lockups across the foot, with open
- * ground between each. That is how the frame is set in both orientations now;
- * the date line used to follow the title directly, as the landscape comp has it.
  */
 export default function HomePage() {
   return (
