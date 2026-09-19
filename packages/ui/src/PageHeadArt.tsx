@@ -41,38 +41,39 @@ import { MaskLines, Reveal } from "./Reveal";
  * opening. Here the artwork's own bottom edge does that, and a black rule
  * directly beneath a photograph reads as a seam rather than as a gesture.
  *
- * TWO HEIGHTS. "full" runs the band to the foot of the viewport, which is how
- * every interior page has opened since the poster went in. "short" is a sample
- * the client asked to see on one page -- "try using 1/3 of the main image for
- * page title background, apply to 1 page and share with us for review" -- so it
- * is a prop that page passes, not a change to the default.
+ * THE BAND, AND ITS CROP. It ran to the foot of the viewport at first. The
+ * client asked to see a short band on one page, was shown a 400rem strip of
+ * the artwork's middle, and chose it -- "I prefer this version of the main
+ * graphic (shorter one)" -- with one correction: "let's crop from the top to
+ * the middle". The sample they attached is three times as wide as it is tall
+ * and shows the artwork from its top edge down. So that is the band on every
+ * page now: `aspect-ratio: 3 / 1`, so the crop is the same slice at every
+ * width rather than a height that changed the slice with every resize, and
+ * `object-position: top`, so the slice starts at the top edge. The `band`
+ * prop that carried the sample is gone with the choice.
  *
- * It began as a literal third of the viewport-less-header height, anchored to
- * the artwork's top edge. On review the client pointed at the Keynotes band on
- * their own screen as the size and crop they wanted, and what they were looking
- * at was a strip about a fifth as tall as it is wide showing the middle of the
- * artwork. So that is what this is: 400rem, which is 21% of the width at the
- * design basis and scales with everything else on the site, rather than a
- * fraction of the window height that changed the crop with every resize. The
- * artwork sits at its centre, as it does in the full band, so About and
- * Keynotes show the same slice at different heights. 240rem on phones, where
- * the label and a one-line title need about 130 of it.
+ * PORTRAIT ON A PHONE. "Check mobile version - maybe better to have the
+ * portrait format graphic?" A 3:1 strip on a 390px screen is 130px tall, and a
+ * two-line title fills it. The portrait cut of the same plate that the home
+ * page uses is served below 768px instead, at 4:5, which is a graphic in its
+ * own right rather than a strip and holds a title like STUDENT NETWORK SESSION
+ * with room to spare.
  *
- * If the client picks it, the default flips here and the prop comes off About.
+ * THE LABEL CAN BE THE TITLE. On About the label is "About" and so is the
+ * title, and the client asked for the first one to be "transparent colour,
+ * make it not visible". It is rendered invisible rather than omitted, so the
+ * title sits at the same height on About as on every other page.
  */
 export function PageHeadArt({
   label,
   title,
   lede,
-  band = "full",
 }: {
   label: string;
   title: string[];
   lede?: ReactNode;
-  band?: "full" | "short";
 }) {
-  const height =
-    band === "short" ? "h-[400rem] max-md:h-[240rem]" : "h-[calc(100svh-var(--hdr))]";
+  const redundantLabel = label.trim().toLowerCase() === title.join(" ").trim().toLowerCase();
 
   return (
     <>
@@ -83,8 +84,23 @@ export function PageHeadArt({
           close the gap between this band and the first paragraph under it. See
           the rule beside it in apps/client/app/globals.css. */}
       <section className="pg-art pt-[var(--hdr)]">
-        <div className={"relative flex w-full items-end overflow-hidden " + height}>
+        <div className="relative flex aspect-[3/1] w-full items-end overflow-hidden max-md:aspect-[4/5]">
           <picture>
+            {/* The portrait plates first: a <picture> takes the first source
+                whose media matches, so the phone cut has to be offered before
+                the landscape one. */}
+            <source
+              media="(max-width: 767.98px)"
+              srcSet="/images/home-portrait-1080.avif 1080w, /images/home-portrait-768.avif 768w, /images/home-portrait-480.avif 480w"
+              type="image/avif"
+              sizes="100vw"
+            />
+            <source
+              media="(max-width: 767.98px)"
+              srcSet="/images/home-portrait-1080.webp 1080w, /images/home-portrait-768.webp 768w, /images/home-portrait-480.webp 480w"
+              type="image/webp"
+              sizes="100vw"
+            />
             <source
               srcSet="/images/hero-1920.avif 1920w, /images/hero-1280.avif 1280w, /images/hero-768.avif 768w"
               type="image/avif"
@@ -97,13 +113,18 @@ export function PageHeadArt({
               alt=""
               width={1920}
               height={1080}
-              className="absolute inset-0 h-full w-full object-cover"
+              className="absolute inset-0 h-full w-full object-cover object-top"
             />
           </picture>
 
-          <div className="ctr relative w-full pb-[44rem] text-wh max-md:pb-[28rem]">
-            <Reveal className="rise pb-[18rem] max-md:pb-[12rem]">
-              <p className="t-lbl">{label}</p>
+          <div className="ctr relative w-full pb-[28rem] text-wh max-md:pb-[20rem]">
+            <Reveal className="rise pb-[8rem] max-md:pb-[6rem]">
+              <p
+                className={"t-lbl" + (redundantLabel ? " invisible" : "")}
+                aria-hidden={redundantLabel || undefined}
+              >
+                {label}
+              </p>
             </Reveal>
             {/* Gated on the fonts, not the scroll — it is already on screen. */}
             <MaskLines as="h1" immediate className="t-h1" lines={title} />
