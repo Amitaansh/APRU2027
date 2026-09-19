@@ -71,11 +71,22 @@ export function ImportantDates({
   const anyConfirmed = rows.some((row) => row.date !== null && row.id !== "conference");
 
   if (variant === "lines") {
+    /*
+     * The same drawn dash the submission requirements under it carry, so the
+     * two lists on the call for abstracts are set one way -- "please be
+     * consistent if bullet point start with '-' or without".
+     */
     return (
-      <ul className="flex flex-col gap-[14rem]">
+      <ul className="flex flex-col gap-[6rem]">
         {rows.map((row) => (
-          <li key={row.id} className="t-b1">
-            {row.label}: <span className={"tnum " + (row.date ? "live" : "dim")}>{display(row)}</span>
+          <li key={row.id} className="t-b1 flex gap-[14rem]">
+            <span aria-hidden="true" className="dim flex-none">
+              &#8212;
+            </span>
+            <span>
+              {row.label}:{" "}
+              <span className={"tnum " + (row.date ? "live" : "dim")}>{display(row)}</span>
+            </span>
           </li>
         ))}
       </ul>

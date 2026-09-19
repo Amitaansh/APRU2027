@@ -40,6 +40,13 @@ export const metadata = pageMetadata({
  * here. It says 1 March there and 28 February on the Key Dates page; dates.json
  * has the 28th, and this page reads the same rows, so the site agrees with
  * itself and the discrepancy is raised with the client rather than picked.
+ *
+ * SET TIGHT. "Layout and text spacings follow as same as one in CiRe, too many
+ * spacings seems distracted. Between tracks, not necessary to have spacings."
+ * The tracks are a list with no gap of their own; the dates and the
+ * requirements carry the same dash so the two lists read as one kind of
+ * thing; and the heading of the second list is "Submission Requirements",
+ * with each line's label struck, as the review has it -- all in abstracts.json.
  */
 export default function CallForAbstractsPage() {
   return (
@@ -48,16 +55,16 @@ export default function CallForAbstractsPage() {
 
       <Section>
         <Reveal>
-          <div className="flex max-w-[74ch] flex-col gap-[20rem]">
+          <div className="flex max-w-[74ch] flex-col gap-[14rem]">
             <p className="t-b1">{abstracts.intro}</p>
 
-            <p className="t-b1 pt-[14rem]">{abstracts.tracksLead}</p>
+            <p className="t-b1 pt-[10rem]">{abstracts.tracksLead}</p>
             {/*
              * Numbered here rather than in the content. The source writes them as
              * "Track 1: AI for resilience"; carrying that prefix in the string
              * means it is wrong the moment a track is added or reordered.
              */}
-            <ol className="flex flex-col gap-[14rem]">
+            <ol className="flex flex-col gap-[4rem]">
               {abstracts.tracks.map((track, i) => (
                 <li key={track} className="t-b1 flex gap-[16rem]">
                   <span className="dim tnum w-[76rem] flex-none">Track {i + 1}</span>
@@ -67,13 +74,13 @@ export default function CallForAbstractsPage() {
             </ol>
 
             {abstracts.coordination.map((paragraph, i) => (
-              <p key={i} className={"t-b1" + (i === 0 ? " pt-[14rem]" : "")}>
+              <p key={i} className={"t-b1" + (i === 0 ? " pt-[10rem]" : "")}>
                 <Marked paragraph={paragraph} link={i === 0} />
               </p>
             ))}
 
             {abstracts.datesHeading && (
-              <p className="t-b1 pt-[14rem] font-bold">{abstracts.datesHeading}</p>
+              <p className="t-b1 pt-[10rem] font-bold">{abstracts.datesHeading}</p>
             )}
             {/*
              * The four dates the source lists under the call: opens, deadline,
@@ -82,8 +89,8 @@ export default function CallForAbstractsPage() {
              */}
             <ImportantDates through="2027-02-28" omit={["registration-opens"]} variant="lines" />
 
-            <p className="t-b1 pt-[14rem] font-bold">{abstracts.rulesHeading}</p>
-            <ul className="flex flex-col gap-[14rem]">
+            <p className="t-b1 pt-[10rem] font-bold">{abstracts.rulesHeading}</p>
+            <ul className="flex flex-col gap-[6rem]">
               {abstracts.rules.map((rule) => (
                 <li key={rule} className="t-b1 flex gap-[14rem]">
                   <span aria-hidden="true" className="dim flex-none">
@@ -95,7 +102,7 @@ export default function CallForAbstractsPage() {
             </ul>
           </div>
 
-          <div className="pt-[54rem] max-md:pt-[34rem]">
+          <div className="pt-[32rem] max-md:pt-[24rem]">
             <CTAButton page="cfa" surface="inline" target={phases.cta.abstracts} />
           </div>
         </Reveal>
