@@ -92,11 +92,14 @@
    */
   .live {
     color: var(--bk);
+    /* "Please make date in bold." The class marks a settled date and nothing
+     * else, on Key Dates and in the call for abstracts alike. */
+    font-weight: 700;
   }
 
   /*
    * ---------------------------------------------------------------------------
-   * TYPE: ONE FAMILY, TWO WEIGHTS
+   * TYPE: ONE FAMILY, TWO WEIGHTS, SET THE WAY CiRe SETS ITS TEXT
    * ---------------------------------------------------------------------------
    * "Use the same font style for all" — one family, with weight left to carry
    * the hierarchy the serif/sans pairing used to carry. Every display role
@@ -104,13 +107,43 @@
    *
    * --font-brand is Atlas Grotesk, the designer's face, and the same one set
    * in the key art -- so the title inside the poster and the headings on every
-   * page below it are now one typeface rather than two that nearly match.
-   * Weights are static here (300/400/700), not a variable axis; see layout.tsx.
+   * page below it are one typeface rather than two that nearly match. Weights
+   * are static (300/400/700), not a variable axis; see layout.tsx. There is
+   * no 600, so "bold" on this site is 700 wherever it is said.
    *
-   * The tracking below was measured against Hedvig, then inherited by Switzer.
-   * Atlas Grotesk Bold is a wider, more open grotesque than either, so -0.02em
-   * is the value to re-check first if the display type ever reads tight.
+   * THE SIZES AND THE SETTING ARE CiRe's. The September review put our About
+   * page beside the Civic Resilience Lab's home page and asked for "the same
+   * font type and size as CiRe (ours are packed and larger now)". The face
+   * stays ours -- that was decided -- but the formatting is theirs, read off
+   * their stylesheet: text at 13px on a 1.5 leading with no tracking; the
+   * navigation at the same 13; the site's title at 20px bold. On this site's
+   * fluid root, where 1rem is a pixel at 1920 and 0.9 of one on a laptop,
+   * that is 15rem for a paragraph, 13 for a secondary line, and a page title
+   * a step above the brand title's 20.
+   *
+   * "Packed" was two things, and both come off here: the -0.02em tracking the
+   * text roles inherited from Switzer, which Atlas Grotesk does not need, and
+   * the 1.35 leading, which was measured for a face with a smaller x-height.
    */
+  body,
+  .t-b1,
+  .t-b2,
+  .f-sans {
+    font-family: var(--font-brand), ui-sans-serif, system-ui, sans-serif;
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 1.5;
+  }
+
+  body,
+  .t-b1 {
+    font-size: 15rem;
+  }
+
+  .t-b2 {
+    font-size: 13rem;
+  }
+
   .t-d1,
   .t-h1,
   .t-h2,
@@ -120,14 +153,7 @@
   .sec-label {
     font-family: var(--font-brand), ui-sans-serif, system-ui, sans-serif;
     font-weight: 700;
-    letter-spacing: -0.02em;
-  }
-
-  .t-b1,
-  .t-b2,
-  .f-sans {
-    font-family: var(--font-brand), ui-sans-serif, system-ui, sans-serif;
-    font-weight: 400;
+    letter-spacing: 0;
   }
 
   /*
@@ -140,28 +166,88 @@
     font-weight: 400;
     font-size: 13rem;
     letter-spacing: 0.02em;
+    line-height: 1.5;
     text-transform: uppercase;
   }
 
   /*
-   * "Adjust each page title font (smaller)." Guarded to desktop because
-   * base.css sets the mobile sizes in a max-width query that this file would
-   * otherwise override at every width.
+   * THE PAGE TITLE IS THE SIZE OF CiRe's. "Same size as the title of CiRe,
+   * apply to all other pages", with an arrow from our 88rem ABOUT to their
+   * 20px "Civic Resilience Laboratory"; and on Keynotes a sketch of the band
+   * with the title about twice the height of the label over it. 24rem is
+   * both: 21.6px on the client's laptop against CiRe's 20, and 1.85x the
+   * 13rem label. The other display roles step down with it so an accordion
+   * title or a status sentence no longer outweighs the page title above it.
+   *
+   * Desktop and mobile are both set here now, because base.css declares the
+   * mobile sizes in a max-width query of its own and the mobile block below
+   * has to come after it to win.
    */
   @media (min-width: 768px) {
     .t-h1 {
-      font-size: 88rem;
-      line-height: 0.95;
+      font-size: 24rem;
+      line-height: 1.1;
     }
     .t-h2 {
-      font-size: 64rem;
-      line-height: 1;
+      font-size: 32rem;
+      line-height: 1.15;
     }
     .t-h3 {
-      font-size: 44rem;
+      font-size: 24rem;
+      line-height: 1.25;
     }
     .t-h4 {
-      font-size: 28rem;
+      font-size: 20rem;
+      line-height: 1.3;
+    }
+  }
+
+  @media (max-width: 767.98px) {
+    body,
+    .t-b1 {
+      font-size: 14rem;
+    }
+    .t-b2 {
+      font-size: 12rem;
+    }
+    .t-lbl {
+      font-size: 12rem;
+    }
+    .t-h1 {
+      font-size: 20rem;
+      line-height: 1.15;
+    }
+    .t-h2 {
+      font-size: 26rem;
+      line-height: 1.15;
+    }
+    .t-h3 {
+      font-size: 20rem;
+      line-height: 1.25;
+    }
+    .t-h4 {
+      font-size: 17rem;
+      line-height: 1.3;
+    }
+  }
+
+  /*
+   * A PERSON'S NAME. Every name on the site -- the two committee rosters, the
+   * keynote cards, the working-group leaders -- carries `.person`, and this is
+   * the one place it is set: a step up from the affiliation under it ("all
+   * names 1-2 size bigger") and bold ("all name in bold font style"). The
+   * names are links where a page exists, and the link rule below makes those
+   * bold too, so a member without a page is set the same as one with.
+   */
+  .person {
+    font-size: 15rem;
+    font-weight: 700;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 767.98px) {
+    .person {
+      font-size: 14rem;
     }
   }
 
@@ -256,9 +342,22 @@
     width: 100%;
     height: 1px;
     background: currentColor;
-    opacity: 0.4;
+    opacity: 1;
     pointer-events: none;
     transition: opacity 0.2s var(--ease-ref);
+  }
+
+  /*
+   * ...AND BOLD. "All clickable text in bold outlines? >> HERE", with the word
+   * set bold and underlined. So the resting rule is now full strength rather
+   * than dimmed -- the hover wipe still arrives over it, as a line replacing
+   * a line, which is a smaller event than it was but still one -- and every
+   * link is 700. The navigation is excepted below: there, bold marks the page
+   * you are on and nothing else.
+   */
+  .link,
+  .link-run {
+    font-weight: 700;
   }
 
   .link:hover::after,
@@ -315,7 +414,7 @@
     text-decoration: underline;
     text-decoration-thickness: 1px;
     text-underline-offset: 0.1em;
-    text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
+    text-decoration-color: currentColor;
     transition:
       background-size 1.109s var(--ease-ref),
       text-decoration-color 0.2s var(--ease-ref);
@@ -339,6 +438,21 @@
   }
 
   /*
+   * THE CURRENT PAGE IS BOLD AND RULED; the others are neither. "In the
+   * selected condition, can it be bold outlines? >> ABOUT". base.css already
+   * draws the rule under `[aria-current="page"]`; the weight is added here and
+   * taken off everything else in the bar, so the six items sit at the nav's
+   * 13rem regular and one of them stands out.
+   */
+  header .link {
+    font-weight: 400;
+  }
+
+  header .link[aria-current="page"] {
+    font-weight: 700;
+  }
+
+  /*
    * ---------------------------------------------------------------------------
    * THE GAP UNDER THE PAGE-HEAD ARTWORK
    * ---------------------------------------------------------------------------
@@ -355,12 +469,125 @@
    * edit to match.
    */
   .pg-art + .pad {
-    padding-top: 90rem;
+    padding-top: 24rem;
   }
 
   @media (max-width: 767.98px) {
     .pg-art + .pad {
-      padding-top: 50rem;
+      padding-top: 16rem;
+    }
+  }
+
+  /*
+   * ---------------------------------------------------------------------------
+   * THE RHYTHM, AT CiRe's SCALE
+   * ---------------------------------------------------------------------------
+   * "Currently spacing are too large for all around." The September review
+   * circled every gap on About, Keynotes, Working Groups, Key Dates, the call
+   * for abstracts and Visitors, and pointed at CiRe for the measure: sixteen
+   * pixels between a heading and its text, a line between paragraphs, and
+   * nothing at all between the band and the first paragraph ("no spacing
+   * here", on every page). base.css's 180rem section pad was measured for the
+   * portfolio's display sizes; against 15rem text it is a page of white.
+   *
+   * Every figure here is a component whose spacing base.css names -- see
+   * COMPONENT SPACING, NAMED there -- so the portfolio keeps its numbers and
+   * this edition states its own.
+   */
+  .pad {
+    padding-top: 48rem;
+    padding-bottom: 64rem;
+  }
+
+  .pad-t {
+    padding-top: 48rem;
+  }
+
+  .pad-b {
+    padding-bottom: 64rem;
+  }
+
+  /* Re-stated after `.pad`: base.css declares it before, and a later `.pad`
+   * at the same specificity would otherwise put the top pad back. */
+  .pad-flow {
+    padding-top: 0;
+  }
+
+  /* Ruled rows: the key dates table, the accordion headers. */
+  .idx-row {
+    --row-pad: 10rem;
+  }
+
+  .idx-row--fold {
+    --row-pad: 12rem;
+  }
+
+  /* The open fold, indented to its title: number cell 50 + gap 20. The
+   * portfolio's 80 allows for a swatch this edition does not draw. */
+  .fold-body {
+    padding-bottom: 20rem;
+    padding-left: 70rem;
+  }
+
+  /* A working group: leaders, then the description, close together. */
+  .wg-blurb {
+    gap: 12rem;
+  }
+
+  .wg-leads-first {
+    padding-bottom: 8rem;
+  }
+
+  /*
+   * A status block is its sentence. "TO BE ANNOUNCED" was struck on both the
+   * schedule and the student network session, and the sentence marked to come
+   * down to the size it has on the schedule -- which is .t-h3, above.
+   */
+  .stat {
+    padding: 0;
+  }
+
+  .stat-label {
+    display: none;
+  }
+
+  .stat-note {
+    padding-top: 10rem;
+  }
+
+  .stat-body {
+    padding-top: 20rem;
+  }
+
+  @media (max-width: 767.98px) {
+    .pad {
+      padding-top: 32rem;
+      padding-bottom: 48rem;
+    }
+
+    .pad-t {
+      padding-top: 32rem;
+    }
+
+    .pad-b {
+      padding-bottom: 48rem;
+    }
+
+    .pad-flow {
+      padding-top: 0;
+    }
+
+    .idx-row {
+      --row-pad: 8rem;
+    }
+
+    .idx-row--fold {
+      --row-pad: 10rem;
+    }
+
+    .fold-body {
+      padding-bottom: 16rem;
+      padding-left: 0;
     }
   }
 
@@ -378,12 +605,12 @@
    * the space between genuinely separate blocks is untouched.
    */
   .pad:has(+ .pad-flow) {
-    padding-bottom: 90rem;
+    padding-bottom: 40rem;
   }
 
   @media (max-width: 767.98px) {
     .pad:has(+ .pad-flow) {
-      padding-bottom: 50rem;
+      padding-bottom: 28rem;
     }
   }
 
@@ -462,34 +689,26 @@
 
 /*
  * ---------------------------------------------------------------------------
- * THE SPONSOR MARKS ON ABOUT
+ * THE SPONSOR MARKS
  * ---------------------------------------------------------------------------
- * "Adjust spacing, 4 logos in a row." Filed against About on mobile, which is
- * where the problem is: `.spon-row` is a wrapping flex of fixed 220rem cells,
- * right for the portfolio's belt -- a strip has no measure to divide -- and
- * wrong here. At 390px two cells fit, the rest wrap, and the marks land on the
- * ragged edge with the gaps the review circled. Desktop already flows the five
- * across one line and was not raised, so it is left alone.
- *
- * A grid, so the cells are equal by construction and the row count is stated
- * rather than emergent.
+ * On the landing page now, under "Supported by". Two rounds of review sit on
+ * this row: "adjust spacing, 4 logos in a row" on a phone, and then "reduce
+ * spacings and be consistent" on the desktop, where the gap between marks
+ * was the stated gap plus whatever transparent margin each canvas happened to
+ * carry. Both are answered in one place: Sponsors.tsx draws each mark cut to
+ * its ink and sized to equal area (`.spon-ink` in base.css), so the gap is
+ * the gap, and the row wraps on its own gutter at every width. The phone grid
+ * this file used to force is gone with the margins that made it necessary.
  *
  * OUTSIDE @layer components, deliberately. base.css declares `.spon-row`
- * unlayered, and an unlayered rule beats every layered one however specific --
- * the first version of this sat in the components layer and did nothing at all.
- *
- * NOTE FOR REVIEW: there are five marks, so a four-column row puts the fifth on
- * a line of its own. That is what "4 in a row" gives with this roster.
+ * unlayered, and an unlayered rule beats every layered one however specific.
  */
+.spon-row {
+  gap: 24rem 40rem;
+}
+
 @media (max-width: 767.98px) {
   .spon-row {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 22rem 14rem;
-    align-items: center;
-  }
-
-  .spon-row .spon-cell {
-    width: 100%;
+    gap: 18rem 26rem;
   }
 }

@@ -34,7 +34,7 @@ function VenueBody({ section }: { section: VenueSection }) {
       : [];
 
   return (
-    <div className="flex flex-col gap-[18rem]">
+    <div className="flex flex-col gap-[12rem]">
       {paragraphs.map((paragraph, i) => (
         <p key={i} className="t-b1 max-w-[70ch]">
           {paragraph}
@@ -42,7 +42,7 @@ function VenueBody({ section }: { section: VenueSection }) {
       ))}
 
       {section.bullets?.length ? (
-        <ul className="flex flex-col gap-[14rem]">
+        <ul className="flex flex-col gap-[8rem]">
           {section.bullets.map((bullet, i) => (
             <li key={i} className="t-b1 max-w-[70ch] flex gap-[14rem]">
               {/* A drawn marker rather than a list-style bullet: the type scale
@@ -57,7 +57,7 @@ function VenueBody({ section }: { section: VenueSection }) {
       ) : null}
 
       {section.links?.length ? (
-        <ul className="flex flex-wrap gap-x-[24rem] gap-y-[8rem]">
+        <ul className="flex flex-wrap gap-x-[24rem] gap-y-[6rem]">
           {section.links.map((link) => (
             <li key={link.url}>
               <a href={link.url} target="_blank" rel="noreferrer" className="t-b2 link">

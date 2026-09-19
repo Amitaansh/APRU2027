@@ -25,6 +25,14 @@ import { usePhase } from "@apru/content/usePhase";
  *
  * The nav is upper-cased in CSS, not in nav.json, so the labels stay one shared
  * piece of content that each edition sets in its own voice.
+ *
+ * THE BAR FOLDS BELOW `lg`, NOT `md`. Six items and two dropdown glyphs need
+ * about 700px of bar at 13rem; on a tablet held upright there are 768, minus
+ * the lockup and the gutters, and the items wrapped onto two lines. The
+ * client asked for the iPad version to be checked; this is what that check
+ * found. The height token (--hdr) is untouched: the lockup keeps its desktop
+ * size down to 768, so the bar is the same height whether it shows the items
+ * or the button.
  */
 export function Header() {
   const pathname = usePathname();
@@ -111,7 +119,7 @@ export function Header() {
           />
         </Link>
 
-        <nav aria-label="Primary" className="max-md:hidden">
+        <nav aria-label="Primary" className="max-lg:hidden">
           <ul className="t-b2 flex items-center gap-[26rem] uppercase tracking-[0.04em]">
             {items.map((item) => {
               if (!item.children) {
@@ -190,7 +198,7 @@ export function Header() {
           aria-expanded={open}
           aria-controls="mobile-menu"
           aria-label={open ? "Close menu" : "Open menu"}
-          className="relative hidden h-[16rem] w-[24rem] max-md:block"
+          className="relative hidden h-[16rem] w-[24rem] max-lg:block"
         >
           <Hamburger open={open} />
         </button>
@@ -199,7 +207,7 @@ export function Header() {
       {open && (
         <div
           id="mobile-menu"
-          className="fixed inset-x-0 bottom-0 top-[var(--hdr)] overflow-y-auto bg-wh px-[15rem] pb-[20rem] pt-[24rem] text-bk md:hidden"
+          className="fixed inset-x-0 bottom-0 top-[var(--hdr)] overflow-y-auto bg-wh px-[15rem] pb-[20rem] pt-[24rem] text-bk lg:hidden"
         >
           {/*
            * "Font size smaller - semibold." The items were set at t-h4, which is

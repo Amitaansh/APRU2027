@@ -24,7 +24,7 @@ export default function KeyDatesPage() {
 
       <Section>
         <ImportantDates />
-        <p className="t-b2 pt-[36rem]">
+        <p className="t-b2 pt-[20rem]">
           Submitting work? See the{" "}
           <Link href="/call-for-abstracts" className="link">
             call for abstracts

@@ -18,6 +18,11 @@ export const metadata = pageMetadata({
  * -- see StatusBlock's `rules` prop. They are the boundary of a list everywhere
  * else on the site; around one sentence on an otherwise empty page they read as
  * a box drawn round it.
+ *
+ * NO "TO BE ANNOUNCED" EITHER, and the sentence a size down. Both are the
+ * edition's call rather than this page's -- the same block on the student
+ * network session page was marked the same way -- so they are `.stat-label`
+ * and `.t-h3` in globals.css, not props here.
  */
 export default function SchedulePage() {
   return (
@@ -26,7 +31,7 @@ export default function SchedulePage() {
 
       <Section>
         <Reveal>
-          <p className="t-b1 max-w-[74ch] pb-[54rem] max-md:pb-[34rem]">
+          <p className="t-b1 max-w-[74ch] pb-[28rem] max-md:pb-[20rem]">
             {program.scheduleIntro}
           </p>
         </Reveal>
