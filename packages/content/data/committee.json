@@ -2,6 +2,27 @@
   "showEmails": false,
   "organising": [
     {
+      "name": "Jeff HOU",
+      "role": "Lead",
+      "affiliation": "Professor, Provost's Chair, and Head of the Department of Architecture, NUS",
+      "photo": "jeff-hou",
+      "profileUrl": "https://cde.nus.edu.sg/arch/staffs/jeffrey-hou/"
+    },
+    {
+      "name": "Yun Hye HWANG",
+      "role": "Co-Lead",
+      "affiliation": "Associate Professor, NUS",
+      "photo": "yun-hye-hwang",
+      "profileUrl": "https://cde.nus.edu.sg/arch/staffs/hwang-yun-hye/"
+    },
+    {
+      "name": "Xiaoxuan LU",
+      "role": "WGs & Panel Coordination",
+      "affiliation": "Visiting Associate Professor, NUS",
+      "photo": "lu-xiaoxuan",
+      "profileUrl": "https://cde.nus.edu.sg/arch/staffs/xiaoxuan-lu/"
+    },
+    {
       "name": "Chaewon AHN",
       "role": "Open Call Coordination",
       "affiliation": "Assistant Professor, NUS",
@@ -9,11 +30,11 @@
       "profileUrl": "https://cde.nus.edu.sg/arch/staffs/ahn-chaewon/"
     },
     {
-      "name": "Jeff HOU",
-      "role": "Lead",
-      "affiliation": "Professor, Provost's Chair, and Head of the Department of Architecture, NUS",
-      "photo": "jeff-hou",
-      "profileUrl": "https://cde.nus.edu.sg/arch/staffs/jeffrey-hou/"
+      "name": "Rosita SAMSUDIN",
+      "role": "Field Trip Management",
+      "affiliation": "Lecturer, NUS",
+      "photo": "rosita-samsudin",
+      "profileUrl": "https://discovery.nus.edu.sg/26364-rosita-samsudin"
     },
     {
       "name": "Jinda QI",
@@ -30,19 +51,6 @@
       "profileUrl": "https://cde.nus.edu.sg/arch/staffs/naomi-hanakata/"
     },
     {
-      "name": "Qian Ning CHEE",
-      "role": "Publicity and Logistics",
-      "affiliation": "Research Assistant, NUS",
-      "photo": "chee-qian-ning"
-    },
-    {
-      "name": "Rosita SAMSUDIN",
-      "role": "Field Trip Management",
-      "affiliation": "Lecturer, NUS",
-      "photo": "rosita-samsudin",
-      "profileUrl": "https://discovery.nus.edu.sg/26364-rosita-samsudin"
-    },
-    {
       "name": "Shengxiao (Alex) LI",
       "role": "Open Call Coordination",
       "affiliation": "Assistant Professor, Texas A&M University",
@@ -50,18 +58,10 @@
       "profileUrl": "https://scholar.google.com/citations?user=_zb8mMYAAAAJ&hl=zh-CN"
     },
     {
-      "name": "Xiaoxuan LU",
-      "role": "WGs & Panel Coordination",
-      "affiliation": "Visiting Associate Professor, NUS",
-      "photo": "lu-xiaoxuan",
-      "profileUrl": "https://cde.nus.edu.sg/arch/staffs/xiaoxuan-lu/"
-    },
-    {
-      "name": "Yun Hye HWANG",
-      "role": "Co-Lead",
-      "affiliation": "Associate Professor, NUS",
-      "photo": "yun-hye-hwang",
-      "profileUrl": "https://cde.nus.edu.sg/arch/staffs/hwang-yun-hye/"
+      "name": "Qian Ning CHEE",
+      "role": "Publicity and Logistics",
+      "affiliation": "Research Assistant, NUS",
+      "photo": "chee-qian-ning"
     }
   ],
   "scientific": [

@@ -29,11 +29,17 @@ import type { CommitteeMember } from "@apru/content/types";
  * while the remaining URLs are being collected.
  */
 
-/** A member's name, linked to their own profile page where one is published. */
+/**
+ * A member's name, linked to their own profile page where one is published.
+ *
+ * `.link-run`, not `.link`: two to a row on a phone, a long name wraps, and
+ * `.link` is an inline-block that draws one rule the width of the block under
+ * its last line. `.link-run` stays inline and rules each line it lands on.
+ */
 function MemberName({ member }: { member: CommitteeMember }) {
   if (!member.profileUrl) return <>{member.name}</>;
   return (
-    <a href={member.profileUrl} target="_blank" rel="noreferrer" className="link">
+    <a href={member.profileUrl} target="_blank" rel="noreferrer" className="link-run">
       {member.name}
     </a>
   );
@@ -44,16 +50,22 @@ function MemberName({ member }: { member: CommitteeMember }) {
  *
  *   "featured" — their own ruled rows at display size, with portraits. The
  *                portfolio, and how the roster was first designed.
- *   "inline"   — everyone in the one grid, three to a row. The client asked for
- *                Jeff and Yun Hye to come down and join the others, and then
- *                for the two of them to head that list: Lead, Co-Lead, and
- *                the other seven after them in the order the content document
- *                gives, which is alphabetical by first name.
+ *   "inline"   — everyone in the one grid, three to a row, in the order the
+ *                data gives. The client asked for Jeff and Yun Hye to come
+ *                down and join the others, then for the two of them to head
+ *                the list, and then -- on the September review -- numbered the
+ *                other seven themselves. committee.json now carries that
+ *                order, so the grid is the file top to bottom and there is
+ *                nothing to lift or sort here.
  *
- * Either way the ORDER IS DECIDED HERE, not in committee.json. The data stays
- * in the content document's alphabetical order so it can be checked against
- * the source line by line, and the leads are lifted out of it at render time
- * -- into their own rows, or to the head of the grid.
+ * The featured layout still finds the leads by role rather than by position,
+ * so it does not depend on the file's order; the seven who follow them come
+ * out in the client's order there too.
+ *
+ * THE LEAD TITLES ARE NOT PRINTED in the inline grid. "Let's remove the title.
+ * It seems a bit confused with the affiliation." The other seven keep their
+ * conference roles (Open Call Coordination and so on); the roles stay in the
+ * data because the featured layout keys off them.
  */
 /**
  * The two roles that set a member apart, in the order they are shown. Read as
@@ -70,13 +82,12 @@ export function Committee({
 }: {
   leads?: "featured" | "inline";
 } = {}) {
-  const featureLeads = leadStyle === "featured";
-  const leadMembers = committee.organising
+  if (leadStyle === "inline") return <InlineRoster />;
+
+  const leads = committee.organising
     .filter((m) => LEAD_ROLES.includes(m.role))
     .sort((a, b) => LEAD_ROLES.indexOf(a.role) - LEAD_ROLES.indexOf(b.role));
-  const otherMembers = committee.organising.filter((m) => !LEAD_ROLES.includes(m.role));
-  const leads = featureLeads ? leadMembers : [];
-  const members = featureLeads ? otherMembers : [...leadMembers, ...otherMembers];
+  const members = committee.organising.filter((m) => !LEAD_ROLES.includes(m.role));
 
   return (
     <div className="flex flex-col gap-[90rem] max-md:gap-[50rem]">
@@ -123,20 +134,6 @@ export function Committee({
                   </span>
                   <br />
                   <span className="dim">{member.affiliation}</span>
-                  {/*
-                   * The third line the content document gives each member --
-                   * what they are doing for this conference, as distinct from
-                   * what they are at their university. Inline only: the
-                   * portfolio's featured layout already carries the role in its
-                   * own meta column, and adding it here as well would print it
-                   * twice for the leads and change a layout that was signed off.
-                   */}
-                  {!featureLeads && (
-                    <>
-                      <br />
-                      <span className="dim">{member.role}</span>
-                    </>
-                  )}
                 </span>
               </li>
             ))}
@@ -183,6 +180,85 @@ export function Committee({
                   )}
                   <br />
                   <span className="dim">{member.affiliation}</span>
+                </li>
+              ))}
+            </ul>
+          </Reveal>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * The client edition's roster: everyone in one grid, three to a row, with the
+ * conference role as a third line under the affiliation -- what they are
+ * doing for this conference, as distinct from what they are at their
+ * university. The two rosters share one grid so they read as one block.
+ *
+ * TWO TO A ROW ON A PHONE. "One for one row seems a lot scrolled down. Maybe
+ * two in one row?" Below 768px `.grd` is a block stack, so the grid is stated
+ * again here as two columns; and below `lg` the portrait sits above the text
+ * rather than beside it, because half a phone -- or a third of a tablet --
+ * is not wide enough for a portrait and a three-line affiliation side by
+ * side.
+ *
+ * Names carry `.person`, the hook the client stylesheet uses to set every
+ * name on the site bold and a step up from the lines under it; the names
+ * link out through MemberName exactly as before.
+ */
+function InlineRoster() {
+  /* Five of the fifteen columns each -- three to a row -- and one of the two
+   * on a phone. A class, not the inline `gridColumn` the featured grid uses:
+   * an inline `span 5` cannot be stepped down at a breakpoint. */
+  const cell = "col-span-5 max-md:col-span-1";
+  const person = "flex gap-[12rem] max-lg:flex-col max-lg:gap-[8rem]";
+  const grid =
+    "grd gap-y-[24rem] max-md:grid max-md:grid-cols-2 max-md:gap-x-[14rem] max-md:gap-y-[20rem]";
+
+  return (
+    <div className="flex flex-col gap-[40rem] max-md:gap-[32rem]">
+      <div>
+        <p className="t-lbl dim pb-[12rem]">Organising committee</p>
+        <Reveal>
+          <ul className={grid + " rise"}>
+            {committee.organising.map((member) => (
+              <li key={member.name} className={cell + " " + person}>
+                <span className="w-[110rem] flex-none max-md:w-[96rem]">
+                  <Portrait name={member.name} photo={member.photo} />
+                </span>
+                <span className="t-b2 flex-1">
+                  <span className="person block">
+                    <MemberName member={member} />
+                  </span>
+                  <span className="dim block">{member.affiliation}</span>
+                  {!LEAD_ROLES.includes(member.role) && (
+                    <span className="dim block">{member.role}</span>
+                  )}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </Reveal>
+      </div>
+
+      <div>
+        <p className="t-lbl dim pb-[12rem]">Scientific committee</p>
+        {committee.scientificStatus === "tba" || committee.scientific.length === 0 ? (
+          <ToBeAnnounced
+            label="Scientific committee to be announced"
+            note="The scientific committee for the 10th conference is being finalised and will be published here."
+          />
+        ) : (
+          <Reveal>
+            {/* No portrait column -- see the note on the featured roster. */}
+            <ul className={grid + " rise"}>
+              {committee.scientific.map((member) => (
+                <li key={member.name} className={cell + " t-b2"}>
+                  <span className="person block">
+                    <MemberName member={member} />
+                  </span>
+                  <span className="dim block">{member.affiliation}</span>
                 </li>
               ))}
             </ul>
