@@ -32,6 +32,20 @@ import { site } from "@apru/content";
  * they are worth keeping apart. The unit number and the switchboard that used to
  * be here are gone: the client set the format for this block line by line, and
  * neither is in it.
+ *
+ * THE TWO MARKS ARE ONE HEIGHT. They were sized to sit at the same cap height,
+ * which put the NUS lockup a hair shorter than the APRU wordmark; the client
+ * drew them level -- "NUS logo should be the same size as APRU logo" -- so the
+ * boxes are now the same height and the shield stands as tall as the ring.
+ *
+ * THE SMALL PRINT IS THE COPYRIGHT LINE ALONE. The sentence used to open with
+ * the conference name and dates; the client struck that clause. What is left
+ * is the notice itself. The location went with the clause: "Singapore (c)
+ * National University of Singapore" read as a sentence with a word missing,
+ * and the address block above already says where.
+ *
+ * The social glyphs are the classic filled marks -- "use a more classic
+ * icon?" -- see `glyphs` on Social.
  */
 
 const ADDRESS_LINKS = [
@@ -44,30 +58,28 @@ export function Footer() {
   const contactEmail = process.env.NEXT_PUBLIC_CONTACT_EMAIL || site.contactEmail;
 
   return (
-    <footer className="border-t border-bk/10 pb-[40rem] pt-[70rem] max-md:pb-[28rem] max-md:pt-[44rem]">
+    <footer className="border-t border-bk/10 pb-[32rem] pt-[40rem] max-md:pb-[24rem] max-md:pt-[28rem]">
       <div className="ctr">
         <div className="grd">
           <div style={{ gridColumn: "span 7" }}>
-            {/* Sized off each file's own aspect ratio so the two sit at the
-                same cap height rather than the same box height. */}
-            <div className="flex flex-wrap items-center gap-x-[28rem] gap-y-[16rem]">
+            <div className="flex flex-wrap items-center gap-x-[24rem] gap-y-[12rem]">
               <img
                 src="/images/apru-white.svg"
                 alt="APRU"
                 width={330}
                 height={102}
-                className="h-[30rem] w-auto invert"
+                className="h-[34rem] w-auto invert"
               />
               <img
                 src="/images/nus-doa-white.svg"
                 alt="National University of Singapore, Department of Architecture, College of Design and Engineering"
                 width={690}
                 height={93}
-                className="h-[27rem] w-auto invert"
+                className="h-[34rem] w-auto invert"
               />
             </div>
 
-            <address className="t-b2 not-italic pt-[24rem] leading-[1.9]">
+            <address className="t-b2 not-italic pt-[16rem] leading-[1.6]">
               {ADDRESS_LINKS.map((line) => (
                 <span key={line.url} className="block">
                   <a href={line.url} target="_blank" rel="noreferrer" className="link">
@@ -88,30 +100,23 @@ export function Footer() {
            */}
           <div
             style={{ gridColumn: "10 / span 6" }}
-            className="flex flex-col items-start gap-[30rem] max-md:pt-[32rem]"
+            className="flex flex-col items-start gap-[20rem] max-md:pt-[24rem]"
           >
             <a href={"mailto:" + contactEmail} className="t-b1 link">
               {contactEmail}
             </a>
 
             <div>
-              <p className="t-lbl dim pb-[14rem]">Follow Us</p>
-              <Social />
+              <p className="t-lbl dim pb-[8rem]">Follow Us</p>
+              <Social glyphs="classic" />
             </div>
           </div>
         </div>
 
-        {/*
-         * One sentence, left-aligned, rather than the three columns this used to
-         * set across the grid.
-         *
-         * It does not fit one row on a phone and is not asked to: at 390px, 140
-         * characters on a single line works out at about a 5px face. It steps
-         * down a size on small screens and wraps.
-         */}
-        <p className="t-b2 pt-[50rem] max-md:pt-[28rem] max-md:text-[11rem] max-md:leading-[1.7]">
-          The 10th APRU Sustainable Cities and Landscapes Conference, {site.dates},{" "}
-          {site.location} &copy; National University of Singapore. All Rights Reserved.
+        {/* One line, left-aligned, rather than the three columns this used to
+            set across the grid. */}
+        <p className="t-b2 pt-[32rem] max-md:pt-[24rem]">
+          &copy; National University of Singapore. All Rights Reserved.
         </p>
       </div>
     </footer>
