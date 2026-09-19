@@ -45,7 +45,7 @@ export function WorkingGroups({
   const items: AccordionItem[] = forums.workingGroups.map((group, i) => {
     /* One paragraph or several — see WorkingGroup.blurb for why both. */
     const blurb = (
-      <div className="flex flex-col gap-[18rem]">
+      <div className="wg-blurb">
         {(Array.isArray(group.blurb) ? group.blurb : [group.blurb]).map((p, n) => (
           <p key={n} className="t-b1 dim max-w-[70ch]">
             {p}
@@ -54,25 +54,34 @@ export function WorkingGroups({
       </div>
     );
 
-    /* The gap between the two blocks belongs to whichever comes second. */
-    const gap = leadsFirst ? "pb-[24rem]" : "pt-[24rem]";
+    /* The gap between the two blocks belongs to whichever comes second --
+     * `.wg-leads` / `.wg-leads-first` in base.css, so an edition can size it. */
+    const gap = leadsFirst ? "wg-leads-first" : "wg-leads";
 
     /*
      * A name is a link only where a page is published; `.link` rather than
      * `.link-run` so that a name in the one-line form moves to the next line
      * whole instead of breaking in the middle.
+     *
+     * `.person` is the hook every name on the site carries -- the two
+     * committee rosters, the keynotes, and these. It has no style of its own
+     * here; the client edition sets names bold and a step up from the line
+     * they sit in, which the review asked for by name.
      */
-    const name = (lead: (typeof group.leads)[number]) =>
-      lead.profileUrl ? (
-        <a href={lead.profileUrl} target="_blank" rel="noreferrer" className="link">
-          {lead.name}
-        </a>
-      ) : (
-        lead.name
-      );
+    const name = (lead: (typeof group.leads)[number]) => (
+      <span className="person">
+        {lead.profileUrl ? (
+          <a href={lead.profileUrl} target="_blank" rel="noreferrer" className="link">
+            {lead.name}
+          </a>
+        ) : (
+          lead.name
+        )}
+      </span>
+    );
 
     const leads = !group.leads?.length ? null : leadsOneLine ? (
-      <p className={"t-b2 max-w-[70ch] " + gap}>
+      <p className={"t-b1 max-w-[70ch] " + gap}>
         {group.leads.map((lead, n) => (
           <Fragment key={lead.name}>
             {n > 0 && <span className="dim">; </span>}

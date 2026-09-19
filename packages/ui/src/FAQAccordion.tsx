@@ -57,7 +57,7 @@ export function FAQAccordion() {
               style={{ gridTemplateRows: expanded ? "1fr" : "0fr" }}
             >
               <div className="overflow-hidden">
-                <p className="t-b1 dim max-w-[70ch] pb-[36rem] pl-[70rem] max-md:pl-0">
+                <p className="t-b1 dim fold-body max-w-[70ch]">
                   {item.answer}
                 </p>
               </div>

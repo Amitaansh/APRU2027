@@ -1100,3 +1100,79 @@
     font-variant-numeric: tabular-nums;
   }
 }
+
+/*
+ * ===========================================================================
+ * COMPONENT SPACING, NAMED
+ * ===========================================================================
+ * The rhythm inside a few shared components, stated as classes rather than as
+ * Tailwind utilities on the markup. Same numbers the utilities carried, so
+ * nothing moves in either edition by this block alone; the point is that a
+ * class in the components layer can be overridden by an edition's stylesheet
+ * (later in the same layer wins), where a utility cannot -- utilities sit in a
+ * layer above and beat every component rule however specific. The client
+ * edition's "too many spacings" review is what this block is for: see the
+ * matching overrides in apps/client/app/globals.css.
+ */
+@layer components {
+  /* The open panel of a fold -- Accordion and FAQAccordion. Indented to the
+   * title (number cell 50 + gap 20; the portfolio's swatch adds another 30). */
+  .fold-body {
+    padding: 0 0 36rem 80rem;
+  }
+
+  /* A working group's description: one paragraph or several. */
+  .wg-blurb {
+    display: flex;
+    flex-direction: column;
+    gap: 18rem;
+  }
+
+  /* The leaders' line or list. The gap belongs to whichever block comes
+   * second -- under the description in the portfolio, above it on the client
+   * edition, which is `-first`. */
+  .wg-leads {
+    padding-top: 24rem;
+  }
+
+  .wg-leads-first {
+    padding-top: 0;
+    padding-bottom: 24rem;
+  }
+
+  /* StatusBlock: the status word, the title, the note and any children. */
+  .stat {
+    display: flex;
+    gap: 20rem;
+    padding: 50rem 0;
+  }
+
+  .stat-label {
+    width: 180rem;
+    flex: none;
+  }
+
+  .stat-note {
+    padding-top: 24rem;
+  }
+
+  .stat-body {
+    padding-top: 36rem;
+  }
+
+  @media (max-width: 767.98px) {
+    .fold-body {
+      padding-left: 0;
+    }
+
+    .stat {
+      flex-direction: column;
+      gap: 16rem;
+      padding: 34rem 0;
+    }
+
+    .stat-label {
+      width: auto;
+    }
+  }
+}

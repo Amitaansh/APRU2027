@@ -39,16 +39,16 @@ export function StatusBlock({
   return (
     <Reveal>
       {rules && <div className="rule-solid rule-draw" />}
-      <div className="rise flex gap-[20rem] py-[50rem] max-md:flex-col max-md:gap-[16rem] max-md:py-[34rem]">
-        <p className={"t-lbl w-[180rem] flex-none max-md:w-auto " + (live ? "live" : "dim")}>
-          {status}
-        </p>
+      {/* The block's own rhythm is `.stat*` in base.css -- named so an edition
+          can tighten it, or drop the status word, from its stylesheet. */}
+      <div className="stat rise">
+        <p className={"t-lbl stat-label " + (live ? "live" : "dim")}>{status}</p>
         <div className="flex-1">
-          {title && <p className="t-h3">{title}</p>}
+          {title && <p className="t-h3 stat-title">{title}</p>}
           {note && (
-            <p className={"t-b2 dim max-w-[56ch] " + (title ? "pt-[24rem]" : "")}>{note}</p>
+            <p className={"t-b2 dim max-w-[56ch]" + (title ? " stat-note" : "")}>{note}</p>
           )}
-          {children && <div className="pt-[36rem]">{children}</div>}
+          {children && <div className="stat-body">{children}</div>}
         </div>
       </div>
       {rules && <div className="rule-solid rule-draw" />}

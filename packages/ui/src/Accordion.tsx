@@ -103,7 +103,8 @@ export function Accordion({
               style={{ gridTemplateRows: expanded ? "1fr" : "0fr" }}
             >
               <div className="overflow-hidden">
-                <div className="pb-[36rem] pl-[80rem] max-md:pl-0">{item.children}</div>
+                {/* Spacing is `.fold-body` in base.css, so an edition can tighten it. */}
+                <div className="fold-body">{item.children}</div>
               </div>
             </div>
           </div>
