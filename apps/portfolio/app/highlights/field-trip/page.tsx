@@ -46,6 +46,9 @@ export default function FieldTripPage() {
             <p className="rise" style={{ transitionDelay: "0.16s" }}>
               {fieldTrip.note}
             </p>
+            <p className="rise" style={{ transitionDelay: "0.24s" }}>
+              {fieldTrip.availability}
+            </p>
           </div>
         </Reveal>
 

@@ -17,6 +17,9 @@ export const metadata = pageMetadata({
  * It was written out here first and matched the document word for word, but the
  * portfolio edition had its own copy of it, and two copies of the same approved
  * paragraph is exactly how the two editions come to disagree.
+ *
+ * The closing sentence -- when the itineraries land -- is a paragraph of its
+ * own, at the client's request; it is `availability` in the data.
  */
 
 export default function FieldTripsPage() {
@@ -26,10 +29,10 @@ export default function FieldTripsPage() {
 
       <Section>
         <Reveal>
-          <div className="t-b1 flex max-w-[74ch] flex-col gap-[24rem]">
+          <div className="t-b1 flex max-w-[74ch] flex-col gap-[14rem]">
             <p>{fieldTrip.intro}</p>
 
-            <ul className="flex flex-col gap-[10rem]">
+            <ul className="flex flex-col gap-[6rem]">
               {fieldTrip.themes.map((theme) => (
                 <li key={theme} className="flex gap-[16rem]">
                   <span aria-hidden="true">&mdash;</span>
@@ -39,6 +42,7 @@ export default function FieldTripsPage() {
             </ul>
 
             <p>{fieldTrip.note}</p>
+            <p>{fieldTrip.availability}</p>
           </div>
         </Reveal>
       </Section>

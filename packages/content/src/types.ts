@@ -311,8 +311,13 @@ export interface FieldTripConfig {
   intro: string;
   /** The five curated themes. */
   themes: string[];
-  /** What a participant can expect, and when itineraries land. */
+  /** What a participant can expect. */
   note: string;
+  /**
+   * When itineraries land. It was the last sentence of `note`; the client
+   * asked for it as a paragraph of its own.
+   */
+  availability: string;
 }
 
 /** The registration page, which is a single stated fact until the portal opens. */
