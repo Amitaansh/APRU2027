@@ -196,6 +196,13 @@ export interface Sponsor {
   name: string;
   /** Omitted until the partner supplies one; the mark then renders unlinked. */
   url?: string;
+  /**
+   * The ink box of `<slug>-mark.{png,webp}`, the same mark cut to its edges,
+   * written by packages/assets/trim-sponsors.mjs. The still grid sizes each
+   * mark to equal area from this ratio; the belt reads the canvas and ignores
+   * it.
+   */
+  mark?: { w: number; h: number };
 }
 
 export interface FAQItem {

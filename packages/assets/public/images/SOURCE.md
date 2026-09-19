@@ -11,5 +11,6 @@ Everything in this folder is produced by `npm run imagery`. Do not hand-edit.
 - OG card: greyscale, contrast lift, ordered 8x8 Bayer dither, two-colour map (#f89c2c over #143a5c) — Design Brief §05.
 - Widths: 768, 1280, 1920 (AVIF + WebP), OG card 1200x630 PNG.
 - Portraits (committee and keynotes): D:/APRU/committee-source — 4:5 crop from the top, or the window in PORTRAIT_CROPS, greyscale, 440x550 (AVIF + WebP) in ./committee.
+- Sponsor marks: 640x400 canvases at matched optical area in ./sponsors, for the belt. The `<slug>-mark.*` files beside them are the same marks cut to their ink by `node packages/assets/trim-sponsors.mjs`, for the still grid — re-run that after this.
 
 Re-run after final art is supplied.

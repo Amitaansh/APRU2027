@@ -724,8 +724,26 @@
   gap: 40rem;
 }
 
+/*
+ * A mark cut to its ink, sized to equal area: width = sqrt(area x ratio).
+ * `--spon-ratio` is the mark's own w/h, set inline by Sponsors.tsx from the
+ * box the trim script recorded; `--spon-area` is the area every mark shares,
+ * in rem squared, and the one number to turn if the row reads heavy or light.
+ * 9000 is a 95rem square, which is what the canvas cells were showing at
+ * 220rem wide once their margins were taken off.
+ */
+.spon-row {
+  --spon-area: 9000;
+}
+
+.spon-ink {
+  width: calc(sqrt(var(--spon-area) * var(--spon-ratio)) * 1rem);
+  flex: none;
+}
+
 @media (max-width: 767.98px) {
   .spon-row {
+    --spon-area: 4200;
     gap: 26rem;
   }
 }

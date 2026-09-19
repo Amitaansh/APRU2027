@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { Belt } from "./Belt";
 import { Reveal } from "./Reveal";
 import { sponsors } from "@apru/content";
@@ -33,6 +34,15 @@ import { sponsors } from "@apru/content";
  * obvious thing to write -- would undo the pipeline's work and blow the wide
  * marks up to three times the area of the tall ones. `.spon-cell` is that box,
  * and it is a fixed width because a belt has no measure to divide.
+ *
+ * ...IN THE BELT. The still grid cannot use the canvas: laid out in a row, the
+ * gap the eye reads is the gap between the INK of two marks, and with the ink
+ * centred on a fixed box that gap is the stated gap plus two margins that are
+ * different for every pair. The client circled exactly that -- "reduce
+ * spacings and be consistent". So the grid draws the trimmed cut of each mark
+ * (`<slug>-mark`, from packages/assets/trim-sponsors.mjs) and sizes it to the
+ * same area from its recorded ink box, which is the pipeline's equal-area rule
+ * applied to the ink rather than to the canvas. The gap is then the gap.
  */
 
 /*
@@ -114,7 +124,7 @@ export function Sponsors({
   if (variant === "grid") {
     return (
       <div>
-        <p className="t-lbl pb-[30rem]">{heading}</p>
+        <p className="t-lbl pb-[16rem]">{heading}</p>
         {/*
          * The dots between marks are a belt device -- they carry the beat of a
          * strip that never ends. Laid out and still they would read as bullets,
@@ -122,33 +132,43 @@ export function Sponsors({
          */}
         <ul className="spon-row">
           {sponsors.map((sponsor) => {
+            /*
+             * Equal area from the ink box: width = sqrt(A * ratio). A is
+             * `--spon-area`, set by the stylesheet so the marks can step down
+             * on a phone; the ratio is the one thing this file knows. A mark
+             * without a recorded box (the trim script has not been run) falls
+             * back to the canvas at the belt's cell width.
+             */
+            const box = sponsor.mark;
+            const file = "/images/sponsors/" + sponsor.slug + (box ? "-mark" : "");
+            const style = box
+              ? ({ "--spon-ratio": box.w / box.h } as CSSProperties)
+              : undefined;
             const mark = (
               <picture className="spon-mark block">
-                <source srcSet={"/images/sponsors/" + sponsor.slug + ".webp"} type="image/webp" />
+                <source srcSet={file + ".webp"} type="image/webp" />
                 <img
-                  src={"/images/sponsors/" + sponsor.slug + ".png"}
+                  src={file + ".png"}
                   alt={sponsor.name}
-                  width={640}
-                  height={400}
+                  width={box ? box.w : 640}
+                  height={box ? box.h : 400}
                   loading="lazy"
                   decoding="async"
                   className="block w-full"
                 />
               </picture>
             );
+            const cell = box ? "spon-ink block" : "spon-cell block";
             return (
               <li key={sponsor.slug}>
                 {sponsor.url ? (
-                  <a
-                    href={sponsor.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="spon-cell block"
-                  >
+                  <a href={sponsor.url} target="_blank" rel="noreferrer" className={cell} style={style}>
                     {mark}
                   </a>
                 ) : (
-                  <span className="spon-cell block">{mark}</span>
+                  <span className={cell} style={style}>
+                    {mark}
+                  </span>
                 )}
               </li>
             );

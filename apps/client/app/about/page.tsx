@@ -1,4 +1,4 @@
-import { Committee, PageHeadArt, Reveal, Section, Sponsors } from "@apru/ui";
+import { Committee, PageHeadArt, Reveal, Section } from "@apru/ui";
 import { site } from "@apru/content";
 import { pageMetadata } from "@apru/content/seo";
 
@@ -33,10 +33,14 @@ export const metadata = pageMetadata({
  * is a `.link-run`, not a `.link`: seven words that wrap on a phone need a rule
  * under each line, not a block that takes the whole one.
  *
- * `band="short"` is the client's sample: one page opening on a short band, sized
- * and cropped to the Keynotes band they pointed at, for them to compare against
- * the full-height band everywhere else. It is here and nowhere else until they
- * choose -- see PageHeadArt.
+ * The short band this page carried as a sample is now the band on every page
+ * -- the client chose it -- so there is nothing to pass; see PageHeadArt.
+ *
+ * THE SPONSOR MARKS HAVE MOVED ON. They came here from the home page as
+ * "Supported by"; on the September review the client sent them to the landing
+ * page ("logo should be in landing page and/or field trip page"), and the
+ * landing page is where they are. About is the programme, the host, and the
+ * two committees.
  */
 export default function AboutPage() {
   const link = site.aboutLink;
@@ -44,11 +48,11 @@ export default function AboutPage() {
 
   return (
     <>
-      <PageHeadArt label="About" title={["About"]} band="short" />
+      <PageHeadArt label="About" title={["About"]} />
 
       <Section>
         <Reveal>
-          <div className="t-b1 flex max-w-[74ch] flex-col gap-[24rem]">
+          <div className="t-b1 flex max-w-[74ch] flex-col gap-[14rem]">
             <p>
               {linked ? (
                 <>
@@ -71,11 +75,6 @@ export default function AboutPage() {
       {/* Everyone in one grid, three to a row — see the `leads` prop. */}
       <Section flow>
         <Committee leads="inline" />
-      </Section>
-
-      {/* "Change sponsors and partners to supported by." */}
-      <Section flow>
-        <Sponsors heading="Supported by" variant="grid" />
       </Section>
     </>
   );

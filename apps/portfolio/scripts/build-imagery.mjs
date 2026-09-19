@@ -1060,6 +1060,7 @@ async function writeSourceNote() {
       "- Portraits (committee and keynotes): " + PORTRAIT_SOURCE + " — 4:5 crop from the top, or the window in PORTRAIT_CROPS, " +
         (PORTRAIT_MONO ? "greyscale, " : "") +
         PORTRAIT.w + "x" + PORTRAIT.h + " (AVIF + WebP) in ./committee.",
+      "- Sponsor marks: " + SPONSOR_CANVAS_W + "x" + SPONSOR_CANVAS_H + " canvases at matched optical area in ./sponsors, for the belt. The `<slug>-mark.*` files beside them are the same marks cut to their ink by `node packages/assets/trim-sponsors.mjs`, for the still grid — re-run that after this.",
       "",
       "Re-run after final art is supplied.",
       "",

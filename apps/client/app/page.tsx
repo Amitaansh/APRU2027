@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { KeyVisual, Reveal } from "@apru/ui";
+import { KeyVisual, Reveal, Sponsors } from "@apru/ui";
 import { site } from "@apru/content";
 
 /**
@@ -23,6 +23,11 @@ import { site } from "@apru/content";
  * a portrait cut of the plate. Nothing is ever shown half-cropped, and the
  * interim "artwork above, live type below" arrangement this page used to fall
  * back to on phones is no longer needed.
+ *
+ * THE SPONSOR MARKS END THE PAGE. They were on About as "Supported by"; the
+ * client sent them here -- "logo should be in landing page" -- so the landing
+ * page now says what the conference is, what it asks for, and who stands
+ * behind it, in that order.
  */
 export default function HomePage() {
   return (
@@ -38,7 +43,7 @@ export default function HomePage() {
        * called a judgement call; the approved content document settles it by
        * setting these three paragraphs on the home page, under the key visual.
        */}
-      <section className="pad-b pt-[70rem] max-md:pt-[40rem]">
+      <section className="pad-b pt-[40rem] max-md:pt-[28rem]">
         <div className="ctr">
           <div className="grd">
             <div style={{ gridColumn: "1 / span 9" }}>
@@ -49,7 +54,7 @@ export default function HomePage() {
                * and the footer says who.
                */}
               <Reveal>
-                <div className="t-b1 flex max-w-[74ch] flex-col gap-[24rem]">
+                <div className="t-b1 flex max-w-[74ch] flex-col gap-[14rem]">
                   {site.themeParagraphs.map((paragraph, i) => (
                     <p key={i}>{paragraph}</p>
                   ))}
@@ -58,13 +63,18 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-[14rem] pt-[54rem] max-md:pt-[34rem]">
+          <div className="flex flex-wrap gap-[14rem] pt-[32rem] max-md:pt-[24rem]">
             <Link href="/call-for-abstracts" className="btn btn-fill">
               Call for abstracts
             </Link>
             <Link href="/register" className="btn">
               Registration
             </Link>
+          </div>
+
+          {/* "Change sponsors and partners to supported by." */}
+          <div className="pt-[48rem] max-md:pt-[36rem]">
+            <Sponsors heading="Supported by" variant="grid" />
           </div>
         </div>
       </section>
