@@ -62,10 +62,12 @@ function MemberName({ member }: { member: CommitteeMember }) {
  * so it does not depend on the file's order; the seven who follow them come
  * out in the client's order there too.
  *
- * THE LEAD TITLES ARE NOT PRINTED in the inline grid. "Let's remove the title.
- * It seems a bit confused with the affiliation." The other seven keep their
- * conference roles (Open Call Coordination and so on); the roles stay in the
- * data because the featured layout keys off them.
+ * NO ROLES ARE PRINTED in the inline grid. The review first struck the Lead
+ * title -- "it seems a bit confused with the affiliation" -- and then, on
+ * seeing the grid, the client took the same view of the other seven's
+ * conference roles and asked for all of them to come off. Name and
+ * affiliation, nothing under. The roles stay in the data because the
+ * featured layout keys off them.
  */
 /**
  * The two roles that set a member apart, in the order they are shown. Read as
@@ -191,10 +193,9 @@ export function Committee({
 }
 
 /**
- * The client edition's roster: everyone in one grid, three to a row, with the
- * conference role as a third line under the affiliation -- what they are
- * doing for this conference, as distinct from what they are at their
- * university. The two rosters share one grid so they read as one block.
+ * The client edition's roster: everyone in one grid, three to a row, two
+ * lines each -- the name and the affiliation. The two rosters share one grid
+ * so they read as one block.
  *
  * TWO TO A ROW ON A PHONE. "One for one row seems a lot scrolled down. Maybe
  * two in one row?" Below 768px `.grd` is a block stack, so the grid is stated
@@ -232,9 +233,6 @@ function InlineRoster() {
                     <MemberName member={member} />
                   </span>
                   <span className="dim block">{member.affiliation}</span>
-                  {!LEAD_ROLES.includes(member.role) && (
-                    <span className="dim block">{member.role}</span>
-                  )}
                 </span>
               </li>
             ))}
