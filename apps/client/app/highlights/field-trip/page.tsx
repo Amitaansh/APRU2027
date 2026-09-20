@@ -29,7 +29,7 @@ export default function FieldTripsPage() {
 
       <Section>
         <Reveal>
-          <div className="t-b1 flex max-w-[74ch] flex-col gap-[14rem]">
+          <div className="t-b1 flex flex-col gap-[14rem]">
             <p>{fieldTrip.intro}</p>
 
             <ul className="flex flex-col gap-[6rem]">

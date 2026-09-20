@@ -689,6 +689,29 @@
 
 /*
  * ---------------------------------------------------------------------------
+ * THE MEASURE RUNS THE PAGE
+ * ---------------------------------------------------------------------------
+ * "Remove space" -- drawn round the empty right-hand half of About and of
+ * Working Groups -- "make the sentence go across the whole page". Every
+ * block of copy on the site was capped at about 74 characters, the measure
+ * a paragraph is usually held to, and on a wide screen that cap left half
+ * the page white. The client's own pages drop the utility; these are the
+ * shared components' caps, which the portfolio keeps.
+ *
+ * OUTSIDE @layer components, deliberately: `max-w-[70ch]` is a utility, and
+ * a utility outranks every layered rule. An unlayered rule is the only thing
+ * that beats it from a stylesheet.
+ */
+.wg-blurb > p,
+.wg-leads,
+.wg-leads-first,
+.stat-note,
+.fold-body {
+  max-width: none;
+}
+
+/*
+ * ---------------------------------------------------------------------------
  * THE SPONSOR MARKS
  * ---------------------------------------------------------------------------
  * On the landing page now, under "Supported by". Two rounds of review sit on

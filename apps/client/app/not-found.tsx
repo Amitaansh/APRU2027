@@ -8,7 +8,7 @@ export default function NotFound() {
       <PageHeadArt label="404" title={["Page not found"]} />
 
       <Section>
-        <p className="t-b1 max-w-[60ch]">
+        <p className="t-b1">
           That page does not exist. It may have moved, or it may not have been published yet.
           Much of this site fills in as the 2027 programme is confirmed.
         </p>

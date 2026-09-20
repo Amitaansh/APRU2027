@@ -46,7 +46,7 @@ export default function HomePage() {
       <section className="pad-b pt-[40rem] max-md:pt-[28rem]">
         <div className="ctr">
           <div className="grd">
-            <div style={{ gridColumn: "1 / span 9" }}>
+            <div style={{ gridColumn: "1 / span 15" }}>
               {/*
                * Only the three paragraphs. The dates, the venue address and
                * the host used to follow them as a fourth block; the client had
@@ -54,7 +54,7 @@ export default function HomePage() {
                * and the footer says who.
                */}
               <Reveal>
-                <div className="t-b1 flex max-w-[74ch] flex-col gap-[14rem]">
+                <div className="t-b1 flex flex-col gap-[14rem]">
                   {site.themeParagraphs.map((paragraph, i) => (
                     <p key={i}>{paragraph}</p>
                   ))}

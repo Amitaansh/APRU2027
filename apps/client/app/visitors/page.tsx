@@ -36,7 +36,7 @@ function VenueBody({ section }: { section: VenueSection }) {
   return (
     <div className="flex flex-col gap-[12rem]">
       {paragraphs.map((paragraph, i) => (
-        <p key={i} className="t-b1 max-w-[70ch]">
+        <p key={i} className="t-b1">
           {paragraph}
         </p>
       ))}
@@ -44,7 +44,7 @@ function VenueBody({ section }: { section: VenueSection }) {
       {section.bullets?.length ? (
         <ul className="flex flex-col gap-[8rem]">
           {section.bullets.map((bullet, i) => (
-            <li key={i} className="t-b1 max-w-[70ch] flex gap-[14rem]">
+            <li key={i} className="t-b1 flex gap-[14rem]">
               {/* A drawn marker rather than a list-style bullet: the type scale
                   sets its own leading and a browser marker sits off it. */}
               <span aria-hidden="true" className="dim flex-none">
@@ -86,7 +86,7 @@ export default function VisitorsPage() {
          * stays, because the structure is what the client is reviewing and a
          * heading that vanishes is harder to notice than one that says so.
          */
-        <p className="t-b1 dim max-w-[70ch]">
+        <p className="t-b1 dim">
           To be announced. Details will be published here ahead of registration opening.
         </p>
       ),

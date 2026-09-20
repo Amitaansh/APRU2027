@@ -31,7 +31,7 @@ export default function SchedulePage() {
 
       <Section>
         <Reveal>
-          <p className="t-b1 max-w-[74ch] pb-[28rem] max-md:pb-[20rem]">
+          <p className="t-b1 pb-[28rem] max-md:pb-[20rem]">
             {program.scheduleIntro}
           </p>
         </Reveal>

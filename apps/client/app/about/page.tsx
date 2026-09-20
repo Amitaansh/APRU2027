@@ -52,7 +52,7 @@ export default function AboutPage() {
 
       <Section>
         <Reveal>
-          <div className="t-b1 flex max-w-[74ch] flex-col gap-[14rem]">
+          <div className="t-b1 flex flex-col gap-[14rem]">
             <p>
               {linked ? (
                 <>

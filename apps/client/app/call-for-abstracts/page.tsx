@@ -55,7 +55,7 @@ export default function CallForAbstractsPage() {
 
       <Section>
         <Reveal>
-          <div className="flex max-w-[74ch] flex-col gap-[14rem]">
+          <div className="flex flex-col gap-[14rem]">
             <p className="t-b1">{abstracts.intro}</p>
 
             <p className="t-b1 pt-[10rem]">{abstracts.tracksLead}</p>

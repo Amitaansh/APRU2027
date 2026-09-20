@@ -35,7 +35,7 @@ export default function WorkingGroupsPage() {
          * asked for it back where the content document has it.
          */}
         <Reveal>
-          <div className="flex max-w-[74ch] flex-col gap-[14rem] pb-[28rem] max-md:pb-[20rem]">
+          <div className="flex flex-col gap-[14rem] pb-[28rem] max-md:pb-[20rem]">
             {forums.intro.map((paragraph, i) => (
               <p key={i} className="t-b1">
                 {paragraph}
