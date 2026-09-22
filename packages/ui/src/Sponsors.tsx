@@ -40,9 +40,11 @@ import { sponsors } from "@apru/content";
  * centred on a fixed box that gap is the stated gap plus two margins that are
  * different for every pair. The client circled exactly that -- "reduce
  * spacings and be consistent". So the grid draws the trimmed cut of each mark
- * (`<slug>-mark`, from packages/assets/trim-sponsors.mjs) and sizes it to the
- * same area from its recorded ink box, which is the pipeline's equal-area rule
- * applied to the ink rather than to the canvas. The gap is then the gap.
+ * (`<slug>-mark`, from packages/assets/trim-sponsors.mjs) and scales it from
+ * its recorded ink box to fit one frame -- a fixed height and a maximum
+ * width, `--spon-h` and `--spon-w` in base.css -- so the marks share a top
+ * and bottom line rather than an area. The gap is then the gap, and the
+ * level is the level.
  */
 
 /*
@@ -133,11 +135,12 @@ export function Sponsors({
         <ul className="spon-row">
           {sponsors.map((sponsor) => {
             /*
-             * Equal area from the ink box: width = sqrt(A * ratio). A is
-             * `--spon-area`, set by the stylesheet so the marks can step down
-             * on a phone; the ratio is the one thing this file knows. A mark
-             * without a recorded box (the trim script has not been run) falls
-             * back to the canvas at the belt's cell width.
+             * Fit to the frame from the ink box: width = min(H * ratio, W).
+             * H and W are `--spon-h` and `--spon-w`, set by the stylesheet so
+             * the frame can step down on a phone; the ratio is the one thing
+             * this file knows. A mark without a recorded box (the trim script
+             * has not been run) falls back to the canvas at the belt's cell
+             * width.
              */
             const box = sponsor.mark;
             const file = "/images/sponsors/" + sponsor.slug + (box ? "-mark" : "");

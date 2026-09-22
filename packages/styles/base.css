@@ -725,25 +725,47 @@
 }
 
 /*
- * A mark cut to its ink, sized to equal area: width = sqrt(area x ratio).
+ * A mark cut to its ink, scaled to fit ONE FRAME. `--spon-h` is the frame's
+ * height and `--spon-w` its width, in rem; every mark is scaled until it
+ * touches one of the two, so the tall marks all stand exactly `--spon-h` and
+ * the wide ones all span exactly `--spon-w`. The top and bottom of the row
+ * are then the frame's edges -- the client's "same water level" -- and the
+ * two numbers here are the ones to turn if the row reads heavy or light.
+ *
+ * It was equal area before this, width = sqrt(area x ratio), which is the
+ * rule that reads as even weight in a belt -- but it hands a tall mark more
+ * height than a squat one, and Tierra and Ground-Up rose above JTC and sank
+ * below it. The client boxed the row and asked for one level.
+ *
+ * Not `object-fit: contain` in a fixed box: that would hand every mark
+ * narrower than the frame a transparent margin on each side, and the gap
+ * between marks would stop being the gap, which is the thing the previous
+ * round fixed. Each cell is its own ink box scaled to fit, so a fixed gap
+ * between ink edges stays the same gap everywhere.
+ *
  * `--spon-ratio` is the mark's own w/h, set inline by Sponsors.tsx from the
- * box the trim script recorded; `--spon-area` is the area every mark shares,
- * in rem squared, and the one number to turn if the row reads heavy or light.
- * 9000 is a 95rem square, which is what the canvas cells were showing at
- * 220rem wide once their margins were taken off.
+ * box the trim script recorded. The image carries its intrinsic ratio, so
+ * only the width is written: height-bound marks get h x ratio, and the
+ * width-bound ones are held at the frame's width and sit centred in the band.
+ *
+ * The frame was set from what the equal-area rule had been showing: 90 is the
+ * height JTC already stood at, and 190 holds Henning Larsen to about the
+ * width it had, rather than the 280 a 90-tall wordmark would demand.
  */
 .spon-row {
-  --spon-area: 9000;
+  --spon-h: 90;
+  --spon-w: 190;
 }
 
 .spon-ink {
-  width: calc(sqrt(var(--spon-area) * var(--spon-ratio)) * 1rem);
+  width: calc(min(var(--spon-h) * var(--spon-ratio), var(--spon-w)) * 1rem);
   flex: none;
 }
 
 @media (max-width: 767.98px) {
   .spon-row {
-    --spon-area: 4200;
+    --spon-h: 60;
+    --spon-w: 125;
     gap: 26rem;
   }
 }

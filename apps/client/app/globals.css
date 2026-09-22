@@ -714,14 +714,16 @@
  * ---------------------------------------------------------------------------
  * THE SPONSOR MARKS
  * ---------------------------------------------------------------------------
- * On the landing page now, under "Supported by". Two rounds of review sit on
- * this row: "adjust spacing, 4 logos in a row" on a phone, and then "reduce
+ * On the landing page now, under "Supported by". Three rounds of review sit
+ * on this row: "adjust spacing, 4 logos in a row" on a phone, then "reduce
  * spacings and be consistent" on the desktop, where the gap between marks
  * was the stated gap plus whatever transparent margin each canvas happened to
- * carry. Both are answered in one place: Sponsors.tsx draws each mark cut to
- * its ink and sized to equal area (`.spon-ink` in base.css), so the gap is
- * the gap, and the row wraps on its own gutter at every width. The phone grid
- * this file used to force is gone with the margins that made it necessary.
+ * carry, and then a box drawn round the row asking that the marks keep to
+ * "the same water level". All three are answered in one place: Sponsors.tsx
+ * draws each mark cut to its ink and scaled to fit one frame (`.spon-ink` in
+ * base.css), so the gap is the gap, the tops and bottoms line up, and the
+ * row wraps on its own gutter at every width. The phone grid this file used
+ * to force is gone with the margins that made it necessary.
  *
  * OUTSIDE @layer components, deliberately. base.css declares `.spon-row`
  * unlayered, and an unlayered rule beats every layered one however specific.
