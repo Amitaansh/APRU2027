@@ -16,6 +16,10 @@ export const metadata = pageMetadata({
  * is gone, and the client asked for what remains to be a link to the call for
  * abstracts. The dates themselves are black here rather than accented - see
  * `.live` in globals.css.
+ *
+ * Everything on the page is at text size: the dates ("1pt smaller than the
+ * normal text", so `size="b1"`) and the pointer to the call for abstracts
+ * under them ("same font size as above").
  */
 export default function KeyDatesPage() {
   return (
@@ -23,8 +27,8 @@ export default function KeyDatesPage() {
       <PageHeadArt label="Programme" title={["Key Dates"]} />
 
       <Section>
-        <ImportantDates />
-        <p className="t-b2 pt-[20rem]">
+        <ImportantDates size="b1" />
+        <p className="t-b1 pt-[20rem]">
           Submitting work? See the{" "}
           <Link href="/call-for-abstracts" className="link">
             call for abstracts

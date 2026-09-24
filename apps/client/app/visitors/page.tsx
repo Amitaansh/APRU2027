@@ -57,10 +57,12 @@ function VenueBody({ section }: { section: VenueSection }) {
       ) : null}
 
       {section.links?.length ? (
+        /* At text size, like the paragraphs above them: set a step down, the
+           bold links read as smaller than the copy around them. */
         <ul className="flex flex-wrap gap-x-[24rem] gap-y-[6rem]">
           {section.links.map((link) => (
             <li key={link.url}>
-              <a href={link.url} target="_blank" rel="noreferrer" className="t-b2 link">
+              <a href={link.url} target="_blank" rel="noreferrer" className="t-b1 link">
                 {link.label}
                 <span aria-hidden="true">&#8202;&#8599;</span>
                 <span className="sr-only">(opens in a new tab)</span>

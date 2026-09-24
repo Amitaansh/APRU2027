@@ -59,12 +59,24 @@ function display(row: (typeof dates)[number]): string {
  * instead of ruled rows across the measure. That is how the content document
  * writes the dates inside the call for abstracts, and the client edition sets
  * that page as the document has it.
+ *
+ * `size` is the date cell's type size in the ruled rows. IndexRow sets its
+ * meta cell a step under the label, which is right for a quiet qualifier and
+ * wrong for the fact the row exists to give: the client read the bold dates
+ * as "1pt smaller than the normal text" and asked for them up. "b1" sets them
+ * at the label's size; the portfolio keeps the default.
  */
 export function ImportantDates({
   through,
   omit = [],
   variant = "rows",
-}: { through?: string; omit?: string[]; variant?: "rows" | "lines" } = {}) {
+  size = "b2",
+}: {
+  through?: string;
+  omit?: string[];
+  variant?: "rows" | "lines";
+  size?: "b1" | "b2";
+} = {}) {
   const rows = (
     through ? dates.filter((row) => row.date !== null && row.date <= through) : dates
   ).filter((row) => !omit.includes(row.id));
@@ -101,7 +113,13 @@ export function ImportantDates({
             key={row.id}
             variant="data"
             title={row.label}
-            meta={<span className={"tnum " + (row.date ? "live" : "dim")}>{display(row)}</span>}
+            meta={
+              /* The size on a wrapper of its own: `.t-b1` also sets weight 400,
+                 and on the same element it would take the bold off `.live`. */
+              <span className={size === "b1" ? "t-b1" : undefined}>
+                <span className={"tnum " + (row.date ? "live" : "dim")}>{display(row)}</span>
+              </span>
+            }
           />
         ))}
       </RuleList>
