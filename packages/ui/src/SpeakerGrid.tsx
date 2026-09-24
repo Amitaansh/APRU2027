@@ -121,7 +121,10 @@ function SpeakerCards() {
                   speaker.name
                 )}
               </p>
-              <p className="pt-[2rem]">{speaker.role + ", " + speaker.institution}</p>
+              {/* The position and the institution on lines of their own --
+                  "move the institution down to another row". */}
+              <p className="pt-[2rem]">{speaker.role}</p>
+              <p>{speaker.institution}</p>
             </div>
             {speaker.bio && (
               <p className="t-b2 pt-[12rem] max-md:col-span-2 max-md:pt-[10rem]">{speaker.bio}</p>
