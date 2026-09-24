@@ -1,4 +1,4 @@
-import { PageHeadArt, Reveal, Section } from "@apru/ui";
+import { PageHeadArt, Reveal, Section, ToBeAnnounced } from "@apru/ui";
 import { fieldTrip } from "@apru/content";
 import { pageMetadata } from "@apru/content/seo";
 
@@ -19,7 +19,10 @@ export const metadata = pageMetadata({
  * paragraph is exactly how the two editions come to disagree.
  *
  * The closing sentence -- when the itineraries land -- is a paragraph of its
- * own, at the client's request; it is `availability` in the data.
+ * own, at the client's request; it is `availability` in the data. It is now
+ * set as the schedule sets its "detailed program will be announced" line --
+ * the same status block, same size, same gap above it -- because the two
+ * sentences say the same kind of thing: this is when the detail lands.
  */
 
 export default function FieldTripsPage() {
@@ -29,7 +32,7 @@ export default function FieldTripsPage() {
 
       <Section>
         <Reveal>
-          <div className="t-b1 flex flex-col gap-[14rem]">
+          <div className="t-b1 flex flex-col gap-[14rem] pb-[28rem] max-md:pb-[20rem]">
             <p>{fieldTrip.intro}</p>
 
             <ul className="flex flex-col gap-[6rem]">
@@ -42,9 +45,9 @@ export default function FieldTripsPage() {
             </ul>
 
             <p>{fieldTrip.note}</p>
-            <p>{fieldTrip.availability}</p>
           </div>
         </Reveal>
+        <ToBeAnnounced label={fieldTrip.availability} rules={false} />
       </Section>
     </>
   );
