@@ -46,6 +46,16 @@ import { site } from "@apru/content";
  *
  * The social glyphs are the classic filled marks -- "use a more classic
  * icon?" -- see `glyphs` on Social.
+ *
+ * ON A PHONE THE TWO MARKS SHARE A ROW. At 34rem they measure about 362rem
+ * together, more than a phone's measure, so the NUS lockup wrapped under the
+ * ring; the client asked for them "in a row" there and only there. 28rem on a
+ * 16rem gap is 314rem, and since rem tracks the viewport below `md` that fits
+ * at every phone width. The desktop pair is untouched.
+ *
+ * THE CONTACT BLOCK SITS HARD RIGHT on a wide screen -- "align to far right"
+ * -- so the footer reads as two ends, who we are and how to reach us. On a
+ * phone it stacks under the address and keeps the left edge.
  */
 
 const ADDRESS_LINKS = [
@@ -62,20 +72,20 @@ export function Footer() {
       <div className="ctr">
         <div className="grd">
           <div style={{ gridColumn: "span 7" }}>
-            <div className="flex flex-wrap items-center gap-x-[24rem] gap-y-[12rem]">
+            <div className="flex flex-wrap items-center gap-x-[24rem] gap-y-[12rem] max-md:flex-nowrap max-md:gap-x-[16rem]">
               <img
                 src="/images/apru-white.svg"
                 alt="APRU"
                 width={330}
                 height={102}
-                className="h-[34rem] w-auto invert"
+                className="h-[34rem] w-auto invert max-md:h-[28rem]"
               />
               <img
                 src="/images/nus-doa-white.svg"
                 alt="National University of Singapore, Department of Architecture, College of Design and Engineering"
                 width={690}
                 height={93}
-                className="h-[34rem] w-auto invert"
+                className="h-[34rem] w-auto invert max-md:h-[28rem]"
               />
             </div>
 
@@ -100,7 +110,7 @@ export function Footer() {
            */}
           <div
             style={{ gridColumn: "10 / span 6" }}
-            className="flex flex-col items-start gap-[20rem] max-md:pt-[24rem]"
+            className="flex flex-col items-start gap-[20rem] max-md:pt-[24rem] md:items-end md:text-right"
           >
             <a href={"mailto:" + contactEmail} className="t-b1 link">
               {contactEmail}
@@ -108,7 +118,7 @@ export function Footer() {
 
             <div>
               <p className="t-lbl dim pb-[8rem]">Follow Us</p>
-              <Social glyphs="classic" />
+              <Social glyphs="classic" className="md:justify-end" />
             </div>
           </div>
         </div>
