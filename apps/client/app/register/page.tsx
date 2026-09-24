@@ -13,6 +13,10 @@ export const metadata = pageMetadata({
  * three-row "Includes" list have all come off; RegisterState is what remains,
  * and it is the one thing on the page that will change by itself when
  * registration opens.
+ *
+ * Set as the schedule is set, at the client's request: who has to register,
+ * then the date the portal arrives as the page's one bold sentence. See
+ * `variant` on RegisterState.
  */
 export default function RegisterPage() {
   return (
@@ -20,7 +24,7 @@ export default function RegisterPage() {
       <PageHeadArt label="Registration" title={["Registration"]} />
 
       <Section>
-        <RegisterState />
+        <RegisterState variant="statement" />
       </Section>
     </>
   );

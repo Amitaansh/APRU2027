@@ -330,5 +330,9 @@ export interface FieldTripConfig {
 /** The registration page, which is a single stated fact until the portal opens. */
 export interface RegistrationConfig {
   body: string;
+  /** Who has to register -- the client edition's opening paragraph. */
+  intro: string;
+  /** When the portal arrives, set as the client edition's status line. */
+  portal: string;
   url: string;
 }
