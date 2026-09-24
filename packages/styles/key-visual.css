@@ -257,14 +257,28 @@
     white-space: normal;
     /*
      * Stretched to the frame, with the title's offset moved from `top` into
-     * padding so the first cap line lands where it did. This is only so the
-     * date block below can be pinned to the middle of the FRAME: it is a child
-     * of this box, and a percentage offset resolves against the nearest
-     * positioned ancestor, which is this hgroup and not .kv.
+     * padding so the first cap line lands where it did, and the lockups' band
+     * reserved at the foot -- their offset, the taller mark (APRU, 26cqw at
+     * 102/330) and one lead -- so nothing set in here can reach them.
+     *
+     * A GRID OF 1fr / auto / 1fr, so the date line is the middle row. See
+     * .kv-meta below for why.
      */
     top: 0;
     bottom: 0;
     padding-top: var(--kv-top);
+    padding-bottom: calc(var(--kv-display) * 1.3724 + 8.04cqw + var(--kv-lead));
+    display: grid;
+    grid-template-rows: 1fr auto 1fr;
+  }
+
+  /*
+   * The title keeps to the top of its row, and carries two leads under it as
+   * the least room it will leave above the date.
+   */
+  .kv-type h1 {
+    align-self: start;
+    padding-bottom: calc(var(--kv-lead) * 2);
   }
 
   .kv-line {
@@ -275,23 +289,26 @@
    * THE DATE BLOCK LEAVES THE TITLE. The client's mobile layout is three
    * things at three heights: the title across the top, the dates on their own
    * about halfway down, the lockups across the foot. So in portrait the date
-   * line comes out of the cap rhythm under the title and is pinned at the
-   * frame's vertical middle, and the place drops to a second line under the
-   * dates -- "21—23 May 2027," over "Singapore", as the layout has it.
+   * line comes out of the cap rhythm under the title and sits in the middle
+   * of the open ground, and the place drops to a second line under the dates
+   * -- "21—23 May 2027," over "Singapore", as the layout has it.
    *
-   * 50% of .kv-type, which the rule above has just made the height of the
-   * frame. The hgroup already carries the gutters, so the block inherits its
-   * left edge by sitting at 0 rather than by naming the gutter again. The
-   * margin-top from the `+ *` rule is zeroed because an absolutely positioned
-   * box keeps its margins and would otherwise sit low by one lead.
+   * IT WAS PINNED AT 50%, and on a small phone that is where the title still
+   * is. At 375 wide the title wraps to five or six lines, and in Safari with
+   * its bars showing -- or an in-app browser -- the frame is short enough that
+   * those lines run past the middle: the review's photograph has the date
+   * printed over "Conference".
+   *
+   * So it is the middle row of the grid above instead of an absolute pin. Two
+   * 1fr rows either side put it at the centre whenever there is room; but a fr
+   * track never shrinks below its content, so when the title is taller than
+   * its half, the first row grows to hold it, the third row gives up the
+   * difference, and the date moves down under the title rather than over it.
+   * The margin-top from the `+ *` rule is zeroed: the gap is the title's own
+   * padding now.
    */
   .kv-meta {
-    position: absolute;
-    top: 50%;
-    left: 0;
-    right: 0;
     margin-top: 0;
-    transform: translateY(-50%);
   }
 
   .kv-place {
