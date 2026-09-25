@@ -58,8 +58,31 @@ import { site } from "@apru/content";
  * phone it stacks under the address and keeps the left edge.
  */
 
-const ADDRESS_LINKS = [
-  { label: "Department of Architecture", url: "https://cde.nus.edu.sg/arch/" },
+/*
+ * THE MARKS CARRY THE LINKS -- "embed link in logo". The ring goes to the
+ * APRU-SCL programme page and the NUS lockup to the department, which is why
+ * the department's line in the address below is no longer a link of its own:
+ * "remove the link for DOA". The college and the university keep theirs.
+ */
+const MARKS = [
+  {
+    src: "/images/apru-white.svg",
+    alt: "APRU",
+    width: 330,
+    height: 102,
+    url: "https://gsi.uoregon.edu/apru-scl",
+  },
+  {
+    src: "/images/nus-doa-white.svg",
+    alt: "National University of Singapore, Department of Architecture, College of Design and Engineering",
+    width: 690,
+    height: 93,
+    url: "https://cde.nus.edu.sg/arch/",
+  },
+];
+
+const ADDRESS_LINES = [
+  { label: "Department of Architecture" },
   { label: "College of Design and Engineering", url: "https://cde.nus.edu.sg/" },
   { label: "National University of Singapore", url: "https://nus.edu.sg/" },
 ];
@@ -73,28 +96,29 @@ export function Footer() {
         <div className="grd">
           <div style={{ gridColumn: "span 7" }}>
             <div className="flex flex-wrap items-center gap-x-[24rem] gap-y-[12rem] max-md:flex-nowrap max-md:gap-x-[16rem]">
-              <img
-                src="/images/apru-white.svg"
-                alt="APRU"
-                width={330}
-                height={102}
-                className="h-[34rem] w-auto invert max-md:h-[28rem]"
-              />
-              <img
-                src="/images/nus-doa-white.svg"
-                alt="National University of Singapore, Department of Architecture, College of Design and Engineering"
-                width={690}
-                height={93}
-                className="h-[34rem] w-auto invert max-md:h-[28rem]"
-              />
+              {MARKS.map((mark) => (
+                <a key={mark.url} href={mark.url} target="_blank" rel="noreferrer" className="shrink-0">
+                  <img
+                    src={mark.src}
+                    alt={mark.alt}
+                    width={mark.width}
+                    height={mark.height}
+                    className="block h-[34rem] w-auto invert max-md:h-[28rem]"
+                  />
+                </a>
+              ))}
             </div>
 
             <address className="t-b2 not-italic pt-[16rem] leading-[1.6]">
-              {ADDRESS_LINKS.map((line) => (
-                <span key={line.url} className="block">
-                  <a href={line.url} target="_blank" rel="noreferrer" className="link">
-                    {line.label}
-                  </a>
+              {ADDRESS_LINES.map((line) => (
+                <span key={line.label} className="block">
+                  {line.url ? (
+                    <a href={line.url} target="_blank" rel="noreferrer" className="link">
+                      {line.label}
+                    </a>
+                  ) : (
+                    line.label
+                  )}
                 </span>
               ))}
               4 Architecture Drive
