@@ -8,7 +8,8 @@
       "Please ensure your passport has a minimum validity of six months at the time of departure. Visitors whose passport has less than six months' validity are reminded to apply for renewal of their passports early to avoid inconvenience from delays in processing visa applications.",
       "Invitation letters for visa application purposes will only be provided once payment for registration fees has been made or a waiver granted. Should a visa not be granted a refund can be given in line with our refund policy.",
       "NUS Department of Architecture will not submit a visa application for you via Submission of Application for Visa Electronically (SAVE). Please submit your visa application at the nearest Singapore Overseas Mission or through the authorized visa agents of the Overseas Missions. The full list of Overseas Missions can be found here.",
-      "All travellers are required to submit the SG Arrival Card within three (3) days (including the day of arrival) before arriving in Singapore, except those transiting/transferring through Singapore without seeking immigration clearance; and Singapore citizens, Permanent Residents and Long-Term Pass Holders entering via land checkpoints. Submission of SGAC is Free and can be done via the SGAC e-Service or MyICA Mobile app."
+      "All travellers are required to submit the SG Arrival Card within three (3) days (including the day of arrival) before arriving in Singapore, except those transiting/transferring through Singapore without seeking immigration clearance; and Singapore citizens, Permanent Residents and Long-Term Pass Holders entering via land checkpoints. Submission of SGAC is Free and can be done via the SGAC e-Service or MyICA Mobile app.",
+      "Travellers are advised to check whether any vaccination requirements apply to them before entering Singapore. In particular, a valid Yellow Fever Vaccination Certificate may be required for travellers arriving from or having recently travelled through countries with a risk of yellow fever transmission."
     ],
     "links": [
       {
@@ -22,6 +23,10 @@
       {
         "label": "SG Arrival Card e-Service",
         "url": "https://eservices.ica.gov.sg/sgarrivalcard/"
+      },
+      {
+        "label": "Yellow Fever Vaccination Certificate",
+        "url": "https://www.ica.gov.sg/enter-transit-depart/entering-singapore/yellow-fever-vaccination-certificate"
       }
     ]
   },
