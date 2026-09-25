@@ -106,7 +106,7 @@ function SpeakerCards() {
         {speakers.map((speaker) => (
           <li
             key={speaker.id}
-            className="grid grid-cols-[220rem_1fr] items-start gap-x-[20rem] max-md:grid-cols-[120rem_1fr] max-md:gap-x-[14rem]"
+            className="grid grid-cols-[220rem_1fr] grid-rows-[auto_1fr] items-start gap-x-[20rem] max-md:grid-cols-[120rem_1fr] max-md:gap-x-[14rem]"
           >
             <span className="row-span-2 max-md:row-span-1">
               <Portrait name={speaker.name} photo={speaker.photo} />
@@ -126,8 +126,16 @@ function SpeakerCards() {
               <p className="pt-[2rem]">{speaker.role}</p>
               <p>{speaker.institution}</p>
             </div>
+            {/* A blank line between the institution and the biography, on
+                every card alike. The two cards with the shorter biographies
+                had one and the two with the longer had none: the portrait
+                spans both rows, and where it outgrew them the grid shared the
+                spare height between the two -- which opened a gap under the
+                affiliation on those cards alone. The client boxed the missing
+                gap on the other two, so `1fr` now hands the spare height to
+                the biography's row, and the line is set here on purpose. */}
             {speaker.bio && (
-              <p className="t-b2 pt-[12rem] max-md:col-span-2 max-md:pt-[10rem]">{speaker.bio}</p>
+              <p className="t-b2 pt-[1lh] max-md:col-span-2 max-md:pt-[10rem]">{speaker.bio}</p>
             )}
           </li>
         ))}
