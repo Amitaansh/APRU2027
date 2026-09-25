@@ -26,6 +26,11 @@
     "date": "2027-02-28"
   },
   {
+    "id": "standard-registration",
+    "label": "Standard registration closes",
+    "date": "2027-04-20"
+  },
+  {
     "id": "conference",
     "label": "Conference",
     "date": "2027-05-21",
