@@ -308,6 +308,13 @@ export interface AbstractsConfig {
   datesHeading?: string;
   rulesHeading: string;
   rules: string[];
+  /**
+   * The portal's author guide, a PDF served from the app's own public/docs.
+   * `lead` is the line's own words and `label` the link after its colon. The
+   * link opens the file in the browser's viewer, which carries its own
+   * download control, so the page offers no separate download.
+   */
+  guide?: VenueLink & { lead: string };
   submitLabel: string;
   /** The NUS UVENTs submission portal. */
   submitUrl: string;

@@ -47,6 +47,9 @@ export const metadata = pageMetadata({
  * requirements carry the same dash so the two lists read as one kind of
  * thing; and the heading of the second list is "Submission Requirements",
  * with each line's label struck, as the review has it -- all in abstracts.json.
+ *
+ * The portal's user guide sits between the requirements and the button: one
+ * line, the client's words, linking the PDF in public/docs.
  */
 export default function CallForAbstractsPage() {
   return (
@@ -100,6 +103,20 @@ export default function CallForAbstractsPage() {
                 </li>
               ))}
             </ul>
+
+            {/*
+             * "Abstract Submission Portal User Guide: [View the guide]", just above
+             * the button. A new tab and the browser's own PDF viewer, which is
+             * where a reader who wants the file downloads it.
+             */}
+            {abstracts.guide && (
+              <p className="t-b1 pt-[10rem]">
+                {abstracts.guide.lead}:{" "}
+                <a href={abstracts.guide.url} target="_blank" rel="noreferrer" className="link">
+                  {abstracts.guide.label}
+                </a>
+              </p>
+            )}
           </div>
 
           <div className="pt-[32rem] max-md:pt-[24rem]">

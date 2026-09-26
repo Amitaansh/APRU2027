@@ -12,6 +12,8 @@ _claude_tmp/
 # the website sitemap carry personal email addresses for NUS and partner-
 # university academics.
 *.pdf
+# ...except the documents the site itself publishes.
+!apps/client/public/docs/*.pdf
 *.ai
 APRU-SCL-2027-*.md
 APRU-SCL-2027-DesignBrief-v2.html

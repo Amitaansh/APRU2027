@@ -29,6 +29,11 @@
     "Up to 5 keywords should be included.",
     "Abstracts must be submitted in English."
   ],
+  "guide": {
+    "lead": "Abstract Submission Portal User Guide",
+    "label": "View the guide",
+    "url": "/docs/abstract-submission-portal-user-guide.pdf"
+  },
   "submitLabel": "Submit now",
   "submitUrl": "https://uvents.nus.edu.sg/event/apruscl"
 }
