@@ -597,11 +597,16 @@ const SPONSORS = [
   { slug: "ground-up-initiative", name: "Ground-Up Initiative", file: "GUI/GUI Logo 1C-01.png" },
   { slug: "henning-larsen", name: "Henning Larsen", file: "Henning Larsen/HL Logo Black RGB.png" },
   { slug: "jtc", name: "JTC", file: "JTC/JTC Logo_Tagline_RGB for Digital.png" },
-  // EPS: libvips has no PostScript delegate here, so the mark comes from the
-  // TIFF preview Illustrator embeds in the file. 448x332, which is enough for a
-  // logo row but is the reason this one is the least sharp of the five — ask
-  // the brand team for a PNG or SVG if it ever needs to run larger.
-  { slug: "singhealth", name: "SingHealth", file: "SingHealth/SingHealth_logo_CMYK.eps", eps: true },
+  // The lockup with the "Defining Tomorrow's Medicine" tagline, a 3385x2660
+  // PNG the client supplied in place of the EPS in the shared folder (whose
+  // 448x332 TIFF preview was the least sharp of the five). It came with the
+  // review rather than through the brand folder, so it is read from where the
+  // other local sources are kept: `path` overrides SPONSOR_SOURCE + file.
+  {
+    slug: "singhealth",
+    name: "SingHealth",
+    path: process.env.SINGHEALTH_SOURCE ?? "D:/APRU/landing-elements/SingHealth_logo_tagline.png",
+  },
   // No alpha channel: black line art on a white JPEG ground. Its coverage is
   // derived from luminance below rather than read from the file.
   { slug: "tierra-design", name: "Tierra Design", file: "Tierra Design/Tierra Design_Black (HighRes).jpg", flat: true },
@@ -635,9 +640,11 @@ async function buildSponsors() {
 
   let written = 0;
   for (const sponsor of SPONSORS) {
-    const source = sponsor.eps
-      ? await epsPreview(path.join(SPONSOR_SOURCE, sponsor.file))
-      : path.join(SPONSOR_SOURCE, sponsor.file);
+    const source = sponsor.path
+      ? sponsor.path
+      : sponsor.eps
+        ? await epsPreview(path.join(SPONSOR_SOURCE, sponsor.file))
+        : path.join(SPONSOR_SOURCE, sponsor.file);
 
     // failOn:'none' — the embedded previews carry warning-level TIFF tags that
     // would otherwise abort the read.
@@ -1022,6 +1029,9 @@ async function main() {
    * to hand, a full run cannot get as far as the portraits at all.
    */
   if (process.env.ONLY_PORTRAITS) return void (await buildPortraits());
+  /* The sponsor marks alone -- a replaced logo, without the rest. Run
+   * packages/assets/trim-sponsors.mjs after it for the still grid's cut. */
+  if (process.env.ONLY_SPONSORS) return void (await buildSponsors());
   /*
    * The hero alone -- for the heal table, without re-encoding the key art.
    * The provenance note is rewritten with it: its Hero line names the table.
