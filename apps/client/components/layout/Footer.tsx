@@ -20,11 +20,15 @@ import { site } from "@apru/content";
  * files, since the NUS lockup already carries the department and the college
  * beside the shield.
  *
- * They are supplied WHITE, for the key visual, where they sit on the artwork.
- * This footer is a white ground, so they are inverted rather than re-drawn: both
- * files are a single `fill: #fff` throughout, so invert(1) is exactly black and
- * nothing else in them moves. A second, black copy of each file would be two
- * more assets to keep in step with the brand package for no gain.
+ * THE APRU MARK IS THE NETWORK'S SCL LOCKUP -- ring, APRU, and "Sustainable
+ * Cities and Landscapes" -- supplied black, so it sits on this white ground as
+ * it comes. It replaced the ring-and-wordmark the key visual still carries.
+ *
+ * The NUS lockup is supplied WHITE, for the key visual, where it sits on the
+ * artwork. Here it is inverted rather than re-drawn: the file is a single
+ * `fill: #fff` throughout, so invert(1) is exactly black and nothing else in
+ * it moves. A second, black copy would be one more asset to keep in step with
+ * the brand package for no gain.
  *
  * THE ADDRESS IS THE DEPARTMENT'S, not the conference venue's. This is SDE1,
  * where the Department of Architecture sits; the conference itself is in SDE3,
@@ -47,11 +51,17 @@ import { site } from "@apru/content";
  * The social glyphs are the classic filled marks -- "use a more classic
  * icon?" -- see `glyphs` on Social.
  *
- * ON A PHONE THE TWO MARKS SHARE A ROW. At 34rem they measure about 362rem
- * together, more than a phone's measure, so the NUS lockup wrapped under the
- * ring; the client asked for them "in a row" there and only there. 28rem on a
- * 16rem gap is 314rem, and since rem tracks the viewport below `md` that fits
- * at every phone width. The desktop pair is untouched.
+ * ON A PHONE THE TWO MARKS SHARE A ROW. At 34rem they are far wider than a
+ * phone's measure, so the NUS lockup wrapped under the APRU one; the client
+ * asked for them "in a row" there and only there. With the wider SCL lockup,
+ * 25rem on a 16rem gap is 338rem, inside the 345 a phone holds, and since rem
+ * tracks the viewport below `md` that fits at every phone width.
+ *
+ * And on a tablet. The pair is 462rem at 34rem tall, wider than the seven
+ * columns it starts in until about 1000px, and wrapped there. It no longer
+ * wraps anywhere: the row runs on into the two empty columns between it and
+ * the contact block, and still ends clear of that block at 768 (443px
+ * against 466).
  *
  * THE CONTACT BLOCK SITS HARD RIGHT on a wide screen -- "align to far right"
  * -- so the footer reads as two ends, who we are and how to reach us. On a
@@ -66,11 +76,12 @@ import { site } from "@apru/content";
  */
 const MARKS = [
   {
-    src: "/images/apru-white.svg",
-    alt: "APRU",
-    width: 330,
-    height: 102,
+    src: "/images/apru-scl-black.png",
+    alt: "APRU Sustainable Cities and Landscapes",
+    width: 1103,
+    height: 202,
     url: "https://gsi.uoregon.edu/apru-scl",
+    invert: false,
   },
   {
     src: "/images/nus-doa-white.svg",
@@ -78,6 +89,7 @@ const MARKS = [
     width: 690,
     height: 93,
     url: "https://cde.nus.edu.sg/arch/",
+    invert: true,
   },
 ];
 
@@ -95,7 +107,7 @@ export function Footer() {
       <div className="ctr">
         <div className="grd">
           <div style={{ gridColumn: "span 7" }}>
-            <div className="flex flex-wrap items-center gap-x-[24rem] gap-y-[12rem] max-md:flex-nowrap max-md:gap-x-[16rem]">
+            <div className="flex items-center gap-x-[24rem] max-md:gap-x-[16rem]">
               {MARKS.map((mark) => (
                 <a key={mark.url} href={mark.url} target="_blank" rel="noreferrer" className="shrink-0">
                   <img
@@ -103,7 +115,7 @@ export function Footer() {
                     alt={mark.alt}
                     width={mark.width}
                     height={mark.height}
-                    className="block h-[34rem] w-auto invert max-md:h-[28rem]"
+                    className={"block h-[34rem] w-auto max-md:h-[25rem]" + (mark.invert ? " invert" : "")}
                   />
                 </a>
               ))}
