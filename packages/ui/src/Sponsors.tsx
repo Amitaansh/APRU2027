@@ -41,10 +41,11 @@ import { sponsors } from "@apru/content";
  * different for every pair. The client circled exactly that -- "reduce
  * spacings and be consistent". So the grid draws the trimmed cut of each mark
  * (`<slug>-mark`, from packages/assets/trim-sponsors.mjs) and scales it from
- * its recorded ink box to fit one frame -- a fixed height and a maximum
- * width, `--spon-h` and `--spon-w` in base.css -- so the marks share a top
- * and bottom line rather than an area. The gap is then the gap, and the
- * level is the level.
+ * its recorded ink box to one matched area inside one frame -- `--spon-s`,
+ * `--spon-h` and `--spon-w` in base.css. The gap is then the gap, and the
+ * marks read as one size: "visually similar size, in proportion to each
+ * other", where fitting them all to the frame's height had left the wide
+ * Henning Larsen wordmark far heavier than Ground-Up's roundel.
  */
 
 /*
@@ -135,17 +136,21 @@ export function Sponsors({
         <ul className="spon-row">
           {sponsors.map((sponsor) => {
             /*
-             * Fit to the frame from the ink box: width = min(H * ratio, W).
-             * H and W are `--spon-h` and `--spon-w`, set by the stylesheet so
-             * the frame can step down on a phone; the ratio is the one thing
-             * this file knows. A mark without a recorded box (the trim script
-             * has not been run) falls back to the canvas at the belt's cell
-             * width.
+             * Sized from the ink box to one area, held inside one frame:
+             * width = min(S * sqrt(ratio), H * ratio, W). S, H and W are
+             * `--spon-s`, `--spon-h` and `--spon-w`, set by the stylesheet so
+             * they can step down on a phone; the ratio and its root are the
+             * things this file knows (CSS has no sqrt() everywhere yet). A
+             * mark without a recorded box (the trim script has not been run)
+             * falls back to the canvas at the belt's cell width.
              */
             const box = sponsor.mark;
             const file = "/images/sponsors/" + sponsor.slug + (box ? "-mark" : "");
             const style = box
-              ? ({ "--spon-ratio": box.w / box.h } as CSSProperties)
+              ? ({
+                  "--spon-ratio": box.w / box.h,
+                  "--spon-root": Math.sqrt(box.w / box.h),
+                } as CSSProperties)
               : undefined;
             const mark = (
               <picture className="spon-mark block">

@@ -719,11 +719,12 @@
  * spacings and be consistent" on the desktop, where the gap between marks
  * was the stated gap plus whatever transparent margin each canvas happened to
  * carry, and then a box drawn round the row asking that the marks keep to
- * "the same water level". All three are answered in one place: Sponsors.tsx
- * draws each mark cut to its ink and scaled to fit one frame (`.spon-ink` in
- * base.css), so the gap is the gap, the tops and bottoms line up, and the
- * row wraps on its own gutter at every width. The phone grid this file used
- * to force is gone with the margins that made it necessary.
+ * "the same water level". Then a fourth: "within a same frame but visually
+ * similar size", and four marks to a row on a phone. All of it is answered in
+ * one place: Sponsors.tsx draws each mark cut to its ink at one area inside
+ * one frame (`.spon-ink` in base.css), so the gap is the gap, the marks weigh
+ * the same, and the phone size is set so exactly four fit before the wrap.
+ * The column gap below has to stay the 20 that sum was made with.
  *
  * OUTSIDE @layer components, deliberately. base.css declares `.spon-row`
  * unlayered, and an unlayered rule beats every layered one however specific.
@@ -734,6 +735,6 @@
 
 @media (max-width: 767.98px) {
   .spon-row {
-    gap: 18rem 26rem;
+    gap: 18rem 20rem;
   }
 }
