@@ -60,6 +60,15 @@ function display(row: (typeof dates)[number]): string {
  * writes the dates inside the call for abstracts, and the client edition sets
  * that page as the document has it.
  *
+ * `variant="table"` sets them as two columns, "label:" and date, with the date
+ * column starting a gutter after the longest label rather than at the far edge
+ * of the measure. That is the client's own mock for the Key Dates page --
+ * "adjust the spacing for key dates" -- against ruled rows whose dates sat a
+ * screen-width away from what they dated, a row apart. On a phone the two
+ * columns do not fit ("Early-bird registration closes:" beside "15 November
+ * 2026 (UTC+8)"), so each date drops under its label and the pairs are spaced
+ * as the rows were.
+ *
  * `size` is the date cell's type size in the ruled rows. IndexRow sets its
  * meta cell a step under the label, which is right for a quiet qualifier and
  * wrong for the fact the row exists to give: the client read the bold dates
@@ -74,7 +83,7 @@ export function ImportantDates({
 }: {
   through?: string;
   omit?: string[];
-  variant?: "rows" | "lines";
+  variant?: "rows" | "lines" | "table";
   size?: "b1" | "b2";
 } = {}) {
   const rows = (
@@ -102,6 +111,33 @@ export function ImportantDates({
           </li>
         ))}
       </ul>
+    );
+  }
+
+  if (variant === "table") {
+    /*
+     * One grid, the rows `display: contents` so every label and every date is
+     * a cell of it and the date column lines up down the table. Below `md`
+     * the grid and the rows go back to blocks, and each pair stacks.
+     */
+    return (
+      <div>
+        <dl className="t-b1 grid grid-cols-[max-content_max-content] gap-x-[32rem] gap-y-[4rem] max-md:block">
+          {rows.map((row) => (
+            <div key={row.id} className="contents max-md:block max-md:pb-[12rem] max-md:last:pb-0">
+              <dt>{row.label}:</dt>
+              <dd>
+                <span className={"tnum " + (row.date ? "live" : "dim")}>{display(row)}</span>
+              </dd>
+            </div>
+          ))}
+        </dl>
+        {!anyConfirmed && (
+          <p className="t-b2 dim pt-[24rem]">
+            Deadlines are being finalised and will be published here as each is confirmed.
+          </p>
+        )}
+      </div>
     );
   }
 

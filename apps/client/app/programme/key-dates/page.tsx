@@ -20,6 +20,12 @@ export const metadata = pageMetadata({
  * Everything on the page is at text size: the dates ("1pt smaller than the
  * normal text", so `size="b1"`) and the pointer to the call for abstracts
  * under them ("same font size as above").
+ *
+ * Set as a table, "label:" and date, the date column a gutter after the
+ * longest label -- "adjust the spacing for key dates", with the client's mock
+ * of the two columns beside it. "Call for Abstracts" and "Registration" are
+ * underlined in that mock as links to come "once the actual link is
+ * available"; they are plain text until then.
  */
 export default function KeyDatesPage() {
   return (
@@ -27,7 +33,7 @@ export default function KeyDatesPage() {
       <PageHeadArt label="Programme" title={["Key Dates"]} />
 
       <Section>
-        <ImportantDates size="b1" />
+        <ImportantDates variant="table" />
         <p className="t-b1 pt-[20rem]">
           Submitting work? See the{" "}
           <Link href="/call-for-abstracts" className="link">
