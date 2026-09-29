@@ -4,10 +4,14 @@
     "For this conference, we have 12 WGs tackling a diverse array of critical urban and ecological topics, ranging from climate-responsive design and botanical urbanism to smart technologies, civic resilience, and healthy aging.",
     "Participants who expressed interest in a specific WG will be contacted directly by the WG leaders regarding any required preparation prior to the conference."
   ],
+  "introTerm": {
+    "label": "Working Groups (WGs)",
+    "url": "https://gsi.uoregon.edu/apru-scl-working-groups"
+  },
   "introLink": {
     "lead": "Selected publications from previous years' APRU-SCL events can be found",
     "label": "here",
-    "url": "https://gsi.uoregon.edu/apru-scl/publications"
+    "url": "https://gsi.uoregon.edu/publications"
   },
   "workingGroups": [
     {

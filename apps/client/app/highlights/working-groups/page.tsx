@@ -23,6 +23,7 @@ export const metadata = pageMetadata({
  * them, rather than a row for each leader.
  */
 export default function WorkingGroupsPage() {
+  const term = forums.introTerm;
   return (
     <>
       <PageHeadArt label="Highlight" title={["Working Groups"]} />
@@ -33,12 +34,25 @@ export default function WorkingGroupsPage() {
          * is the last sentence OF the first one — inside the same <p>, not a
          * paragraph of its own. It was set as its own paragraph, and the client
          * asked for it back where the content document has it.
+         *
+         * The paragraph's opening words, "Working Groups (WGs)", link to the
+         * network's page on the groups, and "here" to its publications -- the
+         * two links the review marked on this introduction.
          */}
         <Reveal>
           <div className="flex flex-col gap-[14rem] pb-[28rem] max-md:pb-[20rem]">
             {forums.intro.map((paragraph, i) => (
               <p key={i} className="t-b1">
-                {paragraph}
+                {i === 0 && term && paragraph.startsWith(term.label) ? (
+                  <>
+                    <a href={term.url} target="_blank" rel="noreferrer" className="link">
+                      {term.label}
+                    </a>
+                    {paragraph.slice(term.label.length)}
+                  </>
+                ) : (
+                  paragraph
+                )}
                 {i === 0 && forums.introLink && (
                   <>
                     {" "}

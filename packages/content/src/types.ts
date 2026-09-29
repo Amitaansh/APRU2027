@@ -169,6 +169,16 @@ export interface ForumsConfig {
     label: string;
     url: string;
   };
+  /**
+   * The words the first paragraph opens with, linked where they stand --
+   * "Working Groups (WGs)" to the network's own page on the groups. Matched
+   * against the start of `intro[0]` rather than cut out of it, so the
+   * paragraph still reads whole wherever the link is not set.
+   */
+  introTerm?: {
+    label: string;
+    url: string;
+  };
   workingGroups: WorkingGroup[];
 }
 
