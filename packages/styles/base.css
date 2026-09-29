@@ -725,65 +725,53 @@
 }
 
 /*
- * A mark cut to its ink, at ONE AREA inside ONE FRAME.
+ * A mark cut to its ink, at ONE HEIGHT, the one wordmark held to a width.
  *
- *   width = min(S x sqrt(ratio), H x ratio, W)
+ *   width = min(H x ratio, W)
  *
- * The first term is equal area: every mark covers S x S of ink, which is
- * what reads as "the same size" across a roundel, a blob and a two-line
- * wordmark. The other two are the frame, `--spon-h` tall and `--spon-w`
- * wide, and only the extremes ever touch it -- Tierra, the tallest mark, is
- * held to the frame's height rather than standing a head above the row.
+ * Every mark that is roughly square or taller stands exactly `--spon-h`, so
+ * the four of them share a top line and a bottom line. `--spon-w` catches
+ * only Henning Larsen, the one wordmark, which at the row's height would run
+ * to three times the width of anything else; it is held to about the width
+ * it already had and sits centred on the row.
  *
- * It was the frame alone before this, every mark scaled until it touched
- * the frame's height or width, so that the row shared a top and a bottom
- * line. That handed the wide marks the whole width as well as most of the
- * height: Henning Larsen covered nearly twice the ink of Ground-Up, and the
- * client asked for the marks "within a same frame but visually similar
- * size, in proportion to each other". Equal area inside the frame is both.
- * The marks sit centred on one line, so the row still has one level.
+ * It was equal area before this, width = S x sqrt(ratio), which hands each
+ * mark a different height -- JTC stood 80 and SingHealth 75, centred, so
+ * neither their tops nor their lines of type met. The client named exactly
+ * that pair: "not aligned / do not have more or less similar heights". And
+ * the round before equal area it was this same rule with the width cap at
+ * 190, which let the wordmark outweigh the rest; the cap is now 150.
  *
  * Not `object-fit: contain` in a fixed box: that would hand every mark
  * narrower than the box a transparent margin on each side, and the gap
  * between marks would stop being the gap. Each cell is its own ink box, so a
  * fixed gap between ink edges stays the same gap everywhere.
  *
- * `--spon-ratio` is the mark's own w/h and `--spon-root` its square root,
- * set inline by Sponsors.tsx from the box the trim script recorded. The
- * image carries its intrinsic ratio, so only the width is written.
- *
- * S = 84 puts the square marks at about the 90 the frame used to give them;
- * the frame is then just tall enough to clip Tierra and nothing else.
+ * `--spon-ratio` is the mark's own w/h, set inline by Sponsors.tsx from the
+ * box the trim script recorded. The image carries its intrinsic ratio, so
+ * only the width is written.
  */
 .spon-row {
-  --spon-s: 84;
-  --spon-h: 100;
-  --spon-w: 190;
+  --spon-h: 88;
+  --spon-w: 150;
 }
 
 .spon-ink {
-  width: calc(
-    min(
-      var(--spon-s) * var(--spon-root),
-      var(--spon-h) * var(--spon-ratio),
-      var(--spon-w)
-    ) * 1rem
-  );
+  width: calc(min(var(--spon-h) * var(--spon-ratio), var(--spon-w)) * 1rem);
   flex: none;
 }
 
 /*
  * A phone takes four marks to the row -- "4 logo in one row for mobile
- * version (make it smaller if needed)". At S = 58 the first four measure 277
- * and three gaps of 20 bring that to 337, inside the 345 a phone's measure
- * holds at every width rem is pinned to it; all five would need 408, so the
+ * version (make it smaller if needed)". At H = 58 the first four measure 280
+ * and three gaps of 20 bring that to 340, inside the 345 a phone's measure
+ * holds at every width rem is pinned to it; all five would need 406, so the
  * fifth always wraps alone rather than the row breaking three and two.
  */
 @media (max-width: 767.98px) {
   .spon-row {
-    --spon-s: 58;
-    --spon-h: 69;
-    --spon-w: 125;
+    --spon-h: 58;
+    --spon-w: 103;
     gap: 20rem;
   }
 }
