@@ -36,8 +36,9 @@ export const metadata = pageMetadata({
  * abstract" and goes there. If the client wants the placeholder back, blank the
  * URL in phases.ts and CTAButton renders the inert affordance on its own.
  *
- * The dates run through the early-bird deadline because the source lists it
- * here. It says 1 March there and 28 February on the Key Dates page; dates.json
+ * The dates run through the standard registration deadline because the
+ * client added it to this list (30 Sep), after early-bird. The source gave
+ * early-bird as 1 March here and 28 February on the Key Dates page; dates.json
  * has the 28th, and this page reads the same rows, so the site agrees with
  * itself and the discrepancy is raised with the client rather than picked.
  *
@@ -86,11 +87,12 @@ export default function CallForAbstractsPage() {
               <p className="t-b1 pt-[10rem] font-bold">{abstracts.datesHeading}</p>
             )}
             {/*
-             * The four dates the source lists under the call: opens, deadline,
-             * notification, early-bird. Registration day falls inside that
-             * range but is not in the source's list, so it is omitted by id.
+             * The five dates the source lists under the call: opens, deadline,
+             * notification, early-bird, standard registration. Registration day
+             * falls inside that range but is not in the source's list, so it is
+             * omitted by id.
              */}
-            <ImportantDates through="2027-02-28" omit={["registration-opens"]} variant="lines" />
+            <ImportantDates through="2027-04-20" omit={["registration-opens"]} variant="lines" />
 
             <p className="t-b1 pt-[10rem] font-bold">{abstracts.rulesHeading}</p>
             <ul className="flex flex-col gap-[6rem]">
