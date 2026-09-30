@@ -17,7 +17,7 @@ import { usePhase } from "@apru/content/usePhase";
  *
  * ASKED OF THE WINDOW, NOT OF THE PHASE. `phase !== "P0"` was the test here, and
  * it was wrong the moment the call for abstracts got a date: the site leaves P0
- * on 15 September 2026, four months before registration opens, and this page
+ * on 30 September 2026, three and a half months before registration opens, and this page
  * would have announced that registration was open for every one of those days.
  */
 /*

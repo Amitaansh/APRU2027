@@ -68,7 +68,7 @@ export const registration = registrationJson as RegistrationConfig;
  * An UNSET milestone defers to `dates.json` rather than blanking the row. The
  * published schedule and the phase engine are two different commitments: a date
  * can be announced long before we are willing to let it flip the site's CTA. So
- * the table can state 15 Sep 2026 while `abstractsOpen` stays null and the site
+ * the table can state 30 Sep 2026 while `abstractsOpen` stays null and the site
  * holds at P0. Filling the milestone still overrides the authored value, which
  * is what keeps the engine authoritative once it is switched on.
  *
@@ -186,7 +186,7 @@ function assertContent(): void {
     fail("committee emails are present but consent is not granted");
   }
 
-  // The open call is live from 15 Sep 2026, so an empty track list or a missing
+  // The open call is live from 30 Sep 2026, so an empty track list or a missing
   // portal URL is not a page that reads as early -- it is a page that is broken
   // on the day it matters.
   if (abstracts.tracks.length === 0) fail("abstracts.json lists no tracks");

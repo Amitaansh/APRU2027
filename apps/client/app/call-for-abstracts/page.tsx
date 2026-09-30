@@ -29,7 +29,7 @@ export const metadata = pageMetadata({
  * "Working Groups" inside the paragraph instead, so that is where the link is.
  *
  * THE BUTTON IS LIVE, not "open soon". The source still carries the placeholder
- * it was written with, but the window opened on 15 September and the portal is
+ * it was written with, but the window opened on 30 September and the portal is
  * the same UVENTs page registration will use; the client confirmed the live
  * link. CTAButton is date-aware only through the target it is given, and
  * `phases.cta.abstracts` always has its URL, so the button says "Submit an

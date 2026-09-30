@@ -62,7 +62,7 @@ export const phases: PhaseConfig = {
     // Note the order. Abstracts open four months before registration does, which
     // is why the ordering check in index.ts reads abstracts first -- the naive
     // "registration comes first" sequence does not hold for this conference.
-    abstractsOpen: "2026-09-15",
+    abstractsOpen: "2026-09-30", // was 15 Sep; the client moved it
     abstractsClose: "2026-11-15", // 23:59 UTC+8; the engine compares dates only
     registrationOpens: "2027-01-15",
     countdownFrom: null, // [OPEN] the client has not asked for a countdown
