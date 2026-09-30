@@ -4,10 +4,9 @@
  * Static export disables Next's image optimizer, so every asset has to arrive
  * pre-optimized.
  *
- * The hero is the supplied key art and nothing else — see buildHero. The dither
- * below is still what draws the Open Graph card, where the art is a ground for
- * type rather than the statement itself: a grainy two-colour threshold, orange
- * over blue, from an ordered Bayer matrix rather than a smooth gradient.
+ * The hero is the supplied key art and nothing else — see buildHero. The Open
+ * Graph card is not made here: it is the home key visual photographed in the
+ * browser, by apps/client/scripts/build-og.mjs.
  *
  *   npm run imagery
  *
@@ -115,40 +114,6 @@ const HERO_HEAL = [
   { x: 1094, y: 427, r: 10, dx: -30, dy: 0 }, // ringed dot in the blue field, mid frame
   { x: 1118, y: 214, r: 8, dx: 30, dy: 0 }, // grey blob in the speckle above the orange streak
 ];
-
-// Duotone pair — orange ink over a deep brand blue.
-const INK = [0xf8, 0x9c, 0x2c];
-const GROUND = [0x14, 0x3a, 0x5c];
-
-// Ordered 8x8 Bayer matrix. Ordered dithering keeps a regular grain that
-// survives AVIF/WebP compression far better than error diffusion does.
-const BAYER = [
-  [0, 32, 8, 40, 2, 34, 10, 42],
-  [48, 16, 56, 24, 50, 18, 58, 26],
-  [12, 44, 4, 36, 14, 46, 6, 38],
-  [60, 28, 52, 20, 62, 30, 54, 22],
-  [3, 35, 11, 43, 1, 33, 9, 41],
-  [51, 19, 59, 27, 49, 17, 57, 25],
-  [15, 47, 7, 39, 13, 45, 5, 37],
-  [63, 31, 55, 23, 61, 29, 53, 21],
-];
-
-/** Greyscale raw buffer to a two-colour dithered RGB buffer. */
-function dither(grey, width, height) {
-  const rgb = Buffer.alloc(width * height * 3);
-  for (let y = 0; y < height; y += 1) {
-    for (let x = 0; x < width; x += 1) {
-      const value = grey[y * width + x];
-      const threshold = ((BAYER[y % 8][x % 8] + 0.5) / 64) * 255;
-      const colour = value > threshold ? INK : GROUND;
-      const i = (y * width + x) * 3;
-      rgb[i] = colour[0];
-      rgb[i + 1] = colour[1];
-      rgb[i + 2] = colour[2];
-    }
-  }
-  return rgb;
-}
 
 /**
  * Clone-stamp the HERO_HEAL patches on one rung of the hero.
@@ -442,54 +407,6 @@ async function buildHome() {
 
   await cut(landscape, HOME_WIDTHS, HERO_RATIO, "home-");
   await cut(portrait, HOME_PORTRAIT_WIDTHS, 2 / 3, "home-portrait-");
-}
-
-/**
- * Open Graph card. The type is drawn as SVG over the duotone art — the card is
- * the first impression when a link is shared across institutions, so it has to
- * carry the brand rather than fall back to a bare screenshot.
- *
- * Note: SVG text renders with whatever font the host has. Archivo is not
- * installed system-wide here, so this falls back to a bold grotesque. Install
- * Archivo (or hand off final art) and re-run for an exact match.
- */
-async function buildOG() {
-  const W = 1200;
-  const H = 630;
-  const height = Math.round(W / HERO_RATIO);
-  const { data, info } = await sharp(SOURCE, { limitInputPixels: false })
-    .resize(W, height, { fit: "cover", position: "attention" })
-    .greyscale()
-    .normalise()
-    .linear(1.15, -12)
-    .raw()
-    .toBuffer({ resolveWithObject: true });
-
-  const art = await sharp(dither(data, info.width, info.height), {
-    raw: { width: info.width, height: info.height, channels: 3 },
-  })
-    .resize(W, H, { fit: "cover" })
-    .png()
-    .toBuffer();
-
-  const overlay = Buffer.from(
-    [
-      '<svg xmlns="http://www.w3.org/2000/svg" width="' + W + '" height="' + H + '">',
-      '<rect width="' + W + '" height="' + H + '" fill="#0c0c0d" opacity="0.55"/>',
-      '<rect x="0" y="0" width="' + W + '" height="8" fill="#f89c2c"/>',
-      '<text x="64" y="150" fill="#f4f2ec" font-family="Archivo, Arial Black, Helvetica, sans-serif" font-size="26" letter-spacing="4">THE 10TH CONFERENCE OF APRU-SCL</text>',
-      '<text x="64" y="330" fill="#f4f2ec" font-family="Archivo, Arial Black, Helvetica, sans-serif" font-weight="900" font-size="132" letter-spacing="-2">BRIDGING</text>',
-      '<text x="64" y="460" fill="#f4f2ec" font-family="Archivo, Arial Black, Helvetica, sans-serif" font-weight="900" font-size="132" letter-spacing="-2">RESILIENCE<tspan fill="#f89c2c">(S)</tspan></text>',
-      '<text x="64" y="560" fill="#f89c2c" font-family="Archivo, Arial, sans-serif" font-size="28" letter-spacing="3">21-23 MAY 2027 &#183; SINGAPORE &#183; NUS</text>',
-      "</svg>",
-    ].join(""),
-  );
-
-  await sharp(art)
-    .composite([{ input: overlay }])
-    .png({ quality: 90 })
-    .toFile(path.join(OUT, "..", "og", "default.png"));
-  console.log("og card written");
 }
 
 /**
@@ -1020,7 +937,6 @@ async function buildHaloTexture() {
 
 async function main() {
   await mkdir(OUT, { recursive: true });
-  await mkdir(path.join(OUT, "..", "og"), { recursive: true });
   /* The key visual alone, for iterating on it without re-encoding the site. */
   if (process.env.ONLY_HOME) return void (await buildHome());
   /*
@@ -1042,7 +958,6 @@ async function main() {
   }
   if (!process.env.SKIP_HERO) await buildHero();
   if (!process.env.SKIP_HOME) await buildHome();
-  await buildOG();
   await buildIcons();
   await buildPortraits();
   await buildSponsors();
@@ -1065,8 +980,8 @@ async function writeSourceNote() {
       "- Home: the artwork alone. The title, series line, dates and both lockups are live text and SVG in the page, not pixels — see packages/ui/src/KeyVisual.tsx.",
       "- Home crop: (77.25, 943.05) 11600x6525 of the plate, read off the master's own image transform — object-position 36.6% 69.9%, baked in.",
       "- Home widths: " + HOME_WIDTHS.join(", ") + " landscape, " + HOME_PORTRAIT_WIDTHS.join(", ") + " portrait (2:3, its own cut of the plate). AVIF q" + HOME_AVIF_Q + " — the measured grain knee — with WebP q" + HOME_WEBP_Q + " to 1920 as the no-AVIF fallback.",
-      "- OG card: greyscale, contrast lift, ordered 8x8 Bayer dither, two-colour map (#f89c2c over #143a5c) — Design Brief §05.",
-      "- Widths: " + WIDTHS.join(", ") + " (AVIF + WebP), OG card 1200x630 PNG.",
+      "- OG card: not made here. ../og/card.jpg is the home key visual rendered in the browser -- `npm run og` in apps/client.",
+      "- Widths: " + WIDTHS.join(", ") + " (AVIF + WebP).",
       "- Portraits (committee and keynotes): " + PORTRAIT_SOURCE + " — 4:5 crop from the top, or the window in PORTRAIT_CROPS, " +
         (PORTRAIT_MONO ? "greyscale, " : "") +
         PORTRAIT.w + "x" + PORTRAIT.h + " (AVIF + WebP) in ./committee.",

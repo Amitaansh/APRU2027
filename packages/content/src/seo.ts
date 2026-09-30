@@ -7,10 +7,10 @@ import { site } from "./index";
  */
 
 export const OG_IMAGE = {
-  url: "/og/default.png",
+  url: "/og/card.jpg",
   width: 1200,
   height: 630,
-  alt: "Bridging Resilience(s) — the 10th Conference of APRU-SCL, 21-23 May 2027, Singapore",
+  alt: "Bridging Resilience(s): The 10th Sustainable Cities and Landscapes Conference, 21—23 May 2027, Singapore. APRU and NUS Department of Architecture.",
 };
 
 export const SITE_URL =

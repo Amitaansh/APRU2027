@@ -9,7 +9,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "icon": "node scripts/build-icon.mjs"
+    "icon": "node scripts/build-icon.mjs",
+    "og": "node scripts/build-og.mjs"
   },
   "dependencies": {
     "@apru/assets": "*",

@@ -8,8 +8,8 @@ Everything in this folder is produced by `npm run imagery`. Do not hand-edit.
 - Home: the artwork alone. The title, series line, dates and both lockups are live text and SVG in the page, not pixels — see packages/ui/src/KeyVisual.tsx.
 - Home crop: (77.25, 943.05) 11600x6525 of the plate, read off the master's own image transform — object-position 36.6% 69.9%, baked in.
 - Home widths: 768, 1280, 1920, 2560 landscape, 480, 768, 1080, 1440 portrait (2:3, its own cut of the plate). AVIF q60 — the measured grain knee — with WebP q70 to 1920 as the no-AVIF fallback.
-- OG card: greyscale, contrast lift, ordered 8x8 Bayer dither, two-colour map (#f89c2c over #143a5c) — Design Brief §05.
-- Widths: 768, 1280, 1920 (AVIF + WebP), OG card 1200x630 PNG.
+- OG card: not made here. ../og/card.jpg is the home key visual rendered in the browser -- `npm run og` in apps/client.
+- Widths: 768, 1280, 1920 (AVIF + WebP).
 - Portraits (committee and keynotes): D:/APRU/committee-source — 4:5 crop from the top, or the window in PORTRAIT_CROPS, greyscale, 440x550 (AVIF + WebP) in ./committee.
 - Sponsor marks: 640x400 canvases at matched optical area in ./sponsors, for the belt. The `<slug>-mark.*` files beside them are the same marks cut to their ink by `node packages/assets/trim-sponsors.mjs`, for the still grid — re-run that after this.
 
