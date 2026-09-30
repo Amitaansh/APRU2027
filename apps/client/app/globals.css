@@ -724,9 +724,8 @@
  * and SingHealth "do not have more or less similar heights". All of it is
  * answered in one place: Sponsors.tsx draws each mark cut to its ink at one
  * height, the wordmark held to a width (`.spon-ink` in base.css), so the gap
- * is the gap, the marks line up, and the phone size is set so exactly four
- * fit before the wrap.
- * The column gap below has to stay the 20 that sum was made with.
+ * is the gap, the marks line up, and the phone size is set so all five fit
+ * on one row. The column gap below has to stay the 16 that sum was made with.
  *
  * OUTSIDE @layer components, deliberately. base.css declares `.spon-row`
  * unlayered, and an unlayered rule beats every layered one however specific.
@@ -737,6 +736,6 @@
 
 @media (max-width: 767.98px) {
   .spon-row {
-    gap: 18rem 20rem;
+    gap: 18rem 16rem;
   }
 }

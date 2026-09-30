@@ -762,17 +762,17 @@
 }
 
 /*
- * A phone takes four marks to the row -- "4 logo in one row for mobile
- * version (make it smaller if needed)". At H = 58 the first four measure 280
- * and three gaps of 20 bring that to 340, inside the 345 a phone's measure
- * holds at every width rem is pinned to it; all five would need 406, so the
- * fifth always wraps alone rather than the row breaking three and two.
+ * A phone takes all five marks on one row. At H = 50 the four upright marks
+ * measure 192 and the wordmark, held to 85 so it keeps the same share of the
+ * row it has on the desktop, brings that to 277; four gaps of 16 make 341,
+ * inside the 345 a phone's measure holds at every width rem is pinned to it.
+ * Nothing wraps, so the row never breaks four and one.
  */
 @media (max-width: 767.98px) {
   .spon-row {
-    --spon-h: 58;
-    --spon-w: 103;
-    gap: 20rem;
+    --spon-h: 50;
+    --spon-w: 85;
+    gap: 16rem;
   }
 }
 
