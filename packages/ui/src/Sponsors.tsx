@@ -42,7 +42,8 @@ import { sponsors } from "@apru/content";
  * spacings and be consistent". So the grid draws the trimmed cut of each mark
  * (`<slug>-mark`, from packages/assets/trim-sponsors.mjs) and scales it from
  * its recorded ink box to one height -- `--spon-h` in base.css, which keeps
- * every logo at least 2cm tall, the wordmark included. The gap is then the gap,
+ * every logo at least 2cm tall but the wordmark, set lower by its `optical`
+ * share so it does not read as the biggest of the six. The gap is then the gap,
  * and the marks share a top and a bottom line: "not aligned / do not have
  * more or less similar heights", said of JTC beside SingHealth when the row
  * was sized to equal area instead.
@@ -144,8 +145,17 @@ export function Sponsors({
              */
             const box = sponsor.mark;
             const file = "/images/sponsors/" + sponsor.slug + (box ? "-mark" : "");
+            /*
+             * `optical` takes a mark below the shared height where its shape
+             * makes it read larger at that height: Henning Larsen's wordmark,
+             * three times as wide as it is tall, looked the biggest of the six
+             * standing as tall as they do. It stays centred on the row.
+             */
             const style = box
-              ? ({ "--spon-ratio": box.w / box.h } as CSSProperties)
+              ? ({
+                  "--spon-ratio": box.w / box.h,
+                  "--spon-scale": sponsor.optical ?? 1,
+                } as CSSProperties)
               : undefined;
             const mark = (
               <picture className="spon-mark block">

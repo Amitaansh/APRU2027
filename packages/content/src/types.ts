@@ -213,6 +213,12 @@ export interface Sponsor {
    * it.
    */
   mark?: { w: number; h: number };
+  /**
+   * The still grid's height for this mark as a share of the row's, for a
+   * mark whose proportions make it read larger than the rest at one height.
+   * 1 when omitted. Kept off `mark`, which the trim script rewrites.
+   */
+  optical?: number;
 }
 
 export interface FAQItem {

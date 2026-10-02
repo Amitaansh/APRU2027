@@ -758,18 +758,25 @@
   --spon-h: 88;
 }
 
+/*
+ * `--spon-scale` is the one exception to the one height: a mark's share of
+ * it, from `optical` in sponsors.json. Henning Larsen's wordmark is 0.63 --
+ * about 3:1 against marks near square, it read as the largest of the six at
+ * full height. The client chose that over the 2cm floor for this one mark
+ * (2 Oct 2026); every other mark still stands the full `--spon-h`.
+ */
 .spon-ink {
-  width: calc(var(--spon-h) * var(--spon-ratio) * 1rem);
+  width: calc(var(--spon-h) * var(--spon-ratio) * var(--spon-scale, 1) * 1rem);
   flex: none;
 }
 
 /*
  * A phone needs H = 90 for 2cm, which is 2cm at 320 wide and more above it.
- * At that height the marks cannot share one row, and the wordmark alone
- * (283) leaves no room beside it in the 345 measure, so a phone takes them
- * in three rows, and the order in sponsors.json is what makes the breaks
- * land there: NParks, JTC and SingHealth measure 297 with two gaps of 16
- * (329); then Henning Larsen on its own; then Tierra and GUI (148). The row
+ * At that height the marks cannot share one row, so a phone takes them in
+ * two, and the order in sponsors.json is what makes the break land there:
+ * NParks, JTC and SingHealth measure 297 with two gaps of 16 (329); then
+ * Henning Larsen at 0.63 (178), Tierra and GUI, 310 with the gaps 342. The
+ * scale is the most it can be with that second row still fitting. The row
  * is held to that 345 outright: above about 690 wide rem stops growing with
  * the screen, and a row left to the page's measure there would break
  * differently.
