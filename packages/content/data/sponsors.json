@@ -18,6 +18,15 @@
     }
   },
   {
+    "slug": "nparks",
+    "name": "National Parks Board",
+    "url": "https://www.nparks.gov.sg/",
+    "mark": {
+      "w": 288,
+      "h": 312
+    }
+  },
+  {
     "slug": "henning-larsen",
     "name": "Henning Larsen",
     "url": "https://henninglarsen.com/",

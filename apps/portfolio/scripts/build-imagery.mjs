@@ -474,7 +474,7 @@ async function buildPortraits() {
 /**
  * Sponsor and partner logos.
  *
- * Five marks from five brand teams, in five formats, at five aspect ratios.
+ * Six marks from six brand teams, in as many formats and aspect ratios.
  * They have to arrive on the page looking like one set, which needs two things
  * doing to them.
  *
@@ -514,6 +514,7 @@ const SPONSORS = [
   { slug: "ground-up-initiative", name: "Ground-Up Initiative", file: "GUI/GUI Logo 1C-01.png" },
   { slug: "henning-larsen", name: "Henning Larsen", file: "Henning Larsen/HL Logo Black RGB.png" },
   { slug: "jtc", name: "JTC", file: "JTC/JTC Logo_Tagline_RGB for Digital.png" },
+  { slug: "nparks", name: "National Parks Board", file: "NParks/23. NParks Logo (new  tagline) - Colour.png" },
   // The lockup with the "Defining Tomorrow's Medicine" tagline, a 3385x2660
   // PNG the client supplied in place of the EPS in the shared folder (whose
   // 448x332 TIFF preview was the least sharp of the five). It came with the

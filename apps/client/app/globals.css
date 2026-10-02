@@ -724,8 +724,10 @@
  * and SingHealth "do not have more or less similar heights". All of it is
  * answered in one place: Sponsors.tsx draws each mark cut to its ink at one
  * height, the wordmark held to a width (`.spon-ink` in base.css), so the gap
- * is the gap, the marks line up, and the phone size is set so all five fit
- * on one row. The column gap below has to stay the 16 that sum was made with.
+ * is the gap, the marks line up. A sixth mark, NParks, came with a 2cm
+ * minimum height, which a phone can only honour three marks to a row; the
+ * sums are in base.css, and the column gap below has to stay the 16 they
+ * were made with.
  *
  * OUTSIDE @layer components, deliberately. base.css declares `.spon-row`
  * unlayered, and an unlayered rule beats every layered one however specific.

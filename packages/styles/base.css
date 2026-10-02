@@ -762,17 +762,23 @@
 }
 
 /*
- * A phone takes all five marks on one row. At H = 50 the four upright marks
- * measure 192 and the wordmark, held to 85 so it keeps the same share of the
- * row it has on the desktop, brings that to 277; four gaps of 16 make 341,
- * inside the 345 a phone's measure holds at every width rem is pinned to it.
- * Nothing wraps, so the row never breaks four and one.
+ * NParks asks that its mark never stand under 2cm, which is 75.6px. The
+ * desktop row clears that at the root's floor (88 x 0.9 = 79px); a phone
+ * needs H = 90, which is 2cm at 320 wide and more above it. At that height
+ * six marks cannot share one row -- their ink alone is 445 against a 345
+ * measure -- so a phone takes them three and three, and the order in
+ * sponsors.json is what makes the break land there: JTC, SingHealth and
+ * NParks measure 297 with two gaps of 16 (329), and the wordmark, held to the
+ * desktop's 150, with Tierra and GUI make 314. The row is held to that 345
+ * outright: above about 690 wide rem stops growing with the screen, and a
+ * row left to the page's measure there breaks five and one.
  */
 @media (max-width: 767.98px) {
   .spon-row {
-    --spon-h: 50;
-    --spon-w: 85;
+    --spon-h: 90;
+    --spon-w: 150;
     gap: 16rem;
+    max-width: 345rem;
   }
 }
 

@@ -28,7 +28,7 @@ import { sponsors } from "@apru/content";
  * in the pipeline, not in this markup. `.spon-mark` is what flips them to white
  * on the dark ground; see [data-ground="dark"] in globals.css.
  *
- * ONE BOX FOR ALL FIVE, and that is load-bearing rather than lazy. Every file is
+ * ONE BOX FOR ALL SIX, and that is load-bearing rather than lazy. Every file is
  * the same canvas with the mark centred inside it at its matched area, so equal
  * boxes here render as equal optical weight. Sizing these by height -- the
  * obvious thing to write -- would undo the pipeline's work and blow the wide
@@ -52,7 +52,7 @@ import { sponsors } from "@apru/content";
  * Enough copies that the track is always at least one set wider than the screen,
  * which is what the wrap in Belt.tsx needs to stay invisible. A set is about
  * 1500rem, so four of them cover a viewport up to 4K and there is no arithmetic
- * to redo unless the roster or the cell width changes. The marks are five URLs
+ * to redo unless the roster or the cell width changes. The marks are six URLs
  * however many times they appear, so the copies cost no extra requests.
  */
 const SETS = 4;
