@@ -723,11 +723,11 @@
  * similar size", and four marks to a row on a phone. Then a fifth, that JTC
  * and SingHealth "do not have more or less similar heights". All of it is
  * answered in one place: Sponsors.tsx draws each mark cut to its ink at one
- * height, the wordmark held to a width (`.spon-ink` in base.css), so the gap
- * is the gap, the marks line up. A sixth mark, NParks, came with a 2cm
- * minimum height, which a phone can only honour three marks to a row; the
- * sums are in base.css, and the column gap below has to stay the 16 they
- * were made with.
+ * height (`.spon-ink` in base.css), so the gap is the gap and the marks
+ * line up. Then a sixth mark, NParks, and with it a 2cm minimum for every
+ * logo, the wordmark included, which a phone can only honour over three
+ * rows; the sums are in base.css, and the column gap below has to stay the
+ * 16 they were made with.
  *
  * OUTSIDE @layer components, deliberately. base.css declares `.spon-row`
  * unlayered, and an unlayered rule beats every layered one however specific.
@@ -739,5 +739,17 @@
 @media (max-width: 767.98px) {
   .spon-row {
     gap: 18rem 16rem;
+  }
+}
+
+/*
+ * A small tablet. At 2cm the six marks are 696 of ink, and with five gaps of
+ * 40 the row needs 896; the measure is 793 at 768 and only reaches that
+ * near 860 wide, so in between the row broke five and one, Ground-Up alone.
+ * Five gaps of 18 make 786, which holds the one row down to 768.
+ */
+@media (min-width: 768px) and (max-width: 879.98px) {
+  .spon-row {
+    column-gap: 18rem;
   }
 }

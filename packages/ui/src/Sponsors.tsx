@@ -41,8 +41,8 @@ import { sponsors } from "@apru/content";
  * different for every pair. The client circled exactly that -- "reduce
  * spacings and be consistent". So the grid draws the trimmed cut of each mark
  * (`<slug>-mark`, from packages/assets/trim-sponsors.mjs) and scales it from
- * its recorded ink box to one height, with the one wide wordmark held to a
- * width -- `--spon-h` and `--spon-w` in base.css. The gap is then the gap,
+ * its recorded ink box to one height -- `--spon-h` in base.css, which keeps
+ * every logo at least 2cm tall, the wordmark included. The gap is then the gap,
  * and the marks share a top and a bottom line: "not aligned / do not have
  * more or less similar heights", said of JTC beside SingHealth when the row
  * was sized to equal area instead.
@@ -136,10 +136,9 @@ export function Sponsors({
         <ul className="spon-row">
           {sponsors.map((sponsor) => {
             /*
-             * Sized from the ink box to one height, the wide wordmark held to
-             * a width: width = min(H * ratio, W). H and W are `--spon-h` and
-             * `--spon-w`, set by the stylesheet so they can step down on a
-             * phone; the ratio is the thing this file knows. A mark without a
+             * Sized from the ink box to one height: width = H * ratio. H is
+             * `--spon-h`, set by the stylesheet so it can change on a phone;
+             * the ratio is the thing this file knows. A mark without a
              * recorded box (the trim script has not been run) falls back to
              * the canvas at the belt's cell width.
              */

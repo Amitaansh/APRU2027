@@ -1,5 +1,14 @@
 [
   {
+    "slug": "nparks",
+    "name": "National Parks Board",
+    "url": "https://www.nparks.gov.sg/",
+    "mark": {
+      "w": 288,
+      "h": 312
+    }
+  },
+  {
     "slug": "jtc",
     "name": "JTC",
     "url": "https://www.jtc.gov.sg/",
@@ -15,15 +24,6 @@
     "mark": {
       "w": 338,
       "h": 266
-    }
-  },
-  {
-    "slug": "nparks",
-    "name": "National Parks Board",
-    "url": "https://www.nparks.gov.sg/",
-    "mark": {
-      "w": 288,
-      "h": 312
     }
   },
   {

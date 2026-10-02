@@ -725,22 +725,25 @@
 }
 
 /*
- * A mark cut to its ink, at ONE HEIGHT, the one wordmark held to a width.
+ * A mark cut to its ink, at ONE HEIGHT, every mark the same.
  *
- *   width = min(H x ratio, W)
+ *   width = H x ratio
  *
- * Every mark that is roughly square or taller stands exactly `--spon-h`, so
- * the four of them share a top line and a bottom line. `--spon-w` catches
- * only Henning Larsen, the one wordmark, which at the row's height would run
- * to three times the width of anything else; it is held to about the width
- * it already had and sits centred on the row.
+ * Every mark stands exactly `--spon-h`, so the six of them share a top line
+ * and a bottom line. The supporters ask that no logo stand under 2cm, which
+ * is 75.6px, and that is what sets H: the desktop row clears it at the
+ * root's floor (88 x 0.9 = 79px).
  *
- * It was equal area before this, width = S x sqrt(ratio), which hands each
+ * The one wordmark, Henning Larsen, used to be held to a width (150, and 190
+ * before that) so that at the row's height it would not run to three times
+ * the width of anything else. Held there it stood about 48 -- 1.3cm -- and
+ * the 2cm minimum is for every logo, so the cap is gone and the wordmark is
+ * as wide as its height makes it.
+ *
+ * It was equal area before the cap, width = S x sqrt(ratio), which hands each
  * mark a different height -- JTC stood 80 and SingHealth 75, centred, so
  * neither their tops nor their lines of type met. The client named exactly
- * that pair: "not aligned / do not have more or less similar heights". And
- * the round before equal area it was this same rule with the width cap at
- * 190, which let the wordmark outweigh the rest; the cap is now 150.
+ * that pair: "not aligned / do not have more or less similar heights".
  *
  * Not `object-fit: contain` in a fixed box: that would hand every mark
  * narrower than the box a transparent margin on each side, and the gap
@@ -753,30 +756,27 @@
  */
 .spon-row {
   --spon-h: 88;
-  --spon-w: 150;
 }
 
 .spon-ink {
-  width: calc(min(var(--spon-h) * var(--spon-ratio), var(--spon-w)) * 1rem);
+  width: calc(var(--spon-h) * var(--spon-ratio) * 1rem);
   flex: none;
 }
 
 /*
- * NParks asks that its mark never stand under 2cm, which is 75.6px. The
- * desktop row clears that at the root's floor (88 x 0.9 = 79px); a phone
- * needs H = 90, which is 2cm at 320 wide and more above it. At that height
- * six marks cannot share one row -- their ink alone is 445 against a 345
- * measure -- so a phone takes them three and three, and the order in
- * sponsors.json is what makes the break land there: JTC, SingHealth and
- * NParks measure 297 with two gaps of 16 (329), and the wordmark, held to the
- * desktop's 150, with Tierra and GUI make 314. The row is held to that 345
- * outright: above about 690 wide rem stops growing with the screen, and a
- * row left to the page's measure there breaks five and one.
+ * A phone needs H = 90 for 2cm, which is 2cm at 320 wide and more above it.
+ * At that height the marks cannot share one row, and the wordmark alone
+ * (283) leaves no room beside it in the 345 measure, so a phone takes them
+ * in three rows, and the order in sponsors.json is what makes the breaks
+ * land there: NParks, JTC and SingHealth measure 297 with two gaps of 16
+ * (329); then Henning Larsen on its own; then Tierra and GUI (148). The row
+ * is held to that 345 outright: above about 690 wide rem stops growing with
+ * the screen, and a row left to the page's measure there would break
+ * differently.
  */
 @media (max-width: 767.98px) {
   .spon-row {
     --spon-h: 90;
-    --spon-w: 150;
     gap: 16rem;
     max-width: 345rem;
   }
