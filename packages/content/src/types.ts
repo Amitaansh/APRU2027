@@ -349,7 +349,19 @@ export interface RegistrationConfig {
   body: string;
   /** Who has to register -- the client edition's opening paragraph. */
   intro: string;
-  /** When the portal arrives, set as the client edition's status line. */
+  /** Phrases inside `intro` that link to the page they name, in reading order. */
+  introLinks: { label: string; url: string }[];
+  /** The line that introduces the fee table. */
+  feesLead: string;
+  /** The fee table: a header row, then one row per category, then a footnote. */
+  fees: {
+    columns: string[];
+    rows: string[][];
+    note: string;
+  };
+  /** When the portal arrives -- the client edition's closing sentence. */
   portal: string;
+  /** The words inside `portal` set in bold. */
+  portalEmphasis: string;
   url: string;
 }

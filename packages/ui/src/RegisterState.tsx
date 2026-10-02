@@ -1,5 +1,7 @@
 "use client";
 
+import type { ReactNode } from "react";
+import Link from "next/link";
 import { CTAButton } from "./CTAButton";
 import { Reveal } from "./Reveal";
 import { StatusBlock, ToBeAnnounced } from "./ToBeAnnounced";
@@ -21,11 +23,13 @@ import { usePhase } from "@apru/content/usePhase";
  * would have announced that registration was open for every one of those days.
  */
 /*
- * `variant="statement"` is the client edition's page, set the way its
- * schedule is: a paragraph saying who has to register, then one bold sentence
- * saying when the portal arrives -- "same font size and style as 'Schedule'
- * page". The paragraph stays above whatever state the window is in; only the
- * sentence under it changes. "status" is the portfolio's, unchanged.
+ * `variant="statement"` is the client edition's page, set as the client's
+ * email (2 Oct 2026) sets it: who has to register, with the four things it
+ * names linked to their pages; a line introducing the fees; the fee table
+ * "with thin grey lines -- 0.25pt" and its footnote; then the sentence saying
+ * when the portal arrives, its date in bold. Everything above that sentence
+ * stays whatever state the window is in; only the sentence changes. "status"
+ * is the portfolio's, unchanged.
  */
 export function RegisterState({
   variant = "status",
@@ -33,13 +37,84 @@ export function RegisterState({
   const state = <RegisterWindow variant={variant} />;
   if (variant === "status") return state;
 
+  const { fees } = registration;
   return (
     <>
       <Reveal>
-        <p className="t-b1 pb-[28rem] max-md:pb-[20rem]">{registration.intro}</p>
+        <div className="flex flex-col gap-[14rem] pb-[28rem] max-md:pb-[20rem]">
+          <p className="t-b1">
+            <Linked text={registration.intro} links={registration.introLinks} />
+          </p>
+          <p className="t-b1 pt-[10rem]">{registration.feesLead}</p>
+          <div>
+            {/* The rules are `.fee-table` in the client stylesheet. */}
+            <table className="fee-table t-b1">
+              <thead>
+                <tr>
+                  {fees.columns.map((c) => (
+                    <th key={c} scope="col">
+                      {c}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {fees.rows.map(([category, ...amounts]) => (
+                  <tr key={category}>
+                    <th scope="row">{category}</th>
+                    {amounts.map((a, i) => (
+                      <td key={i} className="tnum">
+                        {a}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <p className="t-b2 pt-[4rem]">{fees.note}</p>
+          </div>
+        </div>
       </Reveal>
       {state}
     </>
+  );
+}
+
+/**
+ * A paragraph with some of its phrases linked: each label is found at its
+ * first occurrence after the previous one, and a label the text no longer
+ * carries is skipped rather than breaking the sentence. `.link-run` because
+ * these run through the sentence and may wrap.
+ */
+function Linked({ text, links }: { text: string; links: { label: string; url: string }[] }) {
+  const parts: ReactNode[] = [];
+  let rest = text;
+  for (const { label, url } of links) {
+    const at = rest.indexOf(label);
+    if (at < 0) continue;
+    parts.push(
+      rest.slice(0, at),
+      <Link key={label} href={url} className="link-run">
+        {label}
+      </Link>,
+    );
+    rest = rest.slice(at + label.length);
+  }
+  parts.push(rest);
+  return <>{parts}</>;
+}
+
+/** The portal sentence with its date in bold. */
+function Portal() {
+  const { portal, portalEmphasis } = registration;
+  const at = portal.indexOf(portalEmphasis);
+  if (at < 0) return <p className="t-b1">{portal}</p>;
+  return (
+    <p className="t-b1">
+      {portal.slice(0, at)}
+      <strong>{portalEmphasis}</strong>
+      {portal.slice(at + portalEmphasis.length)}
+    </p>
   );
 }
 
@@ -62,7 +137,9 @@ function RegisterWindow({ variant }: { variant: "status" | "statement" }) {
         note="The 10th APRU Sustainable Cities and Landscapes Conference has taken place."
       />
     ) : variant === "statement" ? (
-      <ToBeAnnounced label={registration.portal} rules={false} />
+      <Reveal>
+        <Portal />
+      </Reveal>
     ) : (
       <ToBeAnnounced label="Registration opens soon" note={registration.body} />
     );

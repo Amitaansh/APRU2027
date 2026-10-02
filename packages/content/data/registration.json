@@ -1,6 +1,23 @@
 {
   "body": "Registration starts on 15 January 2027.",
-  "intro": "Registration is required for all participants whose oral or poster presentations have been accepted, as well as for all participants taking part in the Working Group sessions.",
-  "portal": "The registration portal will be available on this page from 15 January 2027.",
+  "intro": "Registration is required for all participants, including presenters of accepted oral and poster sessions and all participants in the Working Group sessions. During the registration process, you will be asked to select your field trip (some options require an additional fee) and indicate which Working Group and/or Student Network sessions you wish to join.",
+  "introLinks": [
+    { "label": "accepted oral and poster sessions", "url": "/call-for-abstracts" },
+    { "label": "Working Group sessions", "url": "/highlights/working-groups" },
+    { "label": "field trip", "url": "/highlights/field-trip" },
+    { "label": "Student Network sessions", "url": "/highlights/student-network-session" }
+  ],
+  "feesLead": "Please see the fee structure below. Early registration is encouraged to take advantage of the discounted rates.",
+  "fees": {
+    "columns": ["Registration Category", "Early Registration Fee (till 28 Feb 2027)", "Standard Fee"],
+    "rows": [
+      ["Type A: Standard", "S$390", "S$488"],
+      ["Type B: SEA*", "S$234", "S$325"],
+      ["Type C: Student", "S$195", "S$265"]
+    ],
+    "note": "*The SEA rate applies to participants from Southeast Asian countries."
+  },
+  "portal": "The registration portal will be available on this page starting 15 January 2027. Please return on this date to complete your registration.",
+  "portalEmphasis": "15 January 2027",
   "url": "https://uvents.nus.edu.sg/event/apruscl"
 }

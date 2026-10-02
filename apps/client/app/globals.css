@@ -559,6 +559,38 @@
     padding-top: 20rem;
   }
 
+  /*
+   * THE FEE TABLE on Registration. "Please add this as a table format (with
+   * thin grey lines -- 0.25pt)." 0.25pt is a third of a CSS pixel; browsers
+   * draw any border under one pixel as a single device pixel, which is the
+   * finest line the screen has. The header row and the category column are
+   * bold, as the client's table sets them. The grey is a literal: --gr3 is
+   * black in this edition.
+   */
+  .fee-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+  }
+
+  .fee-table th,
+  .fee-table td {
+    border: 0.25pt solid #999999;
+    padding: 4rem 10rem;
+    vertical-align: top;
+  }
+
+  .fee-table th {
+    font-weight: 700;
+  }
+
+  @media (max-width: 767.98px) {
+    .fee-table th,
+    .fee-table td {
+      padding: 4rem 6rem;
+    }
+  }
+
   @media (max-width: 767.98px) {
     .pad {
       padding-top: 32rem;
