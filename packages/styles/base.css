@@ -771,19 +771,18 @@
 }
 
 /*
- * A phone needs H = 90 for 2cm, which is 2cm at 320 wide and more above it.
- * At that height the marks cannot share one row, so a phone takes them in
- * two, and the order in sponsors.json is what makes the break land there:
- * NParks, JTC and SingHealth measure 297 with two gaps of 16 (329); then
- * Henning Larsen at 0.63 (178), Tierra and GUI, 310 with the gaps 342. The
- * scale is the most it can be with that second row still fitting. The row
- * is held to that 345 outright: above about 690 wide rem stops growing with
- * the screen, and a row left to the page's measure there would break
- * differently.
+ * A phone stands the marks at H = 50, the size they had before the 2cm
+ * floor. That floor (H = 90 here) is for the desktop row only: on a phone
+ * the client asked for the marks back at their earlier, smaller size (3 Oct
+ * 2026). At 50 the six measure 337 of ink, Henning Larsen at its 0.63, so
+ * they take two rows: NParks, JTC, SingHealth and Henning Larsen measure 264
+ * with three gaps of 16 (312), and Tierra and GUI follow. The row is held to
+ * 345 outright: above about 690 wide rem stops growing with the screen, and a
+ * row left to the page's measure there would break five and one.
  */
 @media (max-width: 767.98px) {
   .spon-row {
-    --spon-h: 90;
+    --spon-h: 50;
     gap: 16rem;
     max-width: 345rem;
   }
