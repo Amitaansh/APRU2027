@@ -561,34 +561,41 @@
 
   /*
    * THE FEE TABLE on Registration. "Please add this as a table format (with
-   * thin grey lines -- 0.25pt)." The finest line a screen has is one device
-   * pixel, so that is what is drawn. Not 0.25pt itself: that is a third of a
-   * CSS pixel, which Chrome rounds up to one device pixel but iOS Safari, on
-   * a 3x phone, rounded away, and the table came back with no lines at all
-   * (3 Oct 2026). 0.5px is one device pixel at 2x and 3x, and at 1x every
-   * browser draws it as one. The borders are separate, each cell drawing
-   * only its right and bottom and the table its top and left, because
-   * WebKit splits a collapsed border between the two cells that share it,
-   * and half of a hairline can round away too. The header row and the
-   * category column are bold, as the client's table sets them. The grey is a
-   * literal: --gr3 is black in this edition.
+   * thin grey lines -- 0.25pt)." 0.25pt is a third of a CSS pixel; browsers
+   * draw any border under one pixel as a single device pixel, which is the
+   * finest line the screen has. The header row and the category column are
+   * bold, as the client's table sets them. The grey is a literal: --gr3 is
+   * black in this edition.
    */
   .fee-table {
-    --fee-rule: 0.5px solid #999999;
     width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    border-top: var(--fee-rule);
-    border-left: var(--fee-rule);
+    border-collapse: collapse;
     text-align: left;
   }
 
   .fee-table th,
   .fee-table td {
-    border-right: var(--fee-rule);
-    border-bottom: var(--fee-rule);
+    border: 0.25pt solid #999999;
     padding: 4rem 10rem;
     vertical-align: top;
+  }
+
+  /*
+   * ...except WebKit on a 3x screen, which is every iPhone since the X, in
+   * Safari and in Chrome alike (both are WebKit on iOS). There a one-device-
+   * pixel border is a third of a CSS pixel, which WebKit stores a hair under
+   * one device pixel, and whether it is painted depends on where the line
+   * falls between pixels: at 0.25pt every line of the table vanished, and
+   * even 0.5px (which it floors to the same third) lost an outer edge at
+   * about one position in sixteen. A whole CSS pixel is the thinnest width
+   * that drew at every position tried (3 Oct 2026). 2x screens, desktops
+   * included, keep the hairline: there it drew everywhere.
+   */
+  @media (-webkit-min-device-pixel-ratio: 2.5), (min-resolution: 2.5dppx) {
+    .fee-table th,
+    .fee-table td {
+      border-width: 1px;
+    }
   }
 
   .fee-table th {
