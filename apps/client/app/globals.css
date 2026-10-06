@@ -602,6 +602,24 @@
     font-weight: 700;
   }
 
+  /*
+   * Left to size itself, the desktop table gave the long early-fee heading
+   * most of the width and squeezed the standard fee to the right edge. The
+   * client marked the rule between the two fee columns further left (6 Oct
+   * 2026), about where the two fee columns come out even, so on the desktop
+   * they share what the category column leaves. A phone keeps sizing by
+   * content: there the early-fee heading needs the room.
+   */
+  @media (min-width: 768px) {
+    .fee-table thead th {
+      width: 35%;
+    }
+
+    .fee-table thead th:first-child {
+      width: 30%;
+    }
+  }
+
   @media (max-width: 767.98px) {
     .fee-table th,
     .fee-table td {
