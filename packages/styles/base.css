@@ -725,6 +725,18 @@
 }
 
 /*
+ * Three marks that never part, so the row breaks three and three or not at
+ * all. The gap is the row's own, inherited, so every rule that sets the gap
+ * between marks on `.spon-row` sets it inside a trio too.
+ */
+.spon-trio {
+  display: flex;
+  align-items: center;
+  gap: inherit;
+  flex: none;
+}
+
+/*
  * A mark cut to its ink, at ONE HEIGHT, every mark the same.
  *
  *   width = H x ratio
@@ -775,10 +787,11 @@
  * floor. That floor (H = 90 here) is for the desktop row only: on a phone
  * the client asked for the marks back at their earlier, smaller size (3 Oct
  * 2026). At 50 the six measure 337 of ink, Henning Larsen at its 0.63, so
- * they take two rows: NParks, JTC, SingHealth and Henning Larsen measure 264
- * with three gaps of 16 (312), and Tierra and GUI follow. The row is held to
- * 345 outright: above about 690 wide rem stops growing with the screen, and a
- * row left to the page's measure there would break five and one.
+ * they take two rows, three and three (`.spon-trio`): NParks, JTC and
+ * SingHealth measure 197 with their two gaps of 16, Henning Larsen, Tierra
+ * and GUI 204. The row is held to 345 outright: above about 690 wide rem
+ * stops growing with the screen, and the row stays the phone's two rows
+ * rather than running to one.
  */
 @media (max-width: 767.98px) {
   .spon-row {

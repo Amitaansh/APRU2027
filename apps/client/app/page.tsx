@@ -43,7 +43,13 @@ export default function HomePage() {
        * called a judgement call; the approved content document settles it by
        * setting these three paragraphs on the home page, under the key visual.
        */}
-      <section className="pad-b pt-[40rem] max-md:pt-[28rem]">
+      {/*
+       * Not `.pad-b`: the section ends on the supporters, and the client
+       * struck the white between the last row of marks and the footer's rule.
+       * What is left is the gap between the two rows of marks (`.spon-row`
+       * in globals.css), so the rule sits as far below them as they do apart.
+       */}
+      <section className="pb-[24rem] pt-[40rem] max-md:pb-[18rem] max-md:pt-[28rem]">
         <div className="ctr">
           <div className="grd">
             <div style={{ gridColumn: "1 / span 15" }}>

@@ -133,60 +133,69 @@ export function Sponsors({
          * The dots between marks are a belt device -- they carry the beat of a
          * strip that never ends. Laid out and still they would read as bullets,
          * so `.spon-row` drops them and lets the marks wrap on their own gutter.
+         *
+         * IN THREES. "Now that there are 6 logos, can u ensure that they break
+         * into 3 and 3." Each trio is its own unbroken row, so the only break
+         * the wrap can make is between the two: one row of six where it fits,
+         * three over three where it does not, and never four and two.
          */}
-        <ul className="spon-row">
-          {sponsors.map((sponsor) => {
-            /*
-             * Sized from the ink box to one height: width = H * ratio. H is
-             * `--spon-h`, set by the stylesheet so it can change on a phone;
-             * the ratio is the thing this file knows. A mark without a
-             * recorded box (the trim script has not been run) falls back to
-             * the canvas at the belt's cell width.
-             */
-            const box = sponsor.mark;
-            const file = "/images/sponsors/" + sponsor.slug + (box ? "-mark" : "");
-            /*
-             * `optical` takes a mark below the shared height where its shape
-             * makes it read larger at that height: Henning Larsen's wordmark,
-             * three times as wide as it is tall, looked the biggest of the six
-             * standing as tall as they do. It stays centred on the row.
-             */
-            const style = box
-              ? ({
-                  "--spon-ratio": box.w / box.h,
-                  "--spon-scale": sponsor.optical ?? 1,
-                } as CSSProperties)
-              : undefined;
-            const mark = (
-              <picture className="spon-mark block">
-                <source srcSet={file + ".webp"} type="image/webp" />
-                <img
-                  src={file + ".png"}
-                  alt={sponsor.name}
-                  width={box ? box.w : 640}
-                  height={box ? box.h : 400}
-                  loading="lazy"
-                  decoding="async"
-                  className="block w-full"
-                />
-              </picture>
-            );
-            const cell = box ? "spon-ink block" : "spon-cell block";
-            return (
-              <li key={sponsor.slug}>
-                {sponsor.url ? (
-                  <a href={sponsor.url} target="_blank" rel="noreferrer" className={cell} style={style}>
-                    {mark}
-                  </a>
-                ) : (
-                  <span className={cell} style={style}>
-                    {mark}
-                  </span>
-                )}
-              </li>
-            );
-          })}
-        </ul>
+        <div className="spon-row">
+          {[sponsors.slice(0, 3), sponsors.slice(3)].map((trio, i) => (
+            <ul key={i} className="spon-trio">
+              {trio.map((sponsor) => {
+                /*
+                 * Sized from the ink box to one height: width = H * ratio. H is
+                 * `--spon-h`, set by the stylesheet so it can change on a phone;
+                 * the ratio is the thing this file knows. A mark without a
+                 * recorded box (the trim script has not been run) falls back to
+                 * the canvas at the belt's cell width.
+                 */
+                const box = sponsor.mark;
+                const file = "/images/sponsors/" + sponsor.slug + (box ? "-mark" : "");
+                /*
+                 * `optical` takes a mark below the shared height where its shape
+                 * makes it read larger at that height: Henning Larsen's wordmark,
+                 * three times as wide as it is tall, looked the biggest of the six
+                 * standing as tall as they do. It stays centred on the row.
+                 */
+                const style = box
+                  ? ({
+                      "--spon-ratio": box.w / box.h,
+                      "--spon-scale": sponsor.optical ?? 1,
+                    } as CSSProperties)
+                  : undefined;
+                const mark = (
+                  <picture className="spon-mark block">
+                    <source srcSet={file + ".webp"} type="image/webp" />
+                    <img
+                      src={file + ".png"}
+                      alt={sponsor.name}
+                      width={box ? box.w : 640}
+                      height={box ? box.h : 400}
+                      loading="lazy"
+                      decoding="async"
+                      className="block w-full"
+                    />
+                  </picture>
+                );
+                const cell = box ? "spon-ink block" : "spon-cell block";
+                return (
+                  <li key={sponsor.slug}>
+                    {sponsor.url ? (
+                      <a href={sponsor.url} target="_blank" rel="noreferrer" className={cell} style={style}>
+                        {mark}
+                      </a>
+                    ) : (
+                      <span className={cell} style={style}>
+                        {mark}
+                      </span>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          ))}
+        </div>
       </div>
     );
   }
