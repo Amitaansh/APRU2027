@@ -11,7 +11,7 @@ import { pageMetadata } from "@apru/content/seo";
 export const metadata = pageMetadata({
   title: "Call for abstracts",
   description:
-    "Submit an abstract for an oral or poster presentation at the 10th APRU-SCL conference, Singapore 2027. Nine tracks; abstracts are 300 words; submissions close 15 November 2026.",
+    "Submit an abstract for an oral or poster presentation at the 10th APRU-SCL conference, Singapore 2027. Ten tracks; abstracts are 300 words; submissions close 15 November 2026.",
   path: "/call-for-abstracts",
 });
 
@@ -46,7 +46,7 @@ export default function CallForAbstractsPage() {
         <p className="t-b2 dim pt-[40rem]">
           See the{" "}
           <Link href="/highlights/working-groups" className="link">
-            twelve working groups
+            thirteen working groups
           </Link>{" "}
           or{" "}
           <Link href="/register" className="link">

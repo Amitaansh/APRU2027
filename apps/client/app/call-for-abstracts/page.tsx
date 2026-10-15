@@ -8,7 +8,7 @@ import { pageMetadata } from "@apru/content/seo";
 export const metadata = pageMetadata({
   title: "Call for Abstracts",
   description:
-    "Submit an abstract for an oral or poster presentation at the 10th APRU-SCL conference, Singapore 2027. Nine tracks; abstracts are 300 words; submissions close 15 November 2026.",
+    "Submit an abstract for an oral or poster presentation at the 10th APRU-SCL conference, Singapore 2027. Ten tracks; abstracts are 300 words; submissions close 15 November 2026.",
   path: "/call-for-abstracts",
 });
 
@@ -19,7 +19,7 @@ export const metadata = pageMetadata({
  * SET AS THE CONTENT DOCUMENT SETS IT. "Use exactly the format from master web
  * content; no need sub-headings; remove 'to be announced' section; add
  * [Submission Open Soon] button." The call is one run of copy there: the
- * intro, the nine tracks, the two paragraphs on how the open call sits beside
+ * intro, the tracks, the two paragraphs on how the open call sits beside
  * the working groups, the dates, the rules, and a button. So it is one Section
  * here, with "Key Dates" and "Submission Rules" as bold lines in the flow rather
  * than as labels down the side, and nothing else in between.

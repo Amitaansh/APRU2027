@@ -4,7 +4,7 @@ import { forums } from "@apru/content";
 import { workingGroupColour } from "./wg-colour";
 
 /**
- * The twelve confirmed working groups, alphabetical by title (content review,
+ * The thirteen confirmed working groups, alphabetical by title (content review,
  * 3 Sep 2026). Leads are named with their institution and, where one is
  * published, linked to their own faculty or CV page.
  *

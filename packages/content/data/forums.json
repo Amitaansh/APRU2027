@@ -1,7 +1,7 @@
 {
   "intro": [
     "Working Groups (WGs) are a core part of the annual APRU-SCL Conference, offering delegates a valuable opportunity to engage in collaborative research and connect with members across the APRU network. The working group framework features ongoing thematic groups that favour collaboration and joint agenda-building over static paper presentations, with working groups typically leaving the conference with a planned output tied to their group theme and/or the conference location.",
-    "For this conference, we have 12 WGs tackling a diverse array of critical urban and ecological topics, ranging from climate-responsive design and botanical urbanism to smart technologies, civic resilience, and healthy aging.",
+    "For this conference, we have 13 WGs tackling a diverse array of critical urban and ecological topics, ranging from climate-responsive design and botanical urbanism to smart technologies, civic resilience, and healthy aging.",
     "Participants who expressed interest in a specific WG will be contacted directly by the WG leaders regarding any required preparation prior to the conference."
   ],
   "introTerm": {
@@ -30,6 +30,23 @@
         }
       ],
       "blurb": "This working group unpack urban aging problems experienced by cities and communities in an aging society, propose context-based solutions towards sustainable and educational solutions to support the next generation of leaders for advancing inclusive, age-friendly planning."
+    },
+    {
+      "id": "aun-adera",
+      "title": "AUN-ADERA Urbanism, Environment and Community",
+      "leads": [
+        {
+          "name": "Beng Kiang TAN",
+          "institution": "National University of Singapore",
+          "profileUrl": "https://cde.nus.edu.sg/arch/staffs/tan-beng-kiang-dr/"
+        },
+        {
+          "name": "Kok Ming CHEAH",
+          "institution": "National University of Singapore",
+          "profileUrl": "https://cde.nus.edu.sg/arch/staffs/cheah-kok-ming/"
+        }
+      ],
+      "blurb": "This AUN-ADERA Urbanism, Environment and Community workgroup is an exchange and sharing platform for architecture, planning and landscape design education and research in ASEAN. Our discussion will focus on developing collaborative platforms and programmes in the next two years for faculty teaching, faculty research and student activities. AUN-ADERA, a thematic network of ASEAN Universities Network (AUN). ADERA stands for Architecture Design Education and Research in ASEAN."
     },
     {
       "id": "botanical-urbanism",

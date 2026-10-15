@@ -10,7 +10,7 @@ import { pageMetadata } from "@apru/content/seo";
 export const metadata = pageMetadata({
   title: "Working groups",
   description:
-    "The twelve ongoing thematic working groups of the APRU Sustainable Cities and Landscapes network, convening at the 10th conference in Singapore.",
+    "The thirteen ongoing thematic working groups of the APRU Sustainable Cities and Landscapes network, convening at the 10th conference in Singapore.",
   path: "/highlights/working-groups",
 });
 
@@ -29,7 +29,7 @@ export default function WorkingGroupsPage() {
       <PageHead
         label="Highlight"
         title={["Working", "groups"]}
-        lede="Twelve ongoing thematic groups convening across the Pacific Rim, each led from a member university."
+        lede="Thirteen ongoing thematic groups convening across the Pacific Rim, each led from a member university."
       />
 
       {/*
