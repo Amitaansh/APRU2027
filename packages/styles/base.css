@@ -717,17 +717,51 @@
   flex: none;
 }
 
+/*
+ * The supporters' line on the client landing page: a `fit` belt (Belt.tsx),
+ * still while one set fits the column and drifting only where it does not.
+ * `--spon-gap` is the one gap, between any two marks and at the seam, so the
+ * beat does not change where one copy meets the next.
+ */
 .spon-row {
+  --spon-gap: 40rem;
+}
+
+.spon-line {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: 40rem;
+  gap: var(--spon-gap);
+  flex: none;
+  /* The seam, inside the measured width like `.spon-set`'s. Belt.tsx leaves
+   * it out when it asks whether the line fits. */
+  padding-right: var(--spon-gap);
+}
+
+/* Still, the copies have nothing to do. Hidden until Belt.tsx says the line
+ * is running, so they never flash in beside a row that fits. */
+.spon-row:not([data-run]) .belt-track > *:not(:first-child) {
+  display: none;
 }
 
 /*
- * Three marks that never part, so the row breaks three and three or not at
- * all. The gap is the row's own, inherited, so every rule that sets the gap
- * between marks on `.spon-row` sets it inside a trio too.
+ * Reduced motion. A line that cannot drift cannot run off the edge either,
+ * so it wraps again -- and only between the trios, three and three, as it
+ * did before it was a line.
+ */
+.spon-row[data-static] .belt-track {
+  justify-content: flex-start;
+}
+
+.spon-row[data-static] .spon-line {
+  flex: auto;
+  flex-wrap: wrap;
+  row-gap: 18rem;
+  padding-right: 0;
+}
+
+/*
+ * Three marks that never part, so a line that wraps breaks three and three or
+ * not at all. The gap is the line's own, inherited.
  */
 .spon-trio {
   display: flex;
@@ -786,18 +820,14 @@
  * A phone stands the marks at H = 50, the size they had before the 2cm
  * floor. That floor (H = 90 here) is for the desktop row only: on a phone
  * the client asked for the marks back at their earlier, smaller size (3 Oct
- * 2026). At 50 the six measure 337 of ink, Henning Larsen at its 0.63, so
- * they take two rows, three and three (`.spon-trio`): NParks, JTC and
- * SingHealth measure 197 with their two gaps of 16, Henning Larsen, Tierra
- * and GUI 204. The row is held to 345 outright: above about 690 wide rem
- * stops growing with the screen, and the row stays the phone's two rows
- * rather than running to one.
+ * 2026). At 50 the six measure 337 of ink, Henning Larsen at its 0.63, and
+ * 417 with their five gaps of 16 -- more than the 345 a 390 phone has, so
+ * there the line drifts. A wider phone, past about 500, holds it still.
  */
 @media (max-width: 767.98px) {
   .spon-row {
     --spon-h: 50;
-    gap: 16rem;
-    max-width: 345rem;
+    --spon-gap: 16rem;
   }
 }
 

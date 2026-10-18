@@ -46,7 +46,13 @@
           "profileUrl": "https://cde.nus.edu.sg/arch/staffs/cheah-kok-ming/"
         }
       ],
-      "blurb": "This AUN-ADERA Urbanism, Environment and Community workgroup is an exchange and sharing platform for architecture, planning and landscape design education and research in ASEAN. Our discussion will focus on developing collaborative platforms and programmes in the next two years for faculty teaching, faculty research and student activities. AUN-ADERA, a thematic network of ASEAN Universities Network (AUN). ADERA stands for Architecture Design Education and Research in ASEAN."
+      "blurb": "This AUN-ADERA Urbanism, Environment and Community workgroup is an exchange and sharing platform for architecture, planning and landscape design education and research in ASEAN. Our discussion will focus on developing collaborative platforms and programmes in the next two years for faculty teaching, faculty research and student activities. AUN-ADERA, a thematic network of ASEAN Universities Network (AUN). ADERA stands for Architecture Design Education and Research in ASEAN.",
+      "links": [
+        {
+          "label": "AUN-ADERA",
+          "url": "https://aun-adera.net/"
+        }
+      ]
     },
     {
       "id": "botanical-urbanism",

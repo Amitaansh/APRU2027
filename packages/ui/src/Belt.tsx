@@ -23,6 +23,13 @@ import { useEffect, useRef, type ReactNode } from "react";
  *
  * The transform is written straight to the node rather than held in React
  * state, like every other per-frame value on the site.
+ *
+ * `fit` makes the motion conditional: a belt that only runs when it has to.
+ * Where one set fits inside the frame it stands still as a single row, the
+ * copies hidden; only where it would otherwise have to break onto a second
+ * line does it start to drift, like a signboard. `data-run` on the root says
+ * which, so the stylesheet shows the copies only while they are needed. The
+ * supporters on the client landing page are this case.
  */
 
 /** Seconds for one set to travel its own width, with the page held still. */
@@ -42,9 +49,11 @@ const MAX = 4;
 
 export function Belt({
   className = "",
+  fit = false,
   children,
 }: {
   className?: string;
+  fit?: boolean;
   children: ReactNode;
 }) {
   const rootRef = useRef<HTMLDivElement | null>(null);
@@ -55,7 +64,7 @@ export function Belt({
     const track = trackRef.current;
     if (!root || !track) return;
 
-    // Still, and collapsed to a single centred set by the CSS.
+    // Still, and collapsed to a single set by the CSS.
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       root.dataset.static = "";
       return;
@@ -64,22 +73,42 @@ export function Belt({
     const set = track.firstElementChild as HTMLElement | null;
     if (!set) return;
 
-    let width = set.getBoundingClientRect().width;
-    let coupled = window.innerWidth >= 768;
+    let width = 0;
+    let coupled = false;
+    let frame = 0;
 
     /*
      * Measured, never assumed. Every length on the site is fluid, so the set is
      * a different width at 1366 than at 1920, and it changes again when the
      * marks decode and the boxes take their real height. Observing the set
-     * covers all of it without a resize listener.
+     * covers all of it without a resize listener -- and the frame too, for
+     * `fit`, since that compares the one against the other.
      */
-    const observer = new ResizeObserver(() => {
+    const measure = () => {
       width = set.getBoundingClientRect().width;
       // Touch scrolling is the OS's job -- see SmoothScroll.tsx -- and its
       // velocity is far too coarse to drive this, so phones get the drift only.
       coupled = window.innerWidth >= 768;
-    });
+
+      /*
+       * The set's trailing pad is the seam between it and the next copy, not
+       * part of the row, so it is left out of whether the row fits. Half a
+       * pixel of slack, or subpixel rounding would set a row that fits exactly
+       * drifting.
+       */
+      if (!fit) return start();
+      const seam = parseFloat(getComputedStyle(set).paddingRight) || 0;
+      if (width - seam > root.getBoundingClientRect().width + 0.5) {
+        root.dataset.run = "";
+        start();
+      } else {
+        delete root.dataset.run;
+        stop();
+      }
+    };
+    const observer = new ResizeObserver(measure);
     observer.observe(set);
+    if (fit) observer.observe(root);
 
     /*
      * The marks are links, and a link you have to chase is not one -- so the
@@ -112,7 +141,6 @@ export function Belt({
     let lastY = window.scrollY;
     let speed = 0; // smoothed scroll velocity, px per 60fps frame
     let held = 0; // eased hover, 0 running -> 1 frozen
-    let frame = 0;
 
     const tick = (now: number) => {
       // Capped, so a tab left in the background does not come back to a belt
@@ -143,7 +171,22 @@ export function Belt({
 
       frame = requestAnimationFrame(tick);
     };
-    frame = requestAnimationFrame(tick);
+
+    /* Started and stopped by `measure`, so a row that fits costs no frames. */
+    function start() {
+      if (frame) return;
+      last = 0;
+      lastY = window.scrollY;
+      frame = requestAnimationFrame(tick);
+    }
+    function stop() {
+      cancelAnimationFrame(frame);
+      frame = 0;
+      offset = 0;
+      track!.style.transform = "";
+    }
+
+    measure();
 
     return () => {
       cancelAnimationFrame(frame);
@@ -153,7 +196,7 @@ export function Belt({
       root.removeEventListener("focusin", onFocusIn);
       root.removeEventListener("focusout", onFocusOut);
     };
-  }, []);
+  }, [fit]);
 
   return (
     <div ref={rootRef} className={"belt " + className}>

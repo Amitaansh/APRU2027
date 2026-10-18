@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, type ReactNode } from "react";
 import { Accordion, type AccordionItem } from "./Accordion";
 import { forums } from "@apru/content";
 import { workingGroupColour } from "./wg-colour";
@@ -43,12 +43,38 @@ export function WorkingGroups({
   const total = forums.workingGroups.length;
 
   const items: AccordionItem[] = forums.workingGroups.map((group, i) => {
-    /* One paragraph or several — see WorkingGroup.blurb for why both. */
+    /*
+     * One paragraph or several — see WorkingGroup.blurb for why both. Each
+     * entry in `links` is set as a link at its first occurrence across them.
+     */
+    const pending = [...(group.links ?? [])];
+    const linked = (text: string) => {
+      const parts: ReactNode[] = [];
+      let rest = text;
+      for (let at = 0; at < pending.length; ) {
+        const { label, url } = pending[at];
+        const found = rest.indexOf(label);
+        if (found < 0) {
+          at++;
+          continue;
+        }
+        parts.push(
+          rest.slice(0, found),
+          <a key={label} href={url} target="_blank" rel="noreferrer" className="link-run">
+            {label}
+          </a>,
+        );
+        rest = rest.slice(found + label.length);
+        pending.splice(at, 1);
+      }
+      parts.push(rest);
+      return parts;
+    };
     const blurb = (
       <div className="wg-blurb">
         {(Array.isArray(group.blurb) ? group.blurb : [group.blurb]).map((p, n) => (
           <p key={n} className="t-b1 dim max-w-[70ch]">
-            {p}
+            {linked(p)}
           </p>
         ))}
       </div>

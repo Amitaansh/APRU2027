@@ -152,6 +152,13 @@ export interface WorkingGroup {
    * made by the schema rather than by the author.
    */
   blurb: string | string[];
+  /**
+   * Words inside the blurb linked where they stand, each at its first
+   * occurrence -- "AUN-ADERA" to the network's own site. Matched rather than
+   * marked up, so the JSON stays free of HTML and the paragraph still reads
+   * whole if a label stops matching.
+   */
+  links?: { label: string; url: string }[];
 }
 
 export interface ForumsConfig {
