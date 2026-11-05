@@ -1,8 +1,6 @@
 /**
- * PLACEHOLDERS, still. The accounts are reserved as @APRU-SCL2027 but not yet
- * created, so these are drawn and not pointed anywhere — `aria-disabled` and a
- * dimmed glyph, which is honest about the state rather than shipping three links
- * to nothing. Fill `href` in SOCIALS when they exist; nothing else changes.
+ * The conference's own accounts. A network with an empty `href` still draws, but
+ * as `aria-disabled` with a dimmed glyph rather than as a link to nothing.
  *
  * ONE FRAME, THREE GLYPHS. "Same size, now LinkedIn looks smaller, consistent
  * height." It did: the old LinkedIn mark was a bare "in" with no enclosure while
@@ -31,7 +29,7 @@ const FRAME =
 const SOCIALS: { name: string; href: string; paths: string[] }[] = [
   {
     name: "LinkedIn",
-    href: "",
+    href: "https://www.linkedin.com/company/apru-scl2027",
     paths: [
       FRAME,
       "M7 7.4h.01", // the i's dot
@@ -42,7 +40,7 @@ const SOCIALS: { name: string; href: string; paths: string[] }[] = [
   },
   {
     name: "Instagram",
-    href: "",
+    href: "https://www.instagram.com/apru_scl2027/",
     paths: [
       FRAME,
       "M10 7.1a2.9 2.9 0 1 0 0 5.8 2.9 2.9 0 0 0 0-5.8Z",
@@ -51,7 +49,7 @@ const SOCIALS: { name: string; href: string; paths: string[] }[] = [
   },
   {
     name: "Facebook",
-    href: "",
+    href: "https://www.facebook.com/people/APRU-SCL-2027/61595035147058/",
     paths: [
       FRAME,
       "M12.1 6.9h-1a1.7 1.7 0 0 0-1.7 1.7v5", // the f's hook and stem
