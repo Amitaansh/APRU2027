@@ -1,4 +1,4 @@
-import { FAQAccordion } from "@apru/ui";
+import { FAQ } from "@apru/ui";
 import { ContactRoute } from "@apru/ui";
 import { Curtain } from "@/components/motion/Curtain";
 import { Reveal } from "@apru/ui";
@@ -46,7 +46,7 @@ export default function ContactPage() {
       </Curtain>
 
       <Section ground="dark">
-        <FAQAccordion />
+        <FAQ />
       </Section>
     </>
   );

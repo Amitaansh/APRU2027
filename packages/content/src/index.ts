@@ -16,7 +16,7 @@ import type {
   AbstractsConfig,
   CommitteeConfig,
   FieldTripConfig,
-  FAQItem,
+  FAQGroup,
   ForumsConfig,
   ImportantDate,
   NavItem,
@@ -41,7 +41,7 @@ export const nav = navJson as NavItem[];
 export const speakers = speakersJson as Speaker[];
 export const program = programJson as ProgramConfig;
 export const forums = forumsJson as ForumsConfig;
-export const faq = faqJson as FAQItem[];
+export const faq = faqJson as FAQGroup[];
 export const venue = venueJson as VenueSection[];
 export const committee = committeeJson as CommitteeConfig;
 export const sponsors = sponsorsJson as Sponsor[];
@@ -166,6 +166,17 @@ function assertContent(): void {
   // A confirmed section has to say something, but prose is not the only way it
   // can: a section may be a list of conditions or a row of destinations and
   // nothing else. What is rejected is a confirmed section that renders blank.
+  // Each question's id names its fold on the page, so it has to be unique.
+  const questions = new Set<string>();
+  for (const group of faq) {
+    if (!group.items.length) fail("faq group " + group.id + " has no questions");
+    for (const item of group.items) {
+      if (questions.has(item.id)) fail("duplicate faq id " + item.id);
+      questions.add(item.id);
+      if (!item.answer.length) fail("faq " + item.id + " has no answer");
+    }
+  }
+
   for (const section of venue) {
     const hasBody = Array.isArray(section.body)
       ? section.body.some(Boolean)

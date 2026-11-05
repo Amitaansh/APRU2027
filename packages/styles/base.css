@@ -1216,7 +1216,7 @@
  * matching overrides in apps/client/app/globals.css.
  */
 @layer components {
-  /* The open panel of a fold -- Accordion and FAQAccordion. Indented to the
+  /* The open panel of a fold -- Accordion. Indented to the
    * title (number cell 50 + gap 20; the portfolio's swatch adds another 30). */
   .fold-body {
     padding: 0 0 36rem 80rem;

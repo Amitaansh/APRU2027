@@ -36,11 +36,14 @@ export interface AccordionItem {
 export function Accordion({
   items,
   numbered = true,
+  start = 0,
   headingLevel: Heading = "h3",
 }: {
   items: AccordionItem[];
   /** Two-digit index before each title. */
   numbered?: boolean;
+  /** How many items come before this list, when one count runs across several. */
+  start?: number;
   /** So a page can place these correctly under its own heading structure. */
   headingLevel?: "h2" | "h3";
 }) {
@@ -66,7 +69,7 @@ export function Accordion({
             )}
             {numbered && (
               <span className="t-b2 dim tnum w-[50rem] flex-none max-md:w-auto">
-                {String(i + 1).padStart(2, "0")}
+                {String(start + i + 1).padStart(2, "0")}
               </span>
             )}
             <span className="t-h4 flex-1">{item.title}</span>

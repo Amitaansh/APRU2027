@@ -25,5 +25,6 @@
   { "label": "Call for Abstracts", "route": "/call-for-abstracts", "group": "primary" },
   { "label": "Registration", "route": "/register", "group": "primary" },
   { "label": "Visitors", "route": "/visitors", "group": "primary" },
+  { "label": "FAQ", "route": "/faq", "group": "primary" },
   { "label": "Contact", "route": "/contact", "group": "footer-only" }
 ]

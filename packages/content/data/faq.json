@@ -1,47 +1,235 @@
 [
   {
-    "id": "when-where",
-    "question": "When and where is the conference?",
-    "answer": "The 10th APRU Sustainable Cities and Landscapes Conference takes place 21—23 May 2027 in Singapore, hosted by the Department of Architecture at the National University of Singapore. Sessions are held at SDE3, 4 Architecture Drive, Singapore 117566, on the NUS Kent Ridge campus."
+    "id": "general",
+    "heading": "General",
+    "items": [
+      {
+        "id": "who-can-participate",
+        "question": "Who can participate in the conference?",
+        "answer": [
+          "The conference welcomes scholars, educators, practitioners, students, researchers, community partners, and others working on issues related to sustainable cities and landscapes.",
+          "Participants do **not** need to be affiliated with an APRU member university in order to submit an abstract or attend the conference."
+        ]
+      },
+      {
+        "id": "virtual-participation",
+        "question": "Is virtual participation available?",
+        "answer": [
+          "No. **APRU-SCL 2027 will be held fully in person in Singapore.** Virtual oral presentations, digital poster presentations, and online participation will not be available."
+        ]
+      }
+    ]
   },
   {
-    "id": "who-for",
-    "question": "Who is the conference for?",
-    "answer": "Scholars, educators, practitioners, students, and community partners working on sustainable cities and landscapes across the Pacific Rim. The conference is open beyond APRU member universities — the working group framework is built around cross-institutional and cross-disciplinary collaboration."
-  },
-  {
-    "id": "what-is-apru-scl",
-    "question": "What is APRU-SCL?",
-    "answer": "The Sustainable Cities and Landscapes (SCL) programme of the Association of Pacific Rim Universities unites researchers and policymakers across 22 member universities, convening an annual conference and a set of ongoing thematic working groups. The 2027 edition in Singapore marks the network's 10th anniversary."
-  },
-  {
-    "id": "abstracts",
-    "question": "How do I submit an abstract?",
-    "answer": "The call for abstracts opens on 30 September 2026 and closes on 15 November 2026 (UTC+8). Submissions are made through the NUS UVENTs event page, linked from the call for abstracts. Abstract titles run to a maximum of 20 words and the body to a maximum of 300 words, with up to five keywords, in English. Authors are notified on 15 January 2027."
-  },
-  {
-    "id": "students",
-    "question": "Is there anything for students?",
-    "answer": "Yes. A student network session runs alongside the conference; details will be published here once they are confirmed. Student registration rates will be published alongside general rates when registration opens."
+    "id": "abstract-submission",
+    "heading": "Abstract Submission",
+    "items": [
+      {
+        "id": "unsure-of-track",
+        "question": "I am unsure which track my abstract belongs to. What should I do?",
+        "answer": [
+          "Please select the track that you feel most closely aligns with your research. The track categories are intentionally broad.",
+          "During the review process, the Organising Committee may also invite reviewers from another track to assess an abstract if their expertise is considered more appropriate to the submission."
+        ]
+      },
+      {
+        "id": "outside-the-tracks",
+        "question": "Can I submit research that does not fit exactly within one of the ten tracks?",
+        "answer": [
+          "Yes. The listed tracks are intended to provide broad thematic guidance and are not necessarily exhaustive. Authors should select the track that most closely relates to their submission."
+        ]
+      },
+      {
+        "id": "outside-the-network",
+        "question": "Can researchers from universities outside the APRU network submit?",
+        "answer": [
+          "Yes. Submissions are welcome from researchers and practitioners regardless of whether their institution is an APRU member."
+        ]
+      },
+      {
+        "id": "abstracts-and-working-groups",
+        "question": "Are accepted abstracts automatically included in a Working Group?",
+        "answer": [
+          "No. **The Call for Abstracts and Working Group participation are separate.**",
+          "Acceptance of an abstract for an oral or poster presentation does not automatically provide access to a Working Group. Participants interested in joining a Working Group may indicate their interest during conference registration."
+        ]
+      },
+      {
+        "id": "awards",
+        "question": "Are there awards for presentations?",
+        "answer": [
+          "Yes. Accepted paper and poster presentations will be eligible for consideration for the **Best Paper Award** and **Best Poster Award**, respectively."
+        ]
+      },
+      {
+        "id": "full-paper",
+        "question": "Is full paper submission compulsory after my abstract is accepted?",
+        "answer": [
+          "No. Submission of a full paper is optional. However, once an abstract has been accepted, **presenters are required to submit the relevant presentation file for an oral presentation or poster file for a poster presentation.**",
+          "Please note that **only submissions accompanied by a full paper will be considered for the Best Paper Award.**"
+        ]
+      }
+    ]
   },
   {
     "id": "working-groups",
-    "question": "How do the working groups work?",
-    "answer": "Working groups are ongoing thematic groups that meet at each annual conference to build joint agendas and shared outputs rather than deliver static paper presentations, with each group typically leaving the conference with a planned output. Thirteen groups are confirmed for 2027. If your research aligns with one of them you are welcome to contact its leaders directly — an accepted abstract does not by itself give access to working group meetings, which are coordinated separately."
+    "heading": "Working Groups",
+    "items": [
+      {
+        "id": "join-a-working-group",
+        "question": "How do I join a Working Group?",
+        "answer": [
+          "You will be able to **register your interest in a Working Group during conference registration**, which opens on **15 January 2027**.",
+          "Participants who express interest in a specific Working Group will be contacted by the respective Working Group leaders regarding participation and any preparation required before the conference."
+        ]
+      },
+      {
+        "id": "present-and-participate",
+        "question": "Can I present an abstract and participate in a Working Group?",
+        "answer": [
+          "Yes. Oral and poster presentations and Working Group participation are separate components of the conference.",
+          "Where a presenter is also participating in a Working Group, the conference organisers will seek to coordinate the schedule so that the participant can attend both activities."
+        ]
+      },
+      {
+        "id": "working-group-abstract",
+        "question": "Does joining a Working Group require an abstract submission?",
+        "answer": [
+          "No. The open Call for Abstracts and Working Group participation are separate processes."
+        ]
+      }
+    ]
   },
   {
     "id": "registration",
-    "question": "When does registration open, and what will it cost?",
-    "answer": "Registration opens on 15 January 2027, and early-bird registration closes on 28 February 2027. Fees have not been set; general and student rates will both be published here once they are confirmed."
+    "heading": "Registration",
+    "items": [
+      {
+        "id": "presenters-register",
+        "question": "Do presenters need to register for the conference?",
+        "answer": [
+          "Yes. **Registration is required for all participants**, including presenters with accepted oral or poster presentations and participants in Working Group sessions."
+        ]
+      },
+      {
+        "id": "registration-fees",
+        "question": "What are the registration fees?",
+        "answer": [
+          "The conference offers three registration categories:",
+          {
+            "table": {
+              "columns": ["Category", "Early Registration", "Standard Registration"],
+              "rows": [
+                ["Standard", "S$390", "S$488"],
+                ["Southeast Asia (SEA)", "S$234", "S$325"],
+                ["Student", "S$195", "S$265"]
+              ]
+            }
+          },
+          "Early registration closes on **28 February 2027**, and standard registration closes on **20 April 2027**."
+        ]
+      },
+      {
+        "id": "sea-rate",
+        "question": "Who is eligible for the Southeast Asia registration rate?",
+        "answer": ["The SEA rate applies to participants from **Southeast Asian countries**."]
+      },
+      {
+        "id": "nus-rate",
+        "question": "Is there a special registration rate for NUS students or faculty?",
+        "answer": [
+          "NUS students and faculty are required to pay the applicable conference registration fee.",
+          "NUS students may wish to check with their department, programme administrator, supervisor, or relevant funding office regarding any funding or reimbursement available for conference participation."
+        ]
+      }
+    ]
   },
   {
-    "id": "visas",
-    "question": "Can you provide a letter of invitation for my visa?",
-    "answer": "Invitation letters for visa applications are provided once registration fees have been paid or a waiver granted. NUS Department of Architecture does not submit visa applications on your behalf — applications go to your nearest Singapore Overseas Mission or an authorised visa agent. See the Visitors page for the full entry requirements."
+    "id": "funding",
+    "heading": "Funding and Financial Support",
+    "items": [
+      {
+        "id": "financial-assistance",
+        "question": "Does APRU-SCL 2027 provide travel grants, accommodation support, scholarships, or financial assistance?",
+        "answer": [
+          "No. **APRU-SCL 2027 and the NUS Department of Architecture do not provide travel grants, accommodation funding, or other financial assistance for conference participation.**",
+          "Participants, particularly students and early-career researchers, are encouraged to check with their home institution, department, programme administrator, supervisor, research grant, or other relevant funding body to determine whether conference travel or registration support may be available."
+        ]
+      },
+      {
+        "id": "travel-and-accommodation",
+        "question": "Are travel and accommodation included in the registration fee?",
+        "answer": [
+          "No. Participants are responsible for arranging and covering their own travel and accommodation."
+        ]
+      }
+    ]
   },
   {
-    "id": "stay-informed",
-    "question": "How do I stay informed?",
-    "answer": "Key dates for the call for abstracts, registration, and the conference itself are published on this site and updated as each is confirmed. The detailed programme is announced in March 2027. For anything not answered here, write to the committee inbox."
+    "id": "field-trips",
+    "heading": "Field Trips",
+    "items": [
+      {
+        "id": "field-trips-offered",
+        "question": "Will there be field trips during APRU-SCL 2027?",
+        "answer": [
+          "Yes. The conference will offer **half-day field trips** exploring Singapore’s approaches to sustainable urbanism.",
+          "The field trips cover five broad themes:",
+          {
+            "list": [
+              "Climate Resilience and Nature Preservation",
+              "Urban Health and Community Design",
+              "Digital Urbanism and AI",
+              "Coastal Resilience and Adaptation",
+              "Urban Ecology and Green Infrastructure"
+            ]
+          },
+          "Activities may include guided walks, cycling tours, and site visits."
+        ]
+      },
+      {
+        "id": "select-a-field-trip",
+        "question": "How do I select a field trip?",
+        "answer": [
+          "Participants will select their preferred field trip during conference registration.",
+          "Some field trip options may require an **additional fee**."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "student-network-session",
+    "heading": "Student Network Session",
+    "items": [
+      {
+        "id": "join-student-network",
+        "question": "How do I join the Student Network Session?",
+        "answer": [
+          "Participants will be able to indicate their interest in the Student Network Session during conference registration.",
+          "Further session details will be announced in **March 2027**."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "travel-and-visa",
+    "heading": "Travel and Visa",
+    "items": [
+      {
+        "id": "visa",
+        "question": "Do I need a visa to attend the conference in Singapore?",
+        "answer": [
+          "Visa requirements depend on your nationality and travel circumstances. Participants should consult the [Singapore Immigration & Checkpoints Authority (ICA)](https://www.ica.gov.sg/) for the latest entry and visa requirements applicable to them."
+        ]
+      },
+      {
+        "id": "invitation-letter",
+        "question": "Can the conference provide an invitation letter for my visa application?",
+        "answer": [
+          "Invitation letters for visa application purposes will only be provided **after the registration fee has been paid or a registration fee waiver has been granted upon request**.",
+          "The NUS Department of Architecture will not submit visa applications on behalf of participants."
+        ]
+      }
+    ]
   }
 ]

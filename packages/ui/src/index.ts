@@ -22,7 +22,7 @@ export { Committee } from "./Committee";
 export { ContactRoute } from "./ContactRoute";
 export { Container } from "./Container";
 export { CTAButton, type Surface } from "./CTAButton";
-export { FAQAccordion } from "./FAQAccordion";
+export { FAQ } from "./FAQ";
 export { ImportantDates } from "./ImportantDates";
 export { KeyVisual } from "./KeyVisual";
 export { IndexRow, RuleList } from "./IndexRow";

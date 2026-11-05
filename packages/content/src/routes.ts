@@ -11,6 +11,7 @@ const PAGE_KEYS: Record<string, string> = {
   "/register": "register",
   "/call-for-abstracts": "cfa",
   "/visitors": "visitors",
+  "/faq": "faq",
   "/contact": "contact",
 };
 

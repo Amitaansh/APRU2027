@@ -228,10 +228,25 @@ export interface Sponsor {
   optical?: number;
 }
 
+/**
+ * One block of an answer. A string is a paragraph and may carry `**bold**` and
+ * `[label](url)`; the list and table are plain text.
+ */
+export type FAQBlock =
+  | string
+  | { list: string[] }
+  | { table: { columns: string[]; rows: string[][] } };
+
 export interface FAQItem {
   id: string;
   question: string;
-  answer: string;
+  answer: FAQBlock[];
+}
+
+export interface FAQGroup {
+  id: string;
+  heading: string;
+  items: FAQItem[];
 }
 
 /** A named destination a visitor is sent to — a map, an app, a booking page. */

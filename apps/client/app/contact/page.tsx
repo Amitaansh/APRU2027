@@ -1,18 +1,18 @@
-import { ContactRoute, FAQAccordion, PageHeadArt, Section } from "@apru/ui";
+import Link from "next/link";
+import { ContactRoute, PageHeadArt, Section } from "@apru/ui";
 import { pageMetadata } from "@apru/content/seo";
 
 export const metadata = pageMetadata({
-  title: "Contact and FAQ",
+  title: "Contact",
   description:
-    "Reach the organising committee for the 10th APRU-SCL conference, and answers to common questions about dates, location, abstracts, and registration.",
+    "Reach the organising committee for the 10th APRU-SCL conference.",
   path: "/contact",
 });
 
 /**
- * Reachable from the footer rather than from the navigation, at the client
- * request. It is still a real page and still in the sitemap - taking it out of
- * the menu is not the same as taking it off the site, and the FAQ has nowhere
- * else to live.
+ * Out of the navigation at the client request, but still a real page and still
+ * in the sitemap. The questions that used to sit under it have their own page
+ * and nav item now, at /faq.
  */
 export default function ContactPage() {
   return (
@@ -21,10 +21,13 @@ export default function ContactPage() {
 
       <Section>
         <ContactRoute />
-      </Section>
-
-      <Section flow>
-        <FAQAccordion />
+        <p className="t-b1 pt-[20rem]">
+          Have a question? See the{" "}
+          <Link href="/faq" className="link">
+            FAQ
+          </Link>
+          .
+        </p>
       </Section>
     </>
   );
