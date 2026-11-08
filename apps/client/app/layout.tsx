@@ -4,6 +4,7 @@ import Script from "next/script";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { DeadlineNotice } from "@/components/layout/DeadlineNotice";
 import { site } from "@apru/content";
 import { DEFAULT_DESCRIPTION, NOINDEX, OG_IMAGE, SITE_URL } from "@apru/content/seo";
 
@@ -125,6 +126,7 @@ export default function RootLayout({
         <Header />
         <main id="main">{children}</main>
         <Footer />
+        <DeadlineNotice />
       </body>
     </html>
   );

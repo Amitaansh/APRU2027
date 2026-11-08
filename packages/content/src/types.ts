@@ -353,6 +353,17 @@ export interface AbstractsConfig {
    * download control, so the page offers no separate download.
    */
   guide?: VenueLink & { lead: string };
+  /**
+   * The notice that opens over the first page a visitor lands on while the
+   * call is open, announcing the extended deadline. Verbatim from the client;
+   * remove the entry and the notice stops appearing.
+   */
+  extensionNotice?: {
+    title: string;
+    /** One entry per paragraph. */
+    body: string[];
+    buttonLabel: string;
+  };
   submitLabel: string;
   /** The NUS UVENTs submission portal. */
   submitUrl: string;

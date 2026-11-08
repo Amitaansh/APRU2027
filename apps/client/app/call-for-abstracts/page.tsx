@@ -8,7 +8,7 @@ import { pageMetadata } from "@apru/content/seo";
 export const metadata = pageMetadata({
   title: "Call for Abstracts",
   description:
-    "Submit an abstract for an oral or poster presentation at the 10th APRU-SCL conference, Singapore 2027. Ten tracks; abstracts are 300 words; submissions close 15 November 2026.",
+    "Submit an abstract for an oral or poster presentation at the 10th APRU-SCL conference, Singapore 2027. Ten tracks; abstracts are 300 words; submissions close 30 November 2026.",
   path: "/call-for-abstracts",
 });
 

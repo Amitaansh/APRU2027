@@ -811,3 +811,24 @@
     --spon-gap: 18rem;
   }
 }
+
+/*
+ * The extended-deadline notice (components/layout/DeadlineNotice.tsx). A white
+ * panel with the site's hairline, no radius and no shadow -- the same rectangle
+ * as the buttons -- over a dimmed page. The browser centres a modal <dialog>
+ * itself; this only sizes it and keeps it inside a phone's 16px gutter.
+ */
+.deadline-notice {
+  width: min(560rem, calc(100vw - 32px));
+  max-width: none;
+  max-height: calc(100svh - 32px);
+  margin: auto;
+  padding: 0;
+  border: 1px solid var(--bk);
+  background: var(--wh);
+  color: var(--bk);
+}
+
+.deadline-notice::backdrop {
+  background: rgb(0 0 0 / 0.55);
+}

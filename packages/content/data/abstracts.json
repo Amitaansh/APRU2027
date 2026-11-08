@@ -35,6 +35,14 @@
     "label": "View the guide",
     "url": "/docs/abstract-submission-portal-user-guide.pdf"
   },
+  "extensionNotice": {
+    "title": "Deadline Extended!",
+    "body": [
+      "The abstract submission deadline for APRU SCL 2027 has been extended to 30 November 2026 (23:59, UTC+8).",
+      "We welcome researchers, practitioners, and scholars to submit your abstracts."
+    ],
+    "buttonLabel": "Submit Now"
+  },
   "submitLabel": "Submit now",
   "submitUrl": "https://uvents.nus.edu.sg/event/apruscl"
 }

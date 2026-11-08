@@ -21,7 +21,7 @@ import { usePhase } from "@apru/content/usePhase";
  * variant of its own. The arrow is a typographic character, not an icon.
  */
 
-export type Surface = "hero" | "floating" | "footer" | "inline";
+export type Surface = "hero" | "floating" | "footer" | "inline" | "popup";
 
 export function CTAButton({
   page,

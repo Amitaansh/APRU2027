@@ -9,7 +9,7 @@ import { usePhase } from "@apru/content/usePhase";
 /**
  * Call for Abstracts is phase-conditional (App Flow §7.6): "opening soon" before
  * 30 Sep 2026, flipping to a live submission link once the window opens and back
- * again when it closes on 15 Nov.
+ * again when it closes on 30 Nov (extended from 15 Nov).
  *
  * ASKED OF THE WINDOW, NOT OF THE PHASE. This used to test `phase === "P2"`,
  * which was the same question while the site had one window open at a time. It
@@ -24,7 +24,7 @@ export function AbstractsState() {
 
   /*
    * "Not open" is two different facts, and saying the wrong one is worse than
-   * saying nothing. Before 30 September the call is coming; after 15 November it
+   * saying nothing. Before 30 September the call is coming; after 30 November it
    * is over, and a page still promising it is "opening soon" six months later is
    * simply untrue. The close date is the boundary between them.
    */
@@ -36,12 +36,12 @@ export function AbstractsState() {
     return closed ? (
       <ToBeAnnounced
         label="The call for abstracts has closed"
-        note="Submissions closed on 15 November 2026. Authors are notified of the outcome on 15 January 2027."
+        note="Submissions closed on 30 November 2026. Authors are notified of the outcome on 15 January 2027."
       />
     ) : (
       <ToBeAnnounced
         label="The call for abstracts is opening soon"
-        note="Submissions open on 30 September 2026 and close on 15 November 2026. The submission rules are set out below."
+        note="Submissions open on 30 September 2026 and close on 30 November 2026. The submission rules are set out below."
       />
     );
   }
