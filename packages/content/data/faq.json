@@ -68,6 +68,24 @@
           "No. Submission of a full paper is optional. However, once an abstract has been accepted, **presenters are required to submit the relevant presentation file for an oral presentation or poster file for a poster presentation.**",
           "Please note that **only submissions accompanied by a full paper will be considered for the Best Paper Award.**"
         ]
+      },
+      {
+        "id": "publication",
+        "question": "Are there publication opportunities associated with APRU-SCL 2027?",
+        "answer": [
+          "APRU-SCL 2027 is primarily a platform for academic discussion, exchange, and presentation, and there is currently no formal publication pathway from conference participation to conference proceedings, peer-reviewed journals, or special issues.",
+          "Participants who are interested in further developing their work towards academic publication are encouraged to join one of the APRU-SCL [Working Groups](/highlights/working-groups). Some Working Groups are planning collaborative publications and may provide opportunities for participants to develop research beyond the conference.",
+          "Any publication arrangements, submission requirements, or associated fees would be determined separately by the relevant Working Group and publication outlet.",
+          "Further information on the Working Groups is available here: [https://gsi.uoregon.edu/apru-scl-working-groups](https://gsi.uoregon.edu/apru-scl-working-groups)"
+        ]
+      },
+      {
+        "id": "co-author",
+        "question": "Can I be listed as a co-author on another submission if I have already submitted an abstract as lead author?",
+        "answer": [
+          "Yes. Each participant may submit **one abstract as the lead author**. However, participants may also be listed as **co-authors on other submissions**, even if they have already submitted their own abstract as lead author.",
+          "If you are involved in a second study, it may be submitted under another lead author, with you listed as a co-author."
+        ]
       }
     ]
   },
@@ -131,8 +149,20 @@
       },
       {
         "id": "sea-rate",
-        "question": "Who is eligible for the Southeast Asia registration rate?",
-        "answer": ["The SEA rate applies to participants from **Southeast Asian countries**."]
+        "question": "Who is eligible for the Southeast Asia (SEA) registration rate?",
+        "answer": [
+          "Eligibility for the **Southeast Asia (SEA) registration rate** is based on the location of the participant’s current institutional or professional affiliation.",
+          "Participants affiliated with an institution or organisation based in Southeast Asia are eligible for the SEA rate, regardless of their nationality or country of residence."
+        ]
+      },
+      {
+        "id": "fees-per-participant",
+        "question": "Are registration fees charged per paper or per participant?",
+        "answer": [
+          "Registration fees are charged **per participant, not per paper**.",
+          "For each accepted abstract, **at least one author must register for the conference** in order for the presentation to remain in the conference programme.",
+          "Only co-authors who are physically attending the conference are required to register and pay the applicable registration fee. Co-authors who are not attending do not need to register."
+        ]
       },
       {
         "id": "nus-rate",

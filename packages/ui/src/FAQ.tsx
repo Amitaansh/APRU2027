@@ -24,6 +24,11 @@ function Inline({ text }: { text: string }) {
     parts.push(
       match[1] ? (
         <strong key={match.index}>{match[1]}</strong>
+      ) : match[3].startsWith("/") ? (
+        /* A page of this site, e.g. the Working Groups: same tab. */
+        <a key={match.index} href={match[3]} className="link-run">
+          {match[2]}
+        </a>
       ) : (
         <a key={match.index} href={match[3]} target="_blank" rel="noreferrer" className="link-run">
           {match[2]}

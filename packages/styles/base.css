@@ -520,6 +520,21 @@
   .live {
     color: var(--ac);
   }
+
+  /*
+   * A date that has moved: the old day struck through beside the new one, in
+   * bold italic blue, as the client marked the abstract deadline's extension.
+   * Doubled to outrank `.live`, which each edition colours for itself.
+   *
+   * Atlas ships no Bold Italic, so the browser takes Regular Italic and needs
+   * leave to embolden it -- the one place synthesis is let back on.
+   */
+  .revised.revised {
+    color: #0000cc;
+    font-weight: 700;
+    font-style: italic;
+    font-synthesis-weight: auto;
+  }
 }
 
 @layer components {

@@ -202,6 +202,13 @@ export interface ImportantDate {
    * label, which is how the content document writes it.
    */
   note?: string;
+  /**
+   * ISO date this row used to give, when the date has moved. The row then reads
+   * as a revision -- the old day struck through beside the new one, bold, italic
+   * and blue -- which is how the client marked the abstract deadline's extension
+   * from 15 to 30 November in the content document.
+   */
+  was?: string;
 }
 
 export interface Sponsor {

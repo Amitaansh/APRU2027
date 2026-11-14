@@ -39,6 +39,31 @@ function display(row: (typeof dates)[number]): string {
 }
 
 /**
+ * A row's date as it is set, which is `display` unless the date has moved.
+ *
+ * A moved date reads the way the client marked the abstract deadline's
+ * extension in the content document: the old day struck through, the new date
+ * after it, the whole thing bold, italic and blue -- "~~15~~ 30 November 2026
+ * (UTC+8)". When the old date is in another month or year, the whole old
+ * date is struck rather than a day that would read as being in the new month.
+ */
+function DateText({ row }: { row: (typeof dates)[number] }) {
+  const cls = "tnum " + (row.date ? "live" : "dim");
+  if (!row.date || !row.was || row.was === row.date) {
+    return <span className={cls}>{display(row)}</span>;
+  }
+  const was = utc(row.was);
+  const now = utc(row.date);
+  const sameMonth =
+    was.getUTCFullYear() === now.getUTCFullYear() && was.getUTCMonth() === now.getUTCMonth();
+  return (
+    <span className={cls + " revised"}>
+      <s>{(sameMonth ? DAY : DISPLAY).format(was)}</s> {display(row)}
+    </span>
+  );
+}
+
+/**
  * Rows are derived from content/phases.ts (Backend Schema §4.3) so the table a
  * visitor reads can never disagree with the engine driving the CTAs. A null date
  * renders "To be confirmed" rather than a gap.
@@ -106,7 +131,7 @@ export function ImportantDates({
             </span>
             <span>
               {row.label}:{" "}
-              <span className={"tnum " + (row.date ? "live" : "dim")}>{display(row)}</span>
+              <DateText row={row} />
             </span>
           </li>
         ))}
@@ -127,7 +152,7 @@ export function ImportantDates({
             <div key={row.id} className="contents max-md:block max-md:pb-[12rem] max-md:last:pb-0">
               <dt>{row.label}:</dt>
               <dd>
-                <span className={"tnum " + (row.date ? "live" : "dim")}>{display(row)}</span>
+                <DateText row={row} />
               </dd>
             </div>
           ))}
@@ -153,7 +178,7 @@ export function ImportantDates({
               /* The size on a wrapper of its own: `.t-b1` also sets weight 400,
                  and on the same element it would take the bold off `.live`. */
               <span className={size === "b1" ? "t-b1" : undefined}>
-                <span className={"tnum " + (row.date ? "live" : "dim")}>{display(row)}</span>
+                <DateText row={row} />
               </span>
             }
           />
